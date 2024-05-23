@@ -1,0 +1,1342 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>POC/PON data &#8212; Accessing Nansen Legacy data in R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'POC PON data';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Flow cytometry" href="Flow%20cytometry%20data.html" />
+    <link rel="prev" title="Nutrients data" href="Nutrients%20data.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Accessing Nansen Legacy data in R - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Accessing Nansen Legacy data in R - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Accessing Nansen Legacy data in R
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="CTD%20data%20-%20one%20file%20per%20cast.html">CTD data - one file per cast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CTD%20data%20-%20one%20file%20per%20cruise.html">CTD data - one file per cruise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Chlorophyll%20A%20data.html">Chlorophyll A data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Nutrients%20data.html">Nutrients data</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">POC/PON data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Flow%20cytometry%20data.html">Flow cytometry</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/lhmarsden/Accessing_Nansen_Legacy_data_in_R" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/lhmarsden/Accessing_Nansen_Legacy_data_in_R/issues/new?title=Issue%20on%20page%20%2FPOC PON data.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/POC PON data.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>POC/PON data</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-the-data">Accessing the data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#niskin-bottles">Niskin bottles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-from-ice-cores">Data from ice cores</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#under-ice-water">Under ice water</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#melt-ponds">Melt ponds</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pancake-ice">Pancake ice</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="poc-pon-data">
+<h1>POC/PON data<a class="headerlink" href="#poc-pon-data" title="Permalink to this heading">#</a></h1>
+<p>Let’s first load in some libraries that we are going to use today. If you are not sure whether you have the library installed, you can embed <em>install.packages</em> within an <em>if</em> statement, like this</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;RNetCDF&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;RNetCDF&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">RNetCDF</span><span class="p">)</span>
+<span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;writexl&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;writexl&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">writexl</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="accessing-the-data">
+<h2>Accessing the data<a class="headerlink" href="#accessing-the-data" title="Permalink to this heading">#</a></h2>
+<p>These data have been published to NIRD RDA which, at the time of writing, is currently not making data available via THREDDS and OPeNDAP. Therefore, we need to download the files to our local computer.</p>
+<p>Go to the SIOS data access portal:
+<a class="reference external" href="https://sios-svalbard.org/metsis/search?f%5B0%5D=dataset_level%3ALevel-1">https://sios-svalbard.org/metsis/search?f[0]=dataset_level%3ALevel-1</a></p>
+<p>Filter by the collection <em>AeN</em> on the right hand panel to find all Nansen Legacy data. This will take you to here:
+<a class="reference external" href="https://sios-svalbard.org/metsis/search?f%5B0%5D=collection%3AAeN&amp;amp;f%5B1%5D=dataset_level%3ALevel-1">https://sios-svalbard.org/metsis/search?f[0]=collection%3AAeN&amp;f[1]=dataset_level%3ALevel-1</a></p>
+<p>Search for <em>POC</em> in the free-text search in the left hand panel. This will take you to here:
+<a class="reference external" href="https://sios-svalbard.org/metsis/search?search_api_fulltext_op=and&amp;amp;fulltext=POC&amp;amp;start_date=&amp;amp;end_date=&amp;amp;items_per_page=15&amp;amp;f%5B0%5D=collection%3AAeN&amp;amp;f%5B1%5D=dataset_level%3ALevel-1">https://sios-svalbard.org/metsis/search?search_api_fulltext_op=and&amp;fulltext=POC&amp;start_date=&amp;end_date=&amp;items_per_page=15&amp;f[0]=collection%3AAeN&amp;f[1]=dataset_level%3ALevel-1</a></p>
+<p>There is one publication per cruise. Choose the one you are interested in by clicking on it. Here is the landing page for one of the publications:
+<a class="reference external" href="https://doi.org/10.11582/2022.00051">https://doi.org/10.11582/2022.00051</a></p>
+<p>There is one file per cast. Download the files you are interested in - the file with the <em>.nc</em> suffix only is okay.</p>
+</section>
+<section id="niskin-bottles">
+<h2>Niskin bottles<a class="headerlink" href="#niskin-bottles" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">relative_filepath</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;../data/POC_and_PON_JC2-2_station_P7_CTD_with_Niskin_bottles.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">relative_filepath</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf netcdf4 {
+dimensions:
+	depth = 17 ;
+	time = 17 ;
+variables:
+	NC_STRING eventID(depth) ;
+		NC_CHAR eventID:long_name = &quot;eventID in the Nansen Legacy logging system, where more metadata can be found about this sample: https://sios-svalbard.org/aen/tools&quot; ;
+		NC_CHAR eventID:units = &quot;NA&quot; ;
+		NC_CHAR eventID:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_FLOAT poc(depth) ;
+		NC_FLOAT poc:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR poc:long_name = &quot;particulate organic carbon of sea water, average concentration&quot; ;
+		NC_CHAR poc:units = &quot;mg m^-3&quot; ;
+		NC_CHAR poc:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR poc:ancillary_variables = &quot;poc_stdev, poc_replicates&quot; ;
+		NC_CHAR poc:cell_methods = &quot;depth: point&quot; ;
+	NC_FLOAT poc_stdev(depth) ;
+		NC_FLOAT poc_stdev:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR poc_stdev:long_name = &quot;particulate organic carbon of sea water, standard deviation&quot; ;
+		NC_CHAR poc_stdev:units = &quot;mg m^-3&quot; ;
+		NC_CHAR poc_stdev:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR poc_stdev:cell_methods = &quot;depth: standard deviation&quot; ;
+	NC_FLOAT pon(depth) ;
+		NC_FLOAT pon:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR pon:long_name = &quot;particulate organic nitrogen of sea water, average concentration&quot; ;
+		NC_CHAR pon:units = &quot;mg m^-3&quot; ;
+		NC_CHAR pon:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR pon:standard_name = &quot;mole_concentration_of_particulate_organic_nitrogen_in_sea_water&quot; ;
+		NC_CHAR pon:ancillary_variables = &quot;pon_stdev, pon_replicates&quot; ;
+		NC_CHAR pon:cell_methods = &quot;depth: point&quot; ;
+	NC_FLOAT pon_stdev(depth) ;
+		NC_FLOAT pon_stdev:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR pon_stdev:long_name = &quot;particulate organic Nitrogen of sea water, standard deviation&quot; ;
+		NC_CHAR pon_stdev:units = &quot;mg m^-3&quot; ;
+		NC_CHAR pon_stdev:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR pon_stdev:cell_methods = &quot;depth: standard deviation&quot; ;
+	NC_FLOAT c_n_ratio(depth) ;
+		NC_FLOAT c_n_ratio:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR c_n_ratio:long_name = &quot;C:N ratio&quot; ;
+		NC_CHAR c_n_ratio:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_INT pon_replicates(depth) ;
+		NC_INT pon_replicates:_FillValue = 10000 ;
+		NC_CHAR pon_replicates:long_name = &quot;Number of replicates sampled for poc variable calculation&quot; ;
+		NC_CHAR pon_replicates:units = &quot;1&quot; ;
+		NC_CHAR pon_replicates:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_INT poc_replicates(depth) ;
+		NC_INT poc_replicates:_FillValue = 10000 ;
+		NC_CHAR poc_replicates:long_name = &quot;Number of replicates sampled for pon variable calculation&quot; ;
+		NC_CHAR poc_replicates:units = &quot;1&quot; ;
+		NC_CHAR poc_replicates:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_INT depth(depth) ;
+		NC_CHAR depth:standard_name = &quot;depth&quot; ;
+		NC_CHAR depth:long_name = &quot;depth below sea surface&quot; ;
+		NC_CHAR depth:units = &quot;meters&quot; ;
+		NC_CHAR depth:coverage_content_type = &quot;coordinate&quot; ;
+		NC_CHAR depth:positive = &quot;down&quot; ;
+	NC_INT64 time(time) ;
+		NC_CHAR time:standard_name = &quot;time&quot; ;
+		NC_CHAR time:long_name = &quot;time in seconds since 2021-08-29T03:47:49Z&quot; ;
+		NC_CHAR time:units = &quot;seconds since 2021-08-29T03:47:49Z&quot; ;
+		NC_CHAR time:coverage_content_type = &quot;coordinate&quot; ;
+
+// global attributes:
+		NC_CHAR :id = &quot;f09c325c-abc0-5165-a998-c3dd81252af5&quot; ;
+		NC_CHAR :naming_authority = &quot;UiT Arctic University of Norway&quot; ;
+		NC_CHAR :title = &quot;Concentration of Particulate Organic Carbon (POC) and Particulate Organic Nitrogen (PON) from the sea water and sea ice in the northern Barents Sea as part of the Nansen Legacy project, Cruise 2021710 , JC2-2 station P7 CTD with Niskin bottles&quot; ;
+		NC_CHAR :keywords = &quot;Earth Science &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; ORGANIC CARBON (7094), Earth Science &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; NITROGEN (7090)&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD:GCMD Keywords&quot; ;
+		NC_DOUBLE :geospatial_lat_min = 81.8032466666667 ;
+		NC_DOUBLE :geospatial_lat_max = 81.8059284333333 ;
+		NC_DOUBLE :geospatial_lon_min = 30.8836919 ;
+		NC_DOUBLE :geospatial_lon_max = 30.9595279166667 ;
+		NC_CHAR :time_coverage_start = &quot;2021-08-29T00:24:32Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-08-29T04:41:28Z&quot; ;
+		NC_CHAR :Conventions = &quot;ACDD-1.3; CF-1.8&quot; ;
+		NC_CHAR :history = &quot;File create at 2022-10-05T07:00:22Z using xarray in Python&quot; ;
+		NC_CHAR :source = &quot;Data from sea water sampled from Niskin bottles bolted to a CTD. Samples at 0 m depth sampled using a bucket off side of ship.&quot; ;
+		NC_CHAR :processing_level = &quot;delete in not necessary&quot; ;
+		NC_CHAR :date_created = &quot;2022-10-05T07:00:22Z&quot; ;
+		NC_CHAR :creator_type = &quot;person&quot; ;
+		NC_STRING :creator_institution = &quot;University of Tromsø (UiT), University of Tromsø (UiT), University of Tromsø (UiT)&quot; ;
+		NC_CHAR :creator_email = &quot;miriam.marquardt@uit.no, paul.bubourg@uit.com, marit.reigstad@uit.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://orcid.org/0000-0003-2913-067X, https://en.uit.no/ansatte/paul.dubourg, https://orcid.org/0000-0002-8592-7192&quot; ;
+		NC_CHAR :creator_name = &quot;Miriam Marquardt, Paul Dubourg, Marit Reigstad&quot; ;
+		NC_CHAR :publisher_name = &quot;NIRD Research Data Archive&quot; ;
+		NC_CHAR :publisher_url = &quot;https://archive.norstore.no/&quot; ;
+		NC_CHAR :publisher_email = &quot;contact@sigma2.no&quot; ;
+		NC_CHAR :publisher_type = &quot;institution&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :license = &quot;https://creativecommons.org/licenses/by/4.0/&quot; ;
+		NC_STRING :metadata_link = &quot;DOI PROVIDED BY DATA CENTRE – THAT LINKS TO THE LANDING PAGE OF THE DATA&quot; ;
+		NC_CHAR :acknowledgements = &quot;Funded by the Research Council of Norway: The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :stationName = &quot;P7&quot; ;
+		NC_INT64 :cruiseNumber = 2021710 ;
+		NC_CHAR :recordedBy = &quot;Miriam Marquardt&quot; ;
+		NC_CHAR :samplingProtocol = &quot;Nansen Legacy Sampling Protocols v10 (https://septentrio.uit.no/index.php/nansenlegacy/article/view/6684)&quot; ;
+		NC_CHAR :sampleType = &quot;POC/PON&quot; ;
+		NC_CHAR :pi_name = &quot;Marit Reigstad, Miriam Marquardt&quot; ;
+		NC_CHAR :pi_institution = &quot;UiT Arctic University of Norway&quot; ;
+		NC_CHAR :pi_email = &quot;marit.reigstad@uit.no, miriam.marquardt@uit.no&quot; ;
+		NC_STRING :pi_address = &quot;UiT Arctic University of Norway, P.O. Box 6050, 9037 Tromsø&quot; ;
+		NC_STRING :references = &quot;Reigstad, M., Riser, C.W., Wassmann, P., Ratkova, T., 2008. Vertical export of particulate organic carbon: Attenuation, composition and loss rates in the northern Barents Sea. Deep-Sea Res. II 55, 2308–2319. http://dx.doi.org/10.1016/j.dsr2.2008. 05.007.&quot; ;
+		NC_STRING :institution = &quot;University of Tromsø (UiT)&quot; ;
+		NC_CHAR :file_creator_name = &quot;Luke Marsden&quot; ;
+		NC_CHAR :file_creator_email = &quot;lukem@unis.no&quot; ;
+		NC_CHAR :file_creator_url = &quot;https://orcid.org/0000-0002-9746-544X&quot; ;
+		NC_CHAR :summary = &quot;This dataset includes concentrations of Particulate Organic Carbon (POC) and Particulate Organic Nitrogen (PON) from the sea water and sea ice. 
+
+Samples were collected in August and September 2021 as part of cruise 2021710, JC2-2, in the northern Barents Sea and the Arctic basin as part of the Nansen Legacy project. 
+
+Sea water was sampled at seven different stations using Niskin bottles attached to a rosette onboard R/V Kronprins Haakon. At three of these stations we also conducted sea ice work and sampled sea ice cores (gear: Kovacs ice corer 9cm) and under-ice water (gear: Niskin bottle) from a hole in the ice and water from meltponds (gear: bucket) for POC/PON analysis. 
+
+For sea water  water triplicate subsamples (1000–9500 mL) were filtered on pre-combusted Whatman GF/F filters, the limited volume of melted sea ice allowed only one but occasionally triplicates subsamples (290-2350 mL). Filters were stored at −20 °C, and analyzed within 1 years on a CE 440 Exeter analytical CHN Analyzer  according to the procedures described by Reigstad et al. (2008). Presented are averaged POC and PON values (in mg m-3), standard deviations and the C:N ratio. PON values &lt; 3x blank values were excluded from the dataset.&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<p>The variables we are most likely interested in have a single dimension, <em>depth</em>. Let’s access and plot the data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">depth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;depth&quot;</span><span class="p">)</span>
+<span class="n">poc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;poc&quot;</span><span class="p">)</span>
+
+<span class="nf">plot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">poc</span><span class="p">,</span>
+<span class="w">  </span><span class="n">depth</span><span class="p">,</span>
+<span class="w">  </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;l&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">lwd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w">     </span>
+<span class="w">  </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;blue&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">las</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w">     </span>
+<span class="w">  </span><span class="n">ylim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">depth</span><span class="p">),</span><span class="m">0</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Add points on the line plot</span>
+<span class="nf">points</span><span class="p">(</span>
+<span class="w">  </span><span class="n">poc</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="n">depth</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="n">pch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">19</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="n">cex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.5</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/2075003c4c16dfb10a2670daf197c6c57d836a424947b7a6b2d86fe83dab73ae.png" src="_images/2075003c4c16dfb10a2670daf197c6c57d836a424947b7a6b2d86fe83dab73ae.png" />
+</div>
+</div>
+</section>
+<section id="data-from-ice-cores">
+<h2>Data from ice cores<a class="headerlink" href="#data-from-ice-cores" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">relative_filepath</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;../data/POC_and_PON_JC2-2_station_P8_ice_ice_cores.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">relative_filepath</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf netcdf4 {
+dimensions:
+	minDepth = 7 ;
+	maxDepth = 7 ;
+variables:
+	NC_STRING eventID(minDepth) ;
+		NC_CHAR eventID:long_name = &quot;eventID in the Nansen Legacy logging system, where more metadata can be found about this sample: https://sios-svalbard.org/aen/tools&quot; ;
+		NC_CHAR eventID:units = &quot;NA&quot; ;
+		NC_CHAR eventID:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_INT numCores(minDepth) ;
+		NC_INT numCores:_FillValue = 10000 ;
+		NC_CHAR numCores:long_name = &quot;Number of ice cores pooled together to make a single sample&quot; ;
+		NC_CHAR numCores:units = &quot;1&quot; ;
+		NC_CHAR numCores:coverage_content_type = &quot;referenceInformation&quot; ;
+		NC_CHAR numCores:positive = &quot;down&quot; ;
+	NC_FLOAT poc(minDepth) ;
+		NC_FLOAT poc:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR poc:long_name = &quot;particulate organic carbon of sea ice, average concentration&quot; ;
+		NC_CHAR poc:units = &quot;mg m^-3&quot; ;
+		NC_CHAR poc:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR poc:ancillary_variables = &quot;poc_stdev, poc_replicates&quot; ;
+		NC_CHAR poc:cell_methods = &quot;minDepth: point&quot; ;
+	NC_FLOAT poc_stdev(minDepth) ;
+		NC_FLOAT poc_stdev:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR poc_stdev:long_name = &quot;particulate organic carbon of sea ice, standard deviation&quot; ;
+		NC_CHAR poc_stdev:units = &quot;mg m^-3&quot; ;
+		NC_CHAR poc_stdev:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR poc_stdev:cell_methods = &quot;minDepth: standard deviation&quot; ;
+	NC_FLOAT pon(minDepth) ;
+		NC_FLOAT pon:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR pon:long_name = &quot;particulate organic nitrogen of sea ice, average concentration&quot; ;
+		NC_CHAR pon:units = &quot;mg m^-3&quot; ;
+		NC_CHAR pon:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR pon:standard_name = &quot;mole_concentration_of_particulate_organic_nitrogen_in_sea_water&quot; ;
+		NC_CHAR pon:ancillary_variables = &quot;pon_stdev, pon_replicates&quot; ;
+		NC_CHAR pon:cell_methods = &quot;minDepth: point&quot; ;
+	NC_FLOAT pon_stdev(minDepth) ;
+		NC_FLOAT pon_stdev:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR pon_stdev:long_name = &quot;particulate organic Nitrogen of sea ice, standard deviation&quot; ;
+		NC_CHAR pon_stdev:units = &quot;mg m^-3&quot; ;
+		NC_CHAR pon_stdev:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR pon_stdev:cell_methods = &quot;minDepth: standard deviation&quot; ;
+	NC_INT pon_replicates(minDepth) ;
+		NC_INT pon_replicates:_FillValue = 10000 ;
+		NC_CHAR pon_replicates:long_name = &quot;Number of replicates sampled for poc variable calculation&quot; ;
+		NC_CHAR pon_replicates:units = &quot;1&quot; ;
+		NC_CHAR pon_replicates:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_INT poc_replicates(minDepth) ;
+		NC_INT poc_replicates:_FillValue = 10000 ;
+		NC_CHAR poc_replicates:long_name = &quot;Number of replicates sampled for pon variable calculation&quot; ;
+		NC_CHAR poc_replicates:units = &quot;1&quot; ;
+		NC_CHAR poc_replicates:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_FLOAT c_n_ratio(minDepth) ;
+		NC_FLOAT c_n_ratio:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR c_n_ratio:long_name = &quot;C:N ratio&quot; ;
+		NC_CHAR c_n_ratio:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_INT minDepth(minDepth) ;
+		NC_CHAR minDepth:standard_name = &quot;depth&quot; ;
+		NC_CHAR minDepth:long_name = &quot;Minimum depth sampled in the chunk of the ice core, positive is increasing depth.&quot; ;
+		NC_CHAR minDepth:units = &quot;centimeters&quot; ;
+		NC_CHAR minDepth:coverage_content_type = &quot;coordinate&quot; ;
+		NC_CHAR minDepth:positive = &quot;down&quot; ;
+		NC_CHAR minDepth:ancillary variables = &quot;maxDepth&quot; ;
+	NC_INT maxDepth(maxDepth) ;
+		NC_CHAR maxDepth:standard_name = &quot;depth&quot; ;
+		NC_CHAR maxDepth:long_name = &quot;Maximum depth sampled in the chunk of the ice core, positive is increasing depth.&quot; ;
+		NC_CHAR maxDepth:units = &quot;m&quot; ;
+		NC_CHAR maxDepth:coverage_content_type = &quot;coordinate&quot; ;
+		NC_CHAR maxDepth:positive = &quot;down&quot; ;
+
+// global attributes:
+		NC_CHAR :id = &quot;4771d75c-5a05-5860-9271-d2d804413dc9&quot; ;
+		NC_CHAR :naming_authority = &quot;UiT Arctic University of Norway&quot; ;
+		NC_CHAR :title = &quot;Concentration of Particulate Organic Carbon (POC) and Particulate Organic Nitrogen (PON) from the sea water and sea ice in the northern Barents Sea as part of the Nansen Legacy project, Cruise 2021710 , JC2-2 station P8_ice ice cores&quot; ;
+		NC_CHAR :keywords = &quot;Earth Science &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; ORGANIC CARBON (7094), Earth Science &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; NITROGEN (7090)&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD:GCMD Keywords&quot; ;
+		NC_DOUBLE :geospatial_lat_min = 83.8994248833333 ;
+		NC_DOUBLE :geospatial_lat_max = 83.8994248833333 ;
+		NC_DOUBLE :geospatial_lon_min = 25.4113657166667 ;
+		NC_DOUBLE :geospatial_lon_max = 25.4113657166667 ;
+		NC_CHAR :time_coverage_start = &quot;2021-09-01T07:00:36Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-09-22T06:27:00Z&quot; ;
+		NC_CHAR :Conventions = &quot;ACDD-1.3; CF-1.8&quot; ;
+		NC_CHAR :history = &quot;File create at 2022-10-05T07:02:15Z using xarray in Python&quot; ;
+		NC_CHAR :source = &quot;Data from sea ice cores sampled with 9 cm ice corer, multiple cores pooled together.&quot; ;
+		NC_CHAR :processing_level = &quot;delete in not necessary&quot; ;
+		NC_CHAR :date_created = &quot;2022-10-05T07:02:15Z&quot; ;
+		NC_CHAR :creator_type = &quot;person&quot; ;
+		NC_STRING :creator_institution = &quot;University of Tromsø (UiT), University of Tromsø (UiT), University of Tromsø (UiT)&quot; ;
+		NC_CHAR :creator_email = &quot;miriam.marquardt@uit.no, paul.bubourg@uit.com, marit.reigstad@uit.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://orcid.org/0000-0003-2913-067X, https://en.uit.no/ansatte/paul.dubourg, https://orcid.org/0000-0002-8592-7192&quot; ;
+		NC_CHAR :creator_name = &quot;Miriam Marquardt, Paul Dubourg, Marit Reigstad&quot; ;
+		NC_CHAR :publisher_name = &quot;NIRD Research Data Archive&quot; ;
+		NC_CHAR :publisher_url = &quot;https://archive.norstore.no/&quot; ;
+		NC_CHAR :publisher_email = &quot;contact@sigma2.no&quot; ;
+		NC_CHAR :publisher_type = &quot;institution&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :license = &quot;https://creativecommons.org/licenses/by/4.0/&quot; ;
+		NC_STRING :metadata_link = &quot;DOI PROVIDED BY DATA CENTRE – THAT LINKS TO THE LANDING PAGE OF THE DATA&quot; ;
+		NC_CHAR :acknowledgements = &quot;Funded by the Research Council of Norway: The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :stationName = &quot;P8_ice&quot; ;
+		NC_INT64 :cruiseNumber = 2021710 ;
+		NC_CHAR :recordedBy = &quot;Miriam Marquardt&quot; ;
+		NC_CHAR :samplingProtocol = &quot;Nansen Legacy Sampling Protocols v10 (https://septentrio.uit.no/index.php/nansenlegacy/article/view/6684)&quot; ;
+		NC_CHAR :sampleType = &quot;POC/PON&quot; ;
+		NC_CHAR :pi_name = &quot;Marit Reigstad, Miriam Marquardt&quot; ;
+		NC_CHAR :pi_institution = &quot;UiT Arctic University of Norway&quot; ;
+		NC_CHAR :pi_email = &quot;marit.reigstad@uit.no, miriam.marquardt@uit.no&quot; ;
+		NC_STRING :pi_address = &quot;UiT Arctic University of Norway, P.O. Box 6050, 9037 Tromsø&quot; ;
+		NC_STRING :references = &quot;Reigstad, M., Riser, C.W., Wassmann, P., Ratkova, T., 2008. Vertical export of particulate organic carbon: Attenuation, composition and loss rates in the northern Barents Sea. Deep-Sea Res. II 55, 2308–2319. http://dx.doi.org/10.1016/j.dsr2.2008. 05.007.&quot; ;
+		NC_STRING :institution = &quot;University of Tromsø (UiT)&quot; ;
+		NC_CHAR :file_creator_name = &quot;Luke Marsden&quot; ;
+		NC_CHAR :file_creator_email = &quot;lukem@unis.no&quot; ;
+		NC_CHAR :file_creator_url = &quot;https://orcid.org/0000-0002-9746-544X&quot; ;
+		NC_CHAR :summary = &quot;This dataset includes concentrations of Particulate Organic Carbon (POC) and Particulate Organic Nitrogen (PON) from the sea water and sea ice. 
+
+Samples were collected in August and September 2021 as part of cruise 2021710, JC2-2, in the northern Barents Sea and the Arctic basin as part of the Nansen Legacy project. 
+
+Sea water was sampled at seven different stations using Niskin bottles attached to a rosette onboard R/V Kronprins Haakon. At three of these stations we also conducted sea ice work and sampled sea ice cores (gear: Kovacs ice corer 9cm) and under-ice water (gear: Niskin bottle) from a hole in the ice and water from meltponds (gear: bucket) for POC/PON analysis. 
+
+For sea water  water triplicate subsamples (1000–9500 mL) were filtered on pre-combusted Whatman GF/F filters, the limited volume of melted sea ice allowed only one but occasionally triplicates subsamples (290-2350 mL). Filters were stored at −20 °C, and analyzed within 1 years on a CE 440 Exeter analytical CHN Analyzer  according to the procedures described by Reigstad et al. (2008). Presented are averaged POC and PON values (in mg m-3), standard deviations and the C:N ratio. PON values &lt; 3x blank values were excluded from the dataset.&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<p>In these data, you can see that the data variables have 2 dimensions, <em>minDepth</em> and <em>maxDepth</em>. However, each data value is representative of a cell - a depth range for each chunk of the ice core that has been melted down.</p>
+<p>So all the data variables just have one dimension, <em>minDepth</em>.</p>
+<p>This is actually not the best, most CF-compliant way to do this. These data are human-readable, but do not follow the recommend best practices. We should have used bounds instead when creating the files. You can read about cell bounds here.
+<a class="reference external" href="https://cfconventions.org/Data/cf-conventions/cf-conventions-1.11/cf-conventions.html#_data_representative_of_cells">https://cfconventions.org/Data/cf-conventions/cf-conventions-1.11/cf-conventions.html#_data_representative_of_cells</a></p>
+<p>Following the best practices is important as it encourages consistency between datasets and makes it easier for someone to build a service that works on not just one file but all similar files. I will cover how to encode data representative of cells in my tutorial series on working with NetCDF files in R, which is linked here. At the time of writing, this is not complete:
+<a class="reference external" href="https://lhmarsden.github.io/NetCDF_in_R_from_beginner_to_pro/intro.html">https://lhmarsden.github.io/NetCDF_in_R_from_beginner_to_pro/intro.html</a></p>
+<p>You can access the data in the same way you would the data from the Niskin bottles.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">min_depth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;minDepth&#39;</span><span class="p">)</span>
+<span class="n">max_depth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;maxDepth&#39;</span><span class="p">)</span>
+<span class="n">poc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;poc&#39;</span><span class="p">)</span>
+<span class="n">pon</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;pon&#39;</span><span class="p">)</span>
+
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">    </span><span class="n">Min_depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">min_depth</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">Max_depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max_depth</span><span class="p">,</span>
+<span class="w">    </span><span class="n">POC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">poc</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">PON</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pon</span>
+<span class="p">)</span>
+
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 7 × 4</caption>
+<thead>
+	<tr><th scope=col>Min_depth</th><th scope=col>Max_depth</th><th scope=col>POC</th><th scope=col>PON</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td> 0</td><td> 3</td><td>2573.1243</td><td>142.27037</td></tr>
+	<tr><td> 3</td><td>10</td><td>1654.3745</td><td> 94.35554</td></tr>
+	<tr><td>10</td><td>20</td><td>1805.5574</td><td>102.02527</td></tr>
+	<tr><td>20</td><td>30</td><td>1569.2649</td><td> 92.12193</td></tr>
+	<tr><td>30</td><td>50</td><td>1227.7764</td><td> 72.65918</td></tr>
+	<tr><td>50</td><td>70</td><td>1169.4253</td><td> 73.34488</td></tr>
+	<tr><td>70</td><td>90</td><td> 555.1413</td><td> 44.04702</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="under-ice-water">
+<h2>Under ice water<a class="headerlink" href="#under-ice-water" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">relative_filepath</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;../data/POC_and_PON_JC2-2_station_P8_ice_under_ice_water.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">relative_filepath</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf netcdf4 {
+dimensions:
+	depth = 1 ;
+variables:
+	NC_STRING eventID(depth) ;
+		NC_CHAR eventID:long_name = &quot;eventID in the Nansen Legacy logging system, where more metadata can be found about this sample: https://sios-svalbard.org/aen/tools&quot; ;
+		NC_CHAR eventID:units = &quot;NA&quot; ;
+		NC_CHAR eventID:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_FLOAT poc(depth) ;
+		NC_FLOAT poc:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR poc:long_name = &quot;particulate organic carbon of sea water, average concentration&quot; ;
+		NC_CHAR poc:units = &quot;mg m^-3&quot; ;
+		NC_CHAR poc:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR poc:ancillary_variables = &quot;poc_stdev, poc_replicates&quot; ;
+		NC_CHAR poc:cell_methods = &quot;depth: point&quot; ;
+	NC_FLOAT poc_stdev(depth) ;
+		NC_FLOAT poc_stdev:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR poc_stdev:long_name = &quot;particulate organic carbon of sea water, standard deviation&quot; ;
+		NC_CHAR poc_stdev:units = &quot;mg m^-3&quot; ;
+		NC_CHAR poc_stdev:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR poc_stdev:cell_methods = &quot;depth: standard deviation&quot; ;
+	NC_FLOAT pon(depth) ;
+		NC_FLOAT pon:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR pon:long_name = &quot;particulate organic nitrogen of sea water, average concentration&quot; ;
+		NC_CHAR pon:units = &quot;mg m^-3&quot; ;
+		NC_CHAR pon:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR pon:standard_name = &quot;mole_concentration_of_particulate_organic_nitrogen_in_sea_water&quot; ;
+		NC_CHAR pon:ancillary_variables = &quot;pon_stdev, pon_replicates&quot; ;
+		NC_CHAR pon:cell_methods = &quot;depth: point&quot; ;
+	NC_FLOAT pon_stdev(depth) ;
+		NC_FLOAT pon_stdev:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR pon_stdev:long_name = &quot;particulate organic Nitrogen of sea water, standard deviation&quot; ;
+		NC_CHAR pon_stdev:units = &quot;mg m^-3&quot; ;
+		NC_CHAR pon_stdev:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR pon_stdev:cell_methods = &quot;depth: standard deviation&quot; ;
+	NC_FLOAT c_n_ratio(depth) ;
+		NC_FLOAT c_n_ratio:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR c_n_ratio:long_name = &quot;C:N ratio&quot; ;
+		NC_CHAR c_n_ratio:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_INT pon_replicates(depth) ;
+		NC_INT pon_replicates:_FillValue = 10000 ;
+		NC_CHAR pon_replicates:long_name = &quot;Number of replicates sampled for poc variable calculation&quot; ;
+		NC_CHAR pon_replicates:units = &quot;1&quot; ;
+		NC_CHAR pon_replicates:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_INT poc_replicates(depth) ;
+		NC_INT poc_replicates:_FillValue = 10000 ;
+		NC_CHAR poc_replicates:long_name = &quot;Number of replicates sampled for pon variable calculation&quot; ;
+		NC_CHAR poc_replicates:units = &quot;1&quot; ;
+		NC_CHAR poc_replicates:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_INT depth(depth) ;
+		NC_CHAR depth:standard_name = &quot;depth&quot; ;
+		NC_CHAR depth:long_name = &quot;depth below sea surface&quot; ;
+		NC_CHAR depth:units = &quot;meters&quot; ;
+		NC_CHAR depth:coverage_content_type = &quot;coordinate&quot; ;
+		NC_CHAR depth:positive = &quot;down&quot; ;
+
+// global attributes:
+		NC_CHAR :id = &quot;ca7db4b3-7bd6-5552-8753-787f5965f424&quot; ;
+		NC_CHAR :naming_authority = &quot;UiT Arctic University of Norway&quot; ;
+		NC_CHAR :title = &quot;Concentration of Particulate Organic Carbon (POC) and Particulate Organic Nitrogen (PON) from the sea water and sea ice in the northern Barents Sea as part of the Nansen Legacy project, Cruise 2021710 , JC2-2 station P8_ice under ice water&quot; ;
+		NC_CHAR :keywords = &quot;Earth Science &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; ORGANIC CARBON (7094), Earth Science &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; NITROGEN (7090)&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD:GCMD Keywords&quot; ;
+		NC_DOUBLE :geospatial_lat_min = 83.8994248833333 ;
+		NC_DOUBLE :geospatial_lat_max = 83.8994248833333 ;
+		NC_DOUBLE :geospatial_lon_min = 25.4113657166667 ;
+		NC_DOUBLE :geospatial_lon_max = 25.4113657166667 ;
+		NC_CHAR :time_coverage_start = &quot;2021-09-01T11:25:00Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-09-22T06:27:00Z&quot; ;
+		NC_CHAR :Conventions = &quot;ACDD-1.3; CF-1.8&quot; ;
+		NC_CHAR :history = &quot;File create at 2022-10-05T07:01:15Z using xarray in Python&quot; ;
+		NC_CHAR :source = &quot;Data from Niskin bottles sampling sea water under the sea ice.&quot; ;
+		NC_CHAR :processing_level = &quot;delete in not necessary&quot; ;
+		NC_CHAR :date_created = &quot;2022-10-05T07:01:15Z&quot; ;
+		NC_CHAR :creator_type = &quot;person&quot; ;
+		NC_STRING :creator_institution = &quot;University of Tromsø (UiT), University of Tromsø (UiT), University of Tromsø (UiT)&quot; ;
+		NC_CHAR :creator_email = &quot;miriam.marquardt@uit.no, paul.bubourg@uit.com, marit.reigstad@uit.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://orcid.org/0000-0003-2913-067X, https://en.uit.no/ansatte/paul.dubourg, https://orcid.org/0000-0002-8592-7192&quot; ;
+		NC_CHAR :creator_name = &quot;Miriam Marquardt, Paul Dubourg, Marit Reigstad&quot; ;
+		NC_CHAR :publisher_name = &quot;NIRD Research Data Archive&quot; ;
+		NC_CHAR :publisher_url = &quot;https://archive.norstore.no/&quot; ;
+		NC_CHAR :publisher_email = &quot;contact@sigma2.no&quot; ;
+		NC_CHAR :publisher_type = &quot;institution&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :license = &quot;https://creativecommons.org/licenses/by/4.0/&quot; ;
+		NC_STRING :metadata_link = &quot;DOI PROVIDED BY DATA CENTRE – THAT LINKS TO THE LANDING PAGE OF THE DATA&quot; ;
+		NC_CHAR :acknowledgements = &quot;Funded by the Research Council of Norway: The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :stationName = &quot;P8_ice&quot; ;
+		NC_INT64 :cruiseNumber = 2021710 ;
+		NC_CHAR :recordedBy = &quot;Miriam Marquardt&quot; ;
+		NC_CHAR :samplingProtocol = &quot;Nansen Legacy Sampling Protocols v10 (https://septentrio.uit.no/index.php/nansenlegacy/article/view/6684)&quot; ;
+		NC_CHAR :sampleType = &quot;POC/PON&quot; ;
+		NC_CHAR :pi_name = &quot;Marit Reigstad, Miriam Marquardt&quot; ;
+		NC_CHAR :pi_institution = &quot;UiT Arctic University of Norway&quot; ;
+		NC_CHAR :pi_email = &quot;marit.reigstad@uit.no, miriam.marquardt@uit.no&quot; ;
+		NC_STRING :pi_address = &quot;UiT Arctic University of Norway, P.O. Box 6050, 9037 Tromsø&quot; ;
+		NC_STRING :references = &quot;Reigstad, M., Riser, C.W., Wassmann, P., Ratkova, T., 2008. Vertical export of particulate organic carbon: Attenuation, composition and loss rates in the northern Barents Sea. Deep-Sea Res. II 55, 2308–2319. http://dx.doi.org/10.1016/j.dsr2.2008. 05.007.&quot; ;
+		NC_STRING :institution = &quot;University of Tromsø (UiT)&quot; ;
+		NC_CHAR :file_creator_name = &quot;Luke Marsden&quot; ;
+		NC_CHAR :file_creator_email = &quot;lukem@unis.no&quot; ;
+		NC_CHAR :file_creator_url = &quot;https://orcid.org/0000-0002-9746-544X&quot; ;
+		NC_CHAR :summary = &quot;This dataset includes concentrations of Particulate Organic Carbon (POC) and Particulate Organic Nitrogen (PON) from the sea water and sea ice. 
+
+Samples were collected in August and September 2021 as part of cruise 2021710, JC2-2, in the northern Barents Sea and the Arctic basin as part of the Nansen Legacy project. 
+
+Sea water was sampled at seven different stations using Niskin bottles attached to a rosette onboard R/V Kronprins Haakon. At three of these stations we also conducted sea ice work and sampled sea ice cores (gear: Kovacs ice corer 9cm) and under-ice water (gear: Niskin bottle) from a hole in the ice and water from meltponds (gear: bucket) for POC/PON analysis. 
+
+For sea water  water triplicate subsamples (1000–9500 mL) were filtered on pre-combusted Whatman GF/F filters, the limited volume of melted sea ice allowed only one but occasionally triplicates subsamples (290-2350 mL). Filters were stored at −20 °C, and analyzed within 1 years on a CE 440 Exeter analytical CHN Analyzer  according to the procedures described by Reigstad et al. (2008). Presented are averaged POC and PON values (in mg m-3), standard deviations and the C:N ratio. PON values &lt; 3x blank values were excluded from the dataset.&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<p>These data are structured in the same was as the data from Niskin bottles, but in this case only 1 or 2 depths have been sampled in each profile.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">depth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;depth&quot;</span><span class="p">)</span>
+<span class="n">poc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;poc&quot;</span><span class="p">)</span>
+
+<span class="n">depth</span>
+<span class="n">poc</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">0</div><div class="output text_html">135.505187988281</div></div>
+</div>
+</section>
+<section id="melt-ponds">
+<h2>Melt ponds<a class="headerlink" href="#melt-ponds" title="Permalink to this heading">#</a></h2>
+<p>For these data, a dimension <em>melt_pond_number</em> has been used to number each of the meltponds sampled. So if multiple melt ponds were sampled, each data point for each variable would be from a different melt pond.</p>
+<p>I think the <em>rmelt_pond_number</em> is an accidental duplicate that can be ignored.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">relative_filepath</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;../data/POC_and_PON_JC2-2_station_P8_ice_melt_ponds.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">relative_filepath</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf netcdf4 {
+dimensions:
+	melt_pond_number = 3 ;
+	rmelt_pond_number = 3 ;
+variables:
+	NC_STRING eventID(melt_pond_number) ;
+		NC_CHAR eventID:long_name = &quot;eventID in the Nansen Legacy logging system, where more metadata can be found about this sample: https://sios-svalbard.org/aen/tools&quot; ;
+		NC_CHAR eventID:units = &quot;NA&quot; ;
+		NC_CHAR eventID:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_FLOAT poc(melt_pond_number) ;
+		NC_FLOAT poc:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR poc:long_name = &quot;particulate organic carbon of melt pond water, average concentration&quot; ;
+		NC_CHAR poc:units = &quot;mg m^-3&quot; ;
+		NC_CHAR poc:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR poc:ancillary_variables = &quot;poc_stdev, poc_replicates&quot; ;
+		NC_CHAR poc:cell_methods = &quot;melt_pond_number: point&quot; ;
+	NC_FLOAT poc_stdev(rmelt_pond_number) ;
+		NC_FLOAT poc_stdev:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR poc_stdev:long_name = &quot;particulate organic carbon of melt pond water, standard deviation&quot; ;
+		NC_CHAR poc_stdev:units = &quot;mg m^-3&quot; ;
+		NC_CHAR poc_stdev:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR poc_stdev:cell_methods = &quot;melt_pond_number: standard deviation&quot; ;
+	NC_FLOAT pon(melt_pond_number) ;
+		NC_FLOAT pon:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR pon:long_name = &quot;particulate organic nitrogen of melt pond water, average concentration&quot; ;
+		NC_CHAR pon:units = &quot;mg m^-3&quot; ;
+		NC_CHAR pon:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR pon:standard_name = &quot;mole_concentration_of_particulate_organic_nitrogen_in_sea_water&quot; ;
+		NC_CHAR pon:ancillary_variables = &quot;pon_stdev, pon_replicates&quot; ;
+		NC_CHAR pon:cell_methods = &quot;melt_pond_number: point&quot; ;
+	NC_FLOAT pon_stdev(melt_pond_number) ;
+		NC_FLOAT pon_stdev:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR pon_stdev:long_name = &quot;particulate organic Nitrogen of melt pond water, standard deviation&quot; ;
+		NC_CHAR pon_stdev:units = &quot;mg m^-3&quot; ;
+		NC_CHAR pon_stdev:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR pon_stdev:cell_methods = &quot;melt_pond_number: standard deviation&quot; ;
+	NC_FLOAT c_n_ratio(melt_pond_number) ;
+		NC_FLOAT c_n_ratio:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR c_n_ratio:long_name = &quot;C:N ratio&quot; ;
+		NC_CHAR c_n_ratio:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_INT pon_replicates(melt_pond_number) ;
+		NC_INT pon_replicates:_FillValue = 10000 ;
+		NC_CHAR pon_replicates:long_name = &quot;Number of replicates sampled for poc variable calculation&quot; ;
+		NC_CHAR pon_replicates:units = &quot;1&quot; ;
+		NC_CHAR pon_replicates:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_INT poc_replicates(melt_pond_number) ;
+		NC_INT poc_replicates:_FillValue = 10000 ;
+		NC_CHAR poc_replicates:long_name = &quot;Number of replicates sampled for pon variable calculation&quot; ;
+		NC_CHAR poc_replicates:units = &quot;1&quot; ;
+		NC_CHAR poc_replicates:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_INT melt_pond_number(melt_pond_number) ;
+		NC_CHAR melt_pond_number:long_name = &quot;Multiple melt ponds were sampled at each station. This variable is an counter assigned to number each individual melt pond&quot; ;
+		NC_CHAR melt_pond_number:units = &quot;1&quot; ;
+		NC_CHAR melt_pond_number:coverage_content_type = &quot;coordinate&quot; ;
+
+// global attributes:
+		NC_CHAR :id = &quot;0a909161-bd9b-5885-8c07-373738c65edd&quot; ;
+		NC_CHAR :naming_authority = &quot;UiT Arctic University of Norway&quot; ;
+		NC_CHAR :title = &quot;Concentration of Particulate Organic Carbon (POC) and Particulate Organic Nitrogen (PON) from the sea water and sea ice in the northern Barents Sea as part of the Nansen Legacy project, Cruise 2021710 , JC2-2 station P8_ice melt ponds&quot; ;
+		NC_CHAR :keywords = &quot;Earth Science &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; ORGANIC CARBON (7094), Earth Science &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; NITROGEN (7090)&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD:GCMD Keywords&quot; ;
+		NC_DOUBLE :geospatial_lat_min = 83.8994248833333 ;
+		NC_DOUBLE :geospatial_lat_max = 83.8994248833333 ;
+		NC_DOUBLE :geospatial_lon_min = 25.4113657166667 ;
+		NC_DOUBLE :geospatial_lon_max = 25.4113657166667 ;
+		NC_CHAR :time_coverage_start = &quot;2021-09-01T08:00:00Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-09-22T06:27:00Z&quot; ;
+		NC_CHAR :Conventions = &quot;ACDD-1.3; CF-1.8&quot; ;
+		NC_CHAR :history = &quot;File create at 2022-10-05T07:01:44Z using xarray in Python&quot; ;
+		NC_CHAR :source = &quot;Data from melt pond water sampled using a bucket&quot; ;
+		NC_CHAR :processing_level = &quot;delete in not necessary&quot; ;
+		NC_CHAR :date_created = &quot;2022-10-05T07:01:44Z&quot; ;
+		NC_CHAR :creator_type = &quot;person&quot; ;
+		NC_STRING :creator_institution = &quot;University of Tromsø (UiT), University of Tromsø (UiT), University of Tromsø (UiT)&quot; ;
+		NC_CHAR :creator_email = &quot;miriam.marquardt@uit.no, paul.bubourg@uit.com, marit.reigstad@uit.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://orcid.org/0000-0003-2913-067X, https://en.uit.no/ansatte/paul.dubourg, https://orcid.org/0000-0002-8592-7192&quot; ;
+		NC_CHAR :creator_name = &quot;Miriam Marquardt, Paul Dubourg, Marit Reigstad&quot; ;
+		NC_CHAR :publisher_name = &quot;NIRD Research Data Archive&quot; ;
+		NC_CHAR :publisher_url = &quot;https://archive.norstore.no/&quot; ;
+		NC_CHAR :publisher_email = &quot;contact@sigma2.no&quot; ;
+		NC_CHAR :publisher_type = &quot;institution&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :license = &quot;https://creativecommons.org/licenses/by/4.0/&quot; ;
+		NC_STRING :metadata_link = &quot;DOI PROVIDED BY DATA CENTRE – THAT LINKS TO THE LANDING PAGE OF THE DATA&quot; ;
+		NC_CHAR :acknowledgements = &quot;Funded by the Research Council of Norway: The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :stationName = &quot;P8_ice&quot; ;
+		NC_INT64 :cruiseNumber = 2021710 ;
+		NC_CHAR :recordedBy = &quot;Miriam Marquardt&quot; ;
+		NC_CHAR :samplingProtocol = &quot;Nansen Legacy Sampling Protocols v10 (https://septentrio.uit.no/index.php/nansenlegacy/article/view/6684)&quot; ;
+		NC_CHAR :sampleType = &quot;POC/PON&quot; ;
+		NC_CHAR :pi_name = &quot;Marit Reigstad, Miriam Marquardt&quot; ;
+		NC_CHAR :pi_institution = &quot;UiT Arctic University of Norway&quot; ;
+		NC_CHAR :pi_email = &quot;marit.reigstad@uit.no, miriam.marquardt@uit.no&quot; ;
+		NC_STRING :pi_address = &quot;UiT Arctic University of Norway, P.O. Box 6050, 9037 Tromsø&quot; ;
+		NC_STRING :references = &quot;Reigstad, M., Riser, C.W., Wassmann, P., Ratkova, T., 2008. Vertical export of particulate organic carbon: Attenuation, composition and loss rates in the northern Barents Sea. Deep-Sea Res. II 55, 2308–2319. http://dx.doi.org/10.1016/j.dsr2.2008. 05.007.&quot; ;
+		NC_STRING :institution = &quot;University of Tromsø (UiT)&quot; ;
+		NC_CHAR :file_creator_name = &quot;Luke Marsden&quot; ;
+		NC_CHAR :file_creator_email = &quot;lukem@unis.no&quot; ;
+		NC_CHAR :file_creator_url = &quot;https://orcid.org/0000-0002-9746-544X&quot; ;
+		NC_CHAR :summary = &quot;This dataset includes concentrations of Particulate Organic Carbon (POC) and Particulate Organic Nitrogen (PON) from the sea water and sea ice. 
+
+Samples were collected in August and September 2021 as part of cruise 2021710, JC2-2, in the northern Barents Sea and the Arctic basin as part of the Nansen Legacy project. 
+
+Sea water was sampled at seven different stations using Niskin bottles attached to a rosette onboard R/V Kronprins Haakon. At three of these stations we also conducted sea ice work and sampled sea ice cores (gear: Kovacs ice corer 9cm) and under-ice water (gear: Niskin bottle) from a hole in the ice and water from meltponds (gear: bucket) for POC/PON analysis. 
+
+For sea water  water triplicate subsamples (1000–9500 mL) were filtered on pre-combusted Whatman GF/F filters, the limited volume of melted sea ice allowed only one but occasionally triplicates subsamples (290-2350 mL). Filters were stored at −20 °C, and analyzed within 1 years on a CE 440 Exeter analytical CHN Analyzer  according to the procedures described by Reigstad et al. (2008). Presented are averaged POC and PON values (in mg m-3), standard deviations and the C:N ratio. PON values &lt; 3x blank values were excluded from the dataset.&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">melt_pond_number</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;melt_pond_number&#39;</span><span class="p">)</span>
+<span class="n">poc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;poc&#39;</span><span class="p">)</span>
+<span class="n">pon</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;pon&#39;</span><span class="p">)</span>
+
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">    </span><span class="n">Melt_pond_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">melt_pond_number</span><span class="p">,</span>
+<span class="w">    </span><span class="n">POC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">poc</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">PON</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pon</span>
+<span class="p">)</span>
+
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 3 × 3</caption>
+<thead>
+	<tr><th scope=col>Melt_pond_number</th><th scope=col>POC</th><th scope=col>PON</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td> 70.68340</td><td> 9.03695</td></tr>
+	<tr><td>2</td><td> 98.05074</td><td>13.27174</td></tr>
+	<tr><td>3</td><td>162.79396</td><td>22.95190</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="pancake-ice">
+<h2>Pancake ice<a class="headerlink" href="#pancake-ice" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">relative_filepath</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;../data/POC_and_PON_JC2-2_station_P9_ice_pancake_ice.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">relative_filepath</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf netcdf4 {
+dimensions:
+	sample_number = 1 ;
+	rsample_number = 1 ;
+variables:
+	NC_STRING eventID(sample_number) ;
+		NC_CHAR eventID:long_name = &quot;eventID in the Nansen Legacy logging system, where more metadata can be found about this sample: https://sios-svalbard.org/aen/tools&quot; ;
+		NC_CHAR eventID:units = &quot;NA&quot; ;
+		NC_CHAR eventID:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_FLOAT poc(sample_number) ;
+		NC_FLOAT poc:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR poc:long_name = &quot;particulate organic carbon of melt pond water, average concentration&quot; ;
+		NC_CHAR poc:units = &quot;mg m^-3&quot; ;
+		NC_CHAR poc:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR poc:ancillary_variables = &quot;poc_stdev, poc_replicates&quot; ;
+		NC_CHAR poc:cell_methods = &quot;sample_number: point&quot; ;
+	NC_FLOAT poc_stdev(rsample_number) ;
+		NC_FLOAT poc_stdev:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR poc_stdev:long_name = &quot;particulate organic carbon of melt pond water, standard deviation&quot; ;
+		NC_CHAR poc_stdev:units = &quot;mg m^-3&quot; ;
+		NC_CHAR poc_stdev:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR poc_stdev:cell_methods = &quot;sample_number: standard deviation&quot; ;
+	NC_FLOAT pon(sample_number) ;
+		NC_FLOAT pon:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR pon:long_name = &quot;particulate organic nitrogen of melt pond water, average concentration&quot; ;
+		NC_CHAR pon:units = &quot;mg m^-3&quot; ;
+		NC_CHAR pon:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR pon:standard_name = &quot;mole_concentration_of_particulate_organic_nitrogen_in_sea_water&quot; ;
+		NC_CHAR pon:ancillary_variables = &quot;pon_stdev, pon_replicates&quot; ;
+		NC_CHAR pon:cell_methods = &quot;sample_number: point&quot; ;
+	NC_FLOAT pon_stdev(sample_number) ;
+		NC_FLOAT pon_stdev:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR pon_stdev:long_name = &quot;particulate organic Nitrogen of melt pond water, standard deviation&quot; ;
+		NC_CHAR pon_stdev:units = &quot;mg m^-3&quot; ;
+		NC_CHAR pon_stdev:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR pon_stdev:cell_methods = &quot;sample_number: standard deviation&quot; ;
+	NC_FLOAT c_n_ratio(sample_number) ;
+		NC_FLOAT c_n_ratio:_FillValue = 1.00000001504747e+30 ;
+		NC_CHAR c_n_ratio:long_name = &quot;C:N ratio&quot; ;
+		NC_CHAR c_n_ratio:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_INT pon_replicates(sample_number) ;
+		NC_INT pon_replicates:_FillValue = 10000 ;
+		NC_CHAR pon_replicates:long_name = &quot;Number of replicates sampled for poc variable calculation&quot; ;
+		NC_CHAR pon_replicates:units = &quot;1&quot; ;
+		NC_CHAR pon_replicates:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_INT poc_replicates(sample_number) ;
+		NC_INT poc_replicates:_FillValue = 10000 ;
+		NC_CHAR poc_replicates:long_name = &quot;Number of replicates sampled for pon variable calculation&quot; ;
+		NC_CHAR poc_replicates:units = &quot;1&quot; ;
+		NC_CHAR poc_replicates:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_INT sample_number(sample_number) ;
+		NC_CHAR sample_number:long_name = &quot;Arbitrary counter for sample number (iteration)&quot; ;
+		NC_CHAR sample_number:units = &quot;1&quot; ;
+		NC_CHAR sample_number:coverage_content_type = &quot;coordinate&quot; ;
+
+// global attributes:
+		NC_CHAR :id = &quot;2f79e9af-90c3-56ec-985d-4db0a0bbfe09&quot; ;
+		NC_CHAR :naming_authority = &quot;UiT Arctic University of Norway&quot; ;
+		NC_CHAR :title = &quot;Concentration of Particulate Organic Carbon (POC) and Particulate Organic Nitrogen (PON) from the sea water and sea ice in the northern Barents Sea as part of the Nansen Legacy project, Cruise 2021710 , JC2-2 station P9_ice pancake ice&quot; ;
+		NC_CHAR :keywords = &quot;Earth Science &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; ORGANIC CARBON (7094), Earth Science &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; NITROGEN (7090)&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD:GCMD Keywords&quot; ;
+		NC_DOUBLE :geospatial_lat_min = 85.3684180833333 ;
+		NC_DOUBLE :geospatial_lat_max = 85.3684180833333 ;
+		NC_DOUBLE :geospatial_lon_min = 7.4764718 ;
+		NC_DOUBLE :geospatial_lon_max = 7.4764718 ;
+		NC_CHAR :time_coverage_start = &quot;2021-09-07T07:27:00Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-09-22T06:27:00Z&quot; ;
+		NC_CHAR :Conventions = &quot;ACDD-1.3; CF-1.8&quot; ;
+		NC_CHAR :history = &quot;File create at 2022-10-05T07:01:22Z using xarray in Python&quot; ;
+		NC_CHAR :source = &quot;Pancake ice (0-1cm) sampled using bucket&quot; ;
+		NC_CHAR :processing_level = &quot;delete in not necessary&quot; ;
+		NC_CHAR :date_created = &quot;2022-10-05T07:01:22Z&quot; ;
+		NC_CHAR :creator_type = &quot;person&quot; ;
+		NC_STRING :creator_institution = &quot;University of Tromsø (UiT), University of Tromsø (UiT), University of Tromsø (UiT)&quot; ;
+		NC_CHAR :creator_email = &quot;miriam.marquardt@uit.no, paul.bubourg@uit.com, marit.reigstad@uit.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://orcid.org/0000-0003-2913-067X, https://en.uit.no/ansatte/paul.dubourg, https://orcid.org/0000-0002-8592-7192&quot; ;
+		NC_CHAR :creator_name = &quot;Miriam Marquardt, Paul Dubourg, Marit Reigstad&quot; ;
+		NC_CHAR :publisher_name = &quot;NIRD Research Data Archive&quot; ;
+		NC_CHAR :publisher_url = &quot;https://archive.norstore.no/&quot; ;
+		NC_CHAR :publisher_email = &quot;contact@sigma2.no&quot; ;
+		NC_CHAR :publisher_type = &quot;institution&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :license = &quot;https://creativecommons.org/licenses/by/4.0/&quot; ;
+		NC_STRING :metadata_link = &quot;DOI PROVIDED BY DATA CENTRE – THAT LINKS TO THE LANDING PAGE OF THE DATA&quot; ;
+		NC_CHAR :acknowledgements = &quot;Funded by the Research Council of Norway: The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :stationName = &quot;P9_ice&quot; ;
+		NC_INT64 :cruiseNumber = 2021710 ;
+		NC_CHAR :recordedBy = &quot;Miriam Marquardt&quot; ;
+		NC_CHAR :samplingProtocol = &quot;Nansen Legacy Sampling Protocols v10 (https://septentrio.uit.no/index.php/nansenlegacy/article/view/6684)&quot; ;
+		NC_CHAR :sampleType = &quot;POC/PON&quot; ;
+		NC_CHAR :pi_name = &quot;Marit Reigstad, Miriam Marquardt&quot; ;
+		NC_CHAR :pi_institution = &quot;UiT Arctic University of Norway&quot; ;
+		NC_CHAR :pi_email = &quot;marit.reigstad@uit.no, miriam.marquardt@uit.no&quot; ;
+		NC_STRING :pi_address = &quot;UiT Arctic University of Norway, P.O. Box 6050, 9037 Tromsø&quot; ;
+		NC_STRING :references = &quot;Reigstad, M., Riser, C.W., Wassmann, P., Ratkova, T., 2008. Vertical export of particulate organic carbon: Attenuation, composition and loss rates in the northern Barents Sea. Deep-Sea Res. II 55, 2308–2319. http://dx.doi.org/10.1016/j.dsr2.2008. 05.007.&quot; ;
+		NC_STRING :institution = &quot;University of Tromsø (UiT)&quot; ;
+		NC_CHAR :file_creator_name = &quot;Luke Marsden&quot; ;
+		NC_CHAR :file_creator_email = &quot;lukem@unis.no&quot; ;
+		NC_CHAR :file_creator_url = &quot;https://orcid.org/0000-0002-9746-544X&quot; ;
+		NC_CHAR :summary = &quot;This dataset includes concentrations of Particulate Organic Carbon (POC) and Particulate Organic Nitrogen (PON) from the sea water and sea ice. 
+
+Samples were collected in August and September 2021 as part of cruise 2021710, JC2-2, in the northern Barents Sea and the Arctic basin as part of the Nansen Legacy project. 
+
+Sea water was sampled at seven different stations using Niskin bottles attached to a rosette onboard R/V Kronprins Haakon. At three of these stations we also conducted sea ice work and sampled sea ice cores (gear: Kovacs ice corer 9cm) and under-ice water (gear: Niskin bottle) from a hole in the ice and water from meltponds (gear: bucket) for POC/PON analysis. 
+
+For sea water  water triplicate subsamples (1000–9500 mL) were filtered on pre-combusted Whatman GF/F filters, the limited volume of melted sea ice allowed only one but occasionally triplicates subsamples (290-2350 mL). Filters were stored at −20 °C, and analyzed within 1 years on a CE 440 Exeter analytical CHN Analyzer  according to the procedures described by Reigstad et al. (2008). Presented are averaged POC and PON values (in mg m-3), standard deviations and the C:N ratio. PON values &lt; 3x blank values were excluded from the dataset.&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<p>For these data, a dimension <em>sample_number</em> has been used to number each of the samples. So if samples were taken at a station, each data point for each variable would be from a different sample.</p>
+<p>I think the <em>rsample_number</em> is an accidental duplicate that can be ignored.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">sample_number</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;sample_number&#39;</span><span class="p">)</span>
+<span class="n">poc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;poc&#39;</span><span class="p">)</span>
+<span class="n">pon</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;pon&#39;</span><span class="p">)</span>
+
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">    </span><span class="n">Melt_pond_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sample_number</span><span class="p">,</span>
+<span class="w">    </span><span class="n">POC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">poc</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">PON</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pon</span>
+<span class="p">)</span>
+
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 1 × 3</caption>
+<thead>
+	<tr><th scope=col>Melt_pond_number</th><th scope=col>POC</th><th scope=col>PON</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>347.9351</td><td>36.81747</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="citing-the-data">
+<h2>Citing the data<a class="headerlink" href="#citing-the-data" title="Permalink to this heading">#</a></h2>
+<p>Please cite the data for the cruise or cruises you have used the data from.</p>
+<p>For the data used in this notebook, the citation is:</p>
+<p><em>Marquardt, M., Dubourg, P., Reigstad, M. (2022).Concentration of Particulate Organic Carbon (POC) and Particulate Organic Nitrogen (PON) from the sea water and sea ice in the northern Barents Sea as part of the Nansen Legacy project, Cruise 2021710 , JC2-2  [Data set]. Norstore. <a class="reference external" href="https://doi.org/10.11582/2022.00051">https://doi.org/10.11582/2022.00051</a></em></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Nutrients%20data.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Nutrients data</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Flow%20cytometry%20data.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Flow cytometry</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-the-data">Accessing the data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#niskin-bottles">Niskin bottles</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-from-ice-cores">Data from ice cores</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#under-ice-water">Under ice water</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#melt-ponds">Melt ponds</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pancake-ice">Pancake ice</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Luke Marsden
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

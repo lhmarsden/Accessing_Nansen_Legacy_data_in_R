@@ -1,0 +1,1155 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Flow cytometry &#8212; Accessing Nansen Legacy data in R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Flow cytometry data';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="POC/PON data" href="POC%20PON%20data.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Accessing Nansen Legacy data in R - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Accessing Nansen Legacy data in R - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Accessing Nansen Legacy data in R
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="CTD%20data%20-%20one%20file%20per%20cast.html">CTD data - one file per cast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CTD%20data%20-%20one%20file%20per%20cruise.html">CTD data - one file per cruise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Chlorophyll%20A%20data.html">Chlorophyll A data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Nutrients%20data.html">Nutrients data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="POC%20PON%20data.html">POC/PON data</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Flow cytometry</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/lhmarsden/Accessing_Nansen_Legacy_data_in_R" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/lhmarsden/Accessing_Nansen_Legacy_data_in_R/issues/new?title=Issue%20on%20page%20%2FFlow cytometry data.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/Flow cytometry data.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Flow cytometry</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-the-data">Accessing the data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#depth">Depth</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxon-names">Taxon names</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abundance">Abundance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-dataframe-including-all-of-this-information-together">Creating a dataframe including all of this information together</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#looping-through-multiple-files">Looping through multiple files</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Looping through multiple files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="flow-cytometry">
+<h1>Flow cytometry<a class="headerlink" href="#flow-cytometry" title="Permalink to this heading">#</a></h1>
+<p>Let’s first load in some libraries that we are going to use today. If you are not sure whether you have the library installed, you can embed <em>install.packages</em> within an <em>if</em> statement, like this</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;RNetCDF&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;RNetCDF&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">RNetCDF</span><span class="p">)</span>
+<span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;writexl&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;writexl&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">writexl</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="accessing-the-data">
+<h2>Accessing the data<a class="headerlink" href="#accessing-the-data" title="Permalink to this heading">#</a></h2>
+<p>The data are available via a THREDDS server that you can find here:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/cytometry/">https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/cytometry/</a></p>
+<p>If you open the link above, you can navigate to different NetCDF files, and you will be linked to OPeNDAP data access forms like this one:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_P6_in_the_Northern_Barents_Sea.nc.html">https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_P6_in_the_Northern_Barents_Sea.nc.html</a></p>
+<p>OPeNDAP makes it possible to access data over the internet without you having to download the data to your computer first. You can just remove the <em>html</em> suffix from the URL above and include it in your R script in the same way that you might include some absolute filepath to a file on your computer.</p>
+<p>So now let’s load the data into R for this cast.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_P6_in_the_Northern_Barents_Sea.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf classic {
+dimensions:
+	depth = 14 ;
+	maxStrlen64 = 64 ;
+	taxon = 18 ;
+variables:
+	NC_FLOAT depth(depth) ;
+		NC_CHAR depth:standard_name = &quot;depth&quot; ;
+		NC_CHAR depth:long_name = &quot;Depth below surface in sea water&quot; ;
+		NC_CHAR depth:coverage_content_type = &quot;coordinate&quot; ;
+		NC_CHAR depth:units = &quot;m&quot; ;
+		NC_CHAR depth:positive = &quot;down&quot; ;
+	NC_CHAR taxon_name(maxStrlen64, taxon) ;
+		NC_CHAR taxon_name:standard_name = &quot;biological_taxon_name&quot; ;
+		NC_CHAR taxon_name:long_name = &quot;FCM_group&quot; ;
+		NC_INT taxon_name:string_length = 80 ;
+	NC_DOUBLE abundance(depth, taxon) ;
+		NC_CHAR abundance:standard_name = &quot;number_concentration_of_biological_taxon_in_sea_water&quot; ;
+		NC_CHAR abundance:long_name = &quot;concentration_of_organisms_of_FCM_group_per_mL_sample&quot; ;
+		NC_CHAR abundance:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR abundance:units = &quot;ml-1&quot; ;
+		NC_CHAR abundance:coordinates = &quot;taxon_name&quot; ;
+
+// global attributes:
+		NC_CHAR :title = &quot;Flow cytometry measurements (abundance of virus, bacteria and small protists (primarily &lt;20μm)) during Nansen Legacy cruise 2021704 (from April 27th to May 20th in 2021) at station P6 (NLEG21) in the Northern Barents Sea&quot; ;
+		NC_CHAR :naming_authority = &quot;University of Bergen&quot; ;
+		NC_CHAR :id = &quot;664b2632-98b8-45fa-bbb6-17cd038c4e25&quot; ;
+		NC_CHAR :summary = &quot;Flow cytometry (FCM) is a fast, high-throughput method to enumerate the abundance of microorganism (smaller than 20 µm). FCM uses the hydrodynamic focusing of a laminar flow to separate and line up microscopic particles. When particles pass a laser beam, the generated light scattering can be used to estimate their cell size, obtain information about cell granularity and surface characteristics and determine fluorescence of either pigments or applied stains, such as DNA binding stains. Photosynthetic microorganisms have auto-fluorescent pigments, such as chlorophylls and can be grouped using these auto-fluorescence properties in combination with cell size. Heterotrophic microorganisms, including archaea, bacteria and heterotrophic nanoflagellates, and virus do not have fluorescent pigments and require staining, for example using SYBR Green to stain Nucleic Acids (DNA) in order to distinguish these cells from other organic and inorganic particles in the sample. 
+Our samples for flow cytometric abundance analysis were taken in triplicates of 2 mL of sample water and fixed with 36 μL 25 % glutaraldehyde (0.5 % final concentration) at 4 °C in the dark for approximately 2 hours, then flash frozen in liquid nitrogen and stored until analysis at -80 °C. The abundance of pico- and nano-sized phytoplankton and heterotrophic nanoflagellates (HNF) were determined using an Attune® NxT, Acoustic Focusing Cytometer (Invitrogen by Thermo Fisher Scientific) with a syringe-based fluidic system and a 20 mW 488 nm (blue) laser. Autotrophic pico-and nano-sized plankton were counted directly after thawing and the various groups discriminated based on their red fluorescence (BL3) vs. orange fluorescence (BL2), red fluorescence (BL3) vs. side scatter (SSC) and orange fluorescence (BL2) vs. side scatter (SSC). For HNF analysis, samples were stained with SYBR Green I for 2 h in the dark and subsequently 1-2mL were measured at a flow rate of 500 µl min-1 following the protocol of Zubkov et al. 2007. The abundance of virus and bacteria was determined using a FACS Calibur (Becton Dickinson) flow cytometer. Prior analysis of virus and bacteria, samples were first thawed, diluted x10 and x100 with 0.2 μm filtered TE buffer (Tris 10 mM, EDTA 1 mM, pH 8), stained with a green fluorescent nucleic acid dye (SYBR Green I ; Molecular Probes, Eugene, Oregon, USA) and then incubated for 10 min at 80°C in a water bath (Marie et al. 1999). Stained samples were counted at a low flow rate of around 60 µL min-1 and different groups discriminated on a biparametric plot of green florescence (BL1) vs. side scatter (SSC). This allowed to distinguish virus particles of different sizes, and different bacterial groups including low nuclear acid (LNA) and high nuclear acid (HNA) bacteria. Names of size groups of photosynthetic and heterotrophic organisms are in accordance to “Standards and Best Practices For Reporting Flow Cytometry Observations: a technical manual (Version 1.1)” (https://repository.oceanbestpractices.org/handle/11329/2111.2). A short summary is listed here: RedPico = picophytoplankton (1-2 µm); RedNano = Nanophytoplankton (2-10µm), which includes subgroups RedNanoSmall (2-5 µm), RedNanoLarge (5-10 µm) and RedNanoVeryLarge (10-20µm); OraPico = Nanophytoplankton with more orange fluorescence; OraNano = Cryptophytes; OraPicoProk = Synechococcus; HetNano = heterotrophic nanoflagellates; HetProk = bacteria (and when present archaea); HetLNA = low nucleic acid (LNA) containing bacteria; HetHNA = high nucleic acid (HNA) containing bacteria with the subgroups HetProkMedium = HNA-bacteria subgroup with less fluorescence signal and HetProkLarge = HNA-bacteria subgroup with more fluorescence signal; Virus = virus particles, including size refined subgroups VirusSmall = small-sized virus particles, VirusMedium = medium-sized virus particles and VirusLarge = large-sized virus particles)&quot; ;
+		NC_CHAR :keywords = &quot;
+EARTH SCIENCE &gt; OCEANS ; EARTH SCIENCE &gt; BIOLOGICAL CLASSIFICATION &gt; BACTERIA/ARCHAEA ; EARTH SCIENCE &gt; BIOLOGICAL CLASSIFICATION &gt; PROTISTS &gt; PLANKTON ; EARTH SCIENCE &gt; BIOLOGICAL CLASSIFICATION &gt; VIRUSES&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD&quot; ;
+		NC_DOUBLE :geospatial_lat_min = 81.54993205 ;
+		NC_DOUBLE :geospatial_lat_max = 81.54993205 ;
+		NC_DOUBLE :geospatial_lon_min = 30.8167937166667 ;
+		NC_DOUBLE :geospatial_lon_max = 30.8167937166667 ;
+		NC_CHAR :time_coverage_start = &quot;2021-05-10T21:45:30.024Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-05-10T21:45:30.024Z&quot; ;
+		NC_CHAR :Conventions = &quot;ACDD-1.3; CF-1.10&quot; ;
+		NC_CHAR :history = &quot;File created using RNetCDF in R at 2023-05-08T08:02:51Z&quot; ;
+		NC_CHAR :source = &quot;Different groups of microorganisms indentified using flow cytometry in a water sample from a CTD with Niskin bottles&quot; ;
+		NC_CHAR :processing_level = &quot;Flow cytometry gating in accordance to standardized norms (https://repository.oceanbestpractices.org/handle/11329/2111.2)&quot; ;
+		NC_CHAR :date_created = &quot;2023-05-08T08:02:51Z&quot; ;
+		NC_CHAR :creator_type = &quot;person&quot; ;
+		NC_CHAR :creator_institution = &quot;University of Bergen&quot; ;
+		NC_CHAR :creator_email = &quot;oliver.muller@uib.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://orcid.org/0000-0001-5405-052X&quot; ;
+		NC_CHAR :creator_name = &quot;Oliver Müller&quot; ;
+		NC_CHAR :publisher_name = &quot;Norwegian Marine Datacentre&quot; ;
+		NC_CHAR :publisher_url = &quot;https://nmdc.no/&quot; ;
+		NC_CHAR :publisher_email = &quot;datahjelp@imr.no&quot; ;
+		NC_CHAR :publisher_type = &quot;institution&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :license = &quot;https://creativecommons.org/licenses/by/4.0/&quot; ;
+		NC_CHAR :metadata_link = &quot;DOI PROVIDED BY DATA CENTRE – THAT LINKS TO THE LANDING PAGE OF THE DATA&quot; ;
+		NC_CHAR :acknowledgements = &quot;Funded by the Research Council of Norway.&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<p>The data have 3 dimensions; <em>depth</em>, <em>taxon</em> and <em>maxStrlen64</em>.</p>
+<p>Let’s look at each variable in turn as it can take some time to understand why these data have been structured like this. This is as recommended by the CF conventions, and you can read the relevant section here:
+<a class="reference external" href="https://cfconventions.org/Data/cf-conventions/cf-conventions-1.11/cf-conventions.html#taxon-names-and-identifiers">https://cfconventions.org/Data/cf-conventions/cf-conventions-1.11/cf-conventions.html#taxon-names-and-identifiers</a></p>
+<p>Note that our file is a bit different because we have a depth profile instead of a time series.</p>
+<section id="depth">
+<h3>Depth<a class="headerlink" href="#depth" title="Permalink to this heading">#</a></h3>
+<p>This is one is. Depth is just a 1D variable.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">depth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;depth&quot;</span><span class="p">)</span>
+<span class="n">depth</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>0.5</li><li>9</li><li>19</li><li>30</li><li>40</li><li>49</li><li>59</li><li>89</li><li>119</li><li>150</li><li>200</li><li>501</li><li>750</li><li>901</li></ol>
+</div></div>
+</div>
+</section>
+<section id="taxon-names">
+<h3>Taxon names<a class="headerlink" href="#taxon-names" title="Permalink to this heading">#</a></h3>
+<p>Here we have 2 dimension, <em>maxStrlen64</em> and <em>taxon</em>.</p>
+<p>One question might immediately spring to mind. Why do we need 2 dimensions for the taxon names? Well, the <em>taxon</em> dimension defines the number of taxon listed in the file (18 in this case). <em>maxStrlen64</em> is the maximum number of characters in the name of each taxon.</p>
+<p>Words are often handled like this in CF-NetCDF as some programmes don’t allow you to write multiple characters into a single data value. So let’s extract the taxon names into something we can use.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">taxon_names</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;taxon_name&quot;</span><span class="p">)</span>
+<span class="n">taxon_names</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>'RedPico'</li><li>'RedNano'</li><li>'RedNanoSmall'</li><li>'RedNanoLarge'</li><li>'OraPico'</li><li>'RedNanoVeryLarge'</li><li>'OraNano'</li><li>'OraPicoProk'</li><li>'HetNano'</li><li>'HetProk'</li><li>'HetLNA'</li><li>'HetHNA'</li><li>'HetProkMedium'</li><li>'HetProkLarge'</li><li>'Virus'</li><li>'VirusSmall'</li><li>'VirusMedium'</li><li>'VirusLarge'</li></ol>
+</div></div>
+</div>
+<p>What has happened here?! The data seem to have been extracted as a 1 dimensional array, one value (word) per element. See, the dimensions of out <em>taxon_names</em> variable is just <em>18</em>, not <em>18 x 64</em>. RNetCDF has extracted the data into a useful format for us automatically.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">dim</span><span class="p">(</span><span class="n">taxon_names</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">18</div></div>
+</div>
+</section>
+<section id="abundance">
+<h3>Abundance<a class="headerlink" href="#abundance" title="Permalink to this heading">#</a></h3>
+<p>The <em>abundance</em> data have 2 dimensions, <em>depth</em> and <em>taxon</em>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">abundance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;abundance&#39;</span><span class="p">)</span>
+<span class="n">abundance</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A matrix: 14 × 18 of type dbl</caption>
+<tbody>
+	<tr><td> 974</td><td>1313</td><td>766</td><td>351</td><td>196</td><td>25</td><td>10</td><td>3</td><td>38</td><td>185009.14</td><td>45521.02</td><td>135831.81</td><td> 71846.44</td><td>63985.37</td><td>1917733.1</td><td>1438756.9</td><td>396709.3</td><td> 82266.91</td></tr>
+	<tr><td>2011</td><td> 950</td><td>818</td><td>115</td><td> 17</td><td> 6</td><td> 4</td><td>0</td><td>63</td><td>185009.14</td><td>45521.02</td><td>135831.81</td><td> 71846.44</td><td>63985.37</td><td>2173491.8</td><td>1669287.0</td><td>414076.8</td><td> 90127.97</td></tr>
+	<tr><td>2397</td><td>1019</td><td>897</td><td>112</td><td> 10</td><td> 5</td><td> 5</td><td>0</td><td>75</td><td>144241.32</td><td>38208.41</td><td>102742.23</td><td> 69469.84</td><td>33272.39</td><td>2240403.0</td><td>1748995.0</td><td>402925.0</td><td> 88483.00</td></tr>
+	<tr><td>1419</td><td>1106</td><td>929</td><td>154</td><td> 23</td><td>11</td><td> 6</td><td>1</td><td>79</td><td>189396.71</td><td>38574.04</td><td>144241.32</td><td> 88482.63</td><td>55758.68</td><td>4696526.5</td><td>3987202.9</td><td>588665.4</td><td>120658.14</td></tr>
+	<tr><td>1133</td><td> 978</td><td>821</td><td>118</td><td> 39</td><td> 9</td><td> 5</td><td>0</td><td>78</td><td>205850.09</td><td>39670.93</td><td>161060.33</td><td>103290.68</td><td>57769.65</td><td>2303473.5</td><td>1762340.0</td><td>457038.4</td><td> 84095.06</td></tr>
+	<tr><td> 712</td><td> 696</td><td>544</td><td>137</td><td> 15</td><td>13</td><td> 2</td><td>0</td><td>99</td><td>162522.85</td><td>38025.59</td><td>120109.69</td><td> 82998.17</td><td>37111.52</td><td>2106032.9</td><td>1557586.8</td><td>477148.1</td><td> 71297.99</td></tr>
+	<tr><td> 425</td><td> 325</td><td>254</td><td> 67</td><td>  4</td><td> 6</td><td> 2</td><td>1</td><td>35</td><td>168555.76</td><td>41499.09</td><td>122669.10</td><td> 83912.25</td><td>38756.86</td><td>1804387.6</td><td>1257769.7</td><td>460694.7</td><td> 85923.22</td></tr>
+	<tr><td> 193</td><td> 122</td><td>106</td><td> 14</td><td>  2</td><td> 0</td><td> 1</td><td>2</td><td>46</td><td>117733.09</td><td>36197.44</td><td> 79707.50</td><td> 50091.41</td><td>29616.09</td><td>1645338.2</td><td>1124314.4</td><td>424131.6</td><td> 96892.14</td></tr>
+	<tr><td> 100</td><td>  75</td><td> 58</td><td> 14</td><td>  3</td><td> 1</td><td> 0</td><td>2</td><td>41</td><td>112979.89</td><td>36745.89</td><td> 75502.74</td><td> 47531.99</td><td>27970.75</td><td>1687385.7</td><td>1206581.4</td><td>409506.4</td><td> 71297.99</td></tr>
+	<tr><td> 105</td><td>  54</td><td> 42</td><td> 12</td><td>  0</td><td> 1</td><td> 0</td><td>0</td><td>55</td><td> 99451.55</td><td>32906.76</td><td> 66179.16</td><td> 42595.98</td><td>23583.18</td><td>1696526.5</td><td>1248628.9</td><td>365630.7</td><td> 82266.91</td></tr>
+	<tr><td>  65</td><td>  56</td><td> 46</td><td>  9</td><td>  1</td><td> 0</td><td> 0</td><td>2</td><td>49</td><td>104387.57</td><td>37294.33</td><td> 64899.45</td><td> 42047.53</td><td>22851.92</td><td>1793967.1</td><td>1255758.7</td><td>434552.1</td><td>103656.31</td></tr>
+	<tr><td>  37</td><td>  33</td><td> 19</td><td> 11</td><td>  3</td><td> 0</td><td> 0</td><td>2</td><td>32</td><td> 80987.20</td><td>25045.70</td><td> 54661.79</td><td> 35648.99</td><td>19012.80</td><td>1491407.7</td><td>1088482.6</td><td>328884.8</td><td> 74040.22</td></tr>
+	<tr><td>   9</td><td>   5</td><td>  3</td><td>  2</td><td>  0</td><td> 0</td><td> 0</td><td>0</td><td>25</td><td> 57404.02</td><td>19012.80</td><td> 38391.22</td><td> 24497.26</td><td>13893.97</td><td> 993784.3</td><td> 729250.5</td><td>213162.7</td><td> 51371.12</td></tr>
+	<tr><td>   4</td><td>   1</td><td>  1</td><td>  0</td><td>  0</td><td> 0</td><td> 0</td><td>1</td><td>22</td><td> 53930.53</td><td>17001.83</td><td> 36745.89</td><td> 21937.84</td><td>14808.04</td><td> 850457.0</td><td> 620475.3</td><td>183546.6</td><td> 46435.10</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>So the data are easily extracted as a 2D matrix where each row represents a different depth and each column represents a different taxon.</p>
+</section>
+</section>
+<section id="creating-a-dataframe-including-all-of-this-information-together">
+<h2>Creating a dataframe including all of this information together<a class="headerlink" href="#creating-a-dataframe-including-all-of-this-information-together" title="Permalink to this heading">#</a></h2>
+<p>So let’s now combine all these variables into a dataframe that we can export to a CSV or XLSX file.</p>
+<p>We want the taxon names as the column headers and the depth to be written for each row.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert the matrix to a dataframe</span>
+<span class="n">abundance_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="n">abundance</span><span class="p">)</span>
+
+<span class="c1"># Assign the taxon names as the column headers</span>
+<span class="nf">colnames</span><span class="p">(</span><span class="n">abundance_df</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">taxon_names</span>
+
+<span class="c1"># Adding a depth column</span>
+<span class="n">abundance_df</span><span class="o">$</span><span class="n">depth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">depth</span>
+
+<span class="c1"># Move the depth column to the front</span>
+<span class="n">abundance_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">abundance_df</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="nf">ncol</span><span class="p">(</span><span class="n">abundance_df</span><span class="p">),</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="nf">ncol</span><span class="p">(</span><span class="n">abundance_df</span><span class="p">)</span><span class="m">-1</span><span class="p">))]</span>
+
+<span class="n">abundance_df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 14 × 19</caption>
+<thead>
+	<tr><th scope=col>depth</th><th scope=col>RedPico</th><th scope=col>RedNano</th><th scope=col>RedNanoSmall</th><th scope=col>RedNanoLarge</th><th scope=col>OraPico</th><th scope=col>RedNanoVeryLarge</th><th scope=col>OraNano</th><th scope=col>OraPicoProk</th><th scope=col>HetNano</th><th scope=col>HetProk</th><th scope=col>HetLNA</th><th scope=col>HetHNA</th><th scope=col>HetProkMedium</th><th scope=col>HetProkLarge</th><th scope=col>Virus</th><th scope=col>VirusSmall</th><th scope=col>VirusMedium</th><th scope=col>VirusLarge</th></tr>
+	<tr><th scope=col>&lt;dbl[1d]&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>  0.5</td><td> 974</td><td>1313</td><td>766</td><td>351</td><td>196</td><td>25</td><td>10</td><td>3</td><td>38</td><td>185009.14</td><td>45521.02</td><td>135831.81</td><td> 71846.44</td><td>63985.37</td><td>1917733.1</td><td>1438756.9</td><td>396709.3</td><td> 82266.91</td></tr>
+	<tr><td>  9.0</td><td>2011</td><td> 950</td><td>818</td><td>115</td><td> 17</td><td> 6</td><td> 4</td><td>0</td><td>63</td><td>185009.14</td><td>45521.02</td><td>135831.81</td><td> 71846.44</td><td>63985.37</td><td>2173491.8</td><td>1669287.0</td><td>414076.8</td><td> 90127.97</td></tr>
+	<tr><td> 19.0</td><td>2397</td><td>1019</td><td>897</td><td>112</td><td> 10</td><td> 5</td><td> 5</td><td>0</td><td>75</td><td>144241.32</td><td>38208.41</td><td>102742.23</td><td> 69469.84</td><td>33272.39</td><td>2240403.0</td><td>1748995.0</td><td>402925.0</td><td> 88483.00</td></tr>
+	<tr><td> 30.0</td><td>1419</td><td>1106</td><td>929</td><td>154</td><td> 23</td><td>11</td><td> 6</td><td>1</td><td>79</td><td>189396.71</td><td>38574.04</td><td>144241.32</td><td> 88482.63</td><td>55758.68</td><td>4696526.5</td><td>3987202.9</td><td>588665.4</td><td>120658.14</td></tr>
+	<tr><td> 40.0</td><td>1133</td><td> 978</td><td>821</td><td>118</td><td> 39</td><td> 9</td><td> 5</td><td>0</td><td>78</td><td>205850.09</td><td>39670.93</td><td>161060.33</td><td>103290.68</td><td>57769.65</td><td>2303473.5</td><td>1762340.0</td><td>457038.4</td><td> 84095.06</td></tr>
+	<tr><td> 49.0</td><td> 712</td><td> 696</td><td>544</td><td>137</td><td> 15</td><td>13</td><td> 2</td><td>0</td><td>99</td><td>162522.85</td><td>38025.59</td><td>120109.69</td><td> 82998.17</td><td>37111.52</td><td>2106032.9</td><td>1557586.8</td><td>477148.1</td><td> 71297.99</td></tr>
+	<tr><td> 59.0</td><td> 425</td><td> 325</td><td>254</td><td> 67</td><td>  4</td><td> 6</td><td> 2</td><td>1</td><td>35</td><td>168555.76</td><td>41499.09</td><td>122669.10</td><td> 83912.25</td><td>38756.86</td><td>1804387.6</td><td>1257769.7</td><td>460694.7</td><td> 85923.22</td></tr>
+	<tr><td> 89.0</td><td> 193</td><td> 122</td><td>106</td><td> 14</td><td>  2</td><td> 0</td><td> 1</td><td>2</td><td>46</td><td>117733.09</td><td>36197.44</td><td> 79707.50</td><td> 50091.41</td><td>29616.09</td><td>1645338.2</td><td>1124314.4</td><td>424131.6</td><td> 96892.14</td></tr>
+	<tr><td>119.0</td><td> 100</td><td>  75</td><td> 58</td><td> 14</td><td>  3</td><td> 1</td><td> 0</td><td>2</td><td>41</td><td>112979.89</td><td>36745.89</td><td> 75502.74</td><td> 47531.99</td><td>27970.75</td><td>1687385.7</td><td>1206581.4</td><td>409506.4</td><td> 71297.99</td></tr>
+	<tr><td>150.0</td><td> 105</td><td>  54</td><td> 42</td><td> 12</td><td>  0</td><td> 1</td><td> 0</td><td>0</td><td>55</td><td> 99451.55</td><td>32906.76</td><td> 66179.16</td><td> 42595.98</td><td>23583.18</td><td>1696526.5</td><td>1248628.9</td><td>365630.7</td><td> 82266.91</td></tr>
+	<tr><td>200.0</td><td>  65</td><td>  56</td><td> 46</td><td>  9</td><td>  1</td><td> 0</td><td> 0</td><td>2</td><td>49</td><td>104387.57</td><td>37294.33</td><td> 64899.45</td><td> 42047.53</td><td>22851.92</td><td>1793967.1</td><td>1255758.7</td><td>434552.1</td><td>103656.31</td></tr>
+	<tr><td>501.0</td><td>  37</td><td>  33</td><td> 19</td><td> 11</td><td>  3</td><td> 0</td><td> 0</td><td>2</td><td>32</td><td> 80987.20</td><td>25045.70</td><td> 54661.79</td><td> 35648.99</td><td>19012.80</td><td>1491407.7</td><td>1088482.6</td><td>328884.8</td><td> 74040.22</td></tr>
+	<tr><td>750.0</td><td>   9</td><td>   5</td><td>  3</td><td>  2</td><td>  0</td><td> 0</td><td> 0</td><td>0</td><td>25</td><td> 57404.02</td><td>19012.80</td><td> 38391.22</td><td> 24497.26</td><td>13893.97</td><td> 993784.3</td><td> 729250.5</td><td>213162.7</td><td> 51371.12</td></tr>
+	<tr><td>901.0</td><td>   4</td><td>   1</td><td>  1</td><td>  0</td><td>  0</td><td> 0</td><td> 0</td><td>1</td><td>22</td><td> 53930.53</td><td>17001.83</td><td> 36745.89</td><td> 21937.84</td><td>14808.04</td><td> 850457.0</td><td> 620475.3</td><td>183546.6</td><td> 46435.10</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>To export the dataframe to a CSV or XLSX file</p>
+<section id="looping-through-multiple-files">
+<h3>Looping through multiple files<a class="headerlink" href="#looping-through-multiple-files" title="Permalink to this heading">#</a></h3>
+<p>What if we want to loop through and access all the casts from, for example, a single cruise?</p>
+<p>We can think of this as the human interface:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/contents.html">https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/contents.html</a></p>
+<p>And this as the machine interface:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/catalog.xml">https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/catalog.xml</a></p>
+<p>If you have never looked at an XML file like this before, don’t worry. What we want to do is access the URL paths of each file and dump them to a list that we can loop through. We need to install another package first.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;xml2&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;xml2&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">xml2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s make a list of the OPeNDAP URLs for each file.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read the XML file</span>
+<span class="n">xml_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/catalog.xml&#39;</span>
+<span class="n">xml_content</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read_xml</span><span class="p">(</span><span class="n">xml_url</span><span class="p">)</span>
+
+<span class="c1"># Extract all &lt;thredds:access&gt; nodes with serviceName=&quot;dap&quot;</span>
+<span class="n">dap_nodes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">xml_find_all</span><span class="p">(</span><span class="n">xml_content</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.//thredds:access[@serviceName=&#39;dap&#39;]&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">xml_ns</span><span class="p">(</span><span class="n">xml_content</span><span class="p">))</span>
+
+<span class="c1"># Extract the URLs</span>
+<span class="n">dap_urls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">xml_attr</span><span class="p">(</span><span class="n">dap_nodes</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;urlPath&quot;</span><span class="p">)</span>
+
+<span class="c1"># Base URL</span>
+<span class="n">base_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;https://opendap1.nodc.no/opendap/&quot;</span>
+
+<span class="c1"># Combine base URL with URL paths to get full URLs</span>
+<span class="n">full_urls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span><span class="w"> </span><span class="n">dap_urls</span><span class="p">)</span>
+
+<span class="c1"># Print the full URLs</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">full_urls</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> [1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T133217.nc&quot;                               
+ [2] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T141507.nc&quot;                               
+ [3] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T043651.nc&quot;                               
+ [4] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T045538.nc&quot;                               
+ [5] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGA_20210516T181751.nc&quot;                                
+ [6] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGB_20210517T001244.nc&quot;                                
+ [7] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGC_20210517T210252.nc&quot;                                
+ [8] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGD_20210518T142143.nc&quot;                                
+ [9] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T023742.nc&quot;                            
+[10] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T035837.nc&quot;                            
+[11] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T044113.nc&quot;                            
+[12] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T101857.nc&quot;                            
+[13] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T035943.nc&quot;                            
+[14] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T043150.nc&quot;                            
+[15] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_Ice_20210502T133216Z_ice_core.nc&quot;              
+[16] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T210116.nc&quot;                            
+[17] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T212005.nc&quot;                            
+[18] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T221452.nc&quot;                            
+[19] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T064610.nc&quot;                            
+[20] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T171510.nc&quot;                            
+[21] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T183338.nc&quot;                            
+[22] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_ice_core.nc&quot;              
+[23] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_slurp_gun.nc&quot;             
+[24] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T161534.nc&quot;                            
+[25] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T162309.nc&quot;                            
+[26] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_Ice_20210508T070815Z_ice_core.nc&quot;              
+[27] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T214530.nc&quot;                     
+[28] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T225046.nc&quot;                     
+[29] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T234300Z.nc&quot;                    
+[30] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_ice_core.nc&quot;       
+[31] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_slurp_gun.nc&quot;      
+[32] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_under_ice_water.nc&quot;
+[33] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210511T073146Z_slurp_gun.nc&quot;      
+[34] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210513T212217.nc&quot;                     
+[35] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T011506.nc&quot;                     
+[36] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T012126.nc&quot;                     
+[37] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210516T052902.nc&quot;                     
+[38] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_ice_core.nc&quot;       
+[39] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_slurp_gun.nc&quot;      
+[40] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_under_ice_water.nc&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we need to use a for loop to access each file in turn. Here is a quick example of how a for loop works if you are not familiar.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">animals</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;pig&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;dog&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;horse&#39;</span><span class="p">)</span>
+
+<span class="nf">for </span><span class="p">(</span><span class="n">animal</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">animals</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">message</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="s">&#39;Hello there,&#39;</span><span class="p">,</span><span class="n">animal</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;Hello there, pig&quot;
+[1] &quot;Hello there, dog&quot;
+[1] &quot;Hello there, horse&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now a more relevant example</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">for </span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">full_urls</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">   </span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T133217.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T141507.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T043651.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T045538.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGA_20210516T181751.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGB_20210517T001244.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGC_20210517T210252.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGD_20210518T142143.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T023742.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T035837.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T044113.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T101857.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T035943.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T043150.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_Ice_20210502T133216Z_ice_core.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T210116.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T212005.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T221452.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T064610.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T171510.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T183338.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_ice_core.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_slurp_gun.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T161534.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T162309.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_Ice_20210508T070815Z_ice_core.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T214530.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T225046.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T234300Z.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_ice_core.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_slurp_gun.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_under_ice_water.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210511T073146Z_slurp_gun.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210513T212217.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T011506.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T012126.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210516T052902.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_ice_core.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_slurp_gun.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_under_ice_water.nc&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Write to CSV</span>
+<span class="nf">write.csv</span><span class="p">(</span><span class="n">abundance_df</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;../data/flow_cytometry_one_cast.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="c1"># Write to XLSX using writexl</span>
+<span class="nf">write_xlsx</span><span class="p">(</span><span class="n">abundance_df</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;../data/flow_cytometry_one_cast.xlsx&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id1">
+<h3>Looping through multiple files<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<p>What if we want to loop through and access data from all the casts?</p>
+<p>We can think of this as the human interface:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/cytometry/contents.html">https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/cytometry/contents.html</a></p>
+<p>And this as the machine interface:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/cytometry/catalog.xml">https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/cytometry/catalog.xml</a></p>
+<p>If you have never looked at an XML file like this before, don’t worry. What we want to do is access the URL paths of each file and dump them to a list that we can loop through. We need to install another package first.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;xml2&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;xml2&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">xml2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s make a list of the OPeNDAP URLs for each file.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read the XML file</span>
+<span class="n">xml_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/cytometry/catalog.xml&#39;</span>
+<span class="n">xml_content</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read_xml</span><span class="p">(</span><span class="n">xml_url</span><span class="p">)</span>
+
+<span class="c1"># Extract all &lt;thredds:access&gt; nodes with serviceName=&quot;dap&quot;</span>
+<span class="n">dap_nodes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">xml_find_all</span><span class="p">(</span><span class="n">xml_content</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.//thredds:access[@serviceName=&#39;dap&#39;]&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">xml_ns</span><span class="p">(</span><span class="n">xml_content</span><span class="p">))</span>
+
+<span class="c1"># Extract the URLs</span>
+<span class="n">dap_urls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">xml_attr</span><span class="p">(</span><span class="n">dap_nodes</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;urlPath&quot;</span><span class="p">)</span>
+
+<span class="c1"># Base URL</span>
+<span class="n">base_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;https://opendap1.nodc.no/opendap/&quot;</span>
+
+<span class="c1"># Combine base URL with URL paths to get full URLs</span>
+<span class="n">full_urls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span><span class="w"> </span><span class="n">dap_urls</span><span class="p">)</span>
+
+<span class="c1"># Print the full URLs</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">full_urls</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  [1] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2018707_station_P1_in_the_Northern_Barents_Sea.nc&quot;                                   
+  [2] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2018707_station_P2_in_the_Northern_Barents_Sea.nc&quot;                                   
+  [3] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2018707_station_P3_in_the_Northern_Barents_Sea.nc&quot;                                   
+  [4] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2018707_station_P4_in_the_Northern_Barents_Sea.nc&quot;                                   
+  [5] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2018707_station_P5_in_the_Northern_Barents_Sea.nc&quot;                                   
+  [6] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2018707_station_PICE_in_the_Northern_Barents_Sea.nc&quot;                                 
+  [7] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2018707_station_SICE3_in_the_Northern_Barents_Sea.nc&quot;                                
+  [8] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_NLEG05_in_the_Northern_Barents_Sea.nc&quot;                               
+  [9] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_NLEG06_in_the_Northern_Barents_Sea.nc&quot;                               
+ [10] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_NLEG08_in_the_Northern_Barents_Sea.nc&quot;                               
+ [11] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_NLEG09_in_the_Northern_Barents_Sea.nc&quot;                               
+ [12] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_NLEG10_in_the_Northern_Barents_Sea.nc&quot;                               
+ [13] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_NLEG12_in_the_Northern_Barents_Sea.nc&quot;                               
+ [14] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_NLEG14_in_the_Northern_Barents_Sea.nc&quot;                               
+ [15] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_NLEG15_in_the_Northern_Barents_Sea.nc&quot;                               
+ [16] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_NLEG19_in_the_Northern_Barents_Sea.nc&quot;                               
+ [17] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_NLEG23_in_the_Northern_Barents_Sea.nc&quot;                               
+ [18] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_NLEG24_in_the_Northern_Barents_Sea.nc&quot;                               
+ [19] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_P1_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [20] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_P2_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [21] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_P3_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [22] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_P4_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [23] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_P5_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [24] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_P6_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [25] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_P7_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [26] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019706_station_SICE4_in_the_Northern_Barents_Sea.nc&quot;                                
+ [27] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019711_station_P1_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [28] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019711_station_P2_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [29] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019711_station_P3_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [30] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019711_station_P4_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [31] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019711_station_P5_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [32] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019711_station_P6_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [33] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2019711_station_P7_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [34] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_NLEG02_in_the_Northern_Barents_Sea.nc&quot;                               
+ [35] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_NLEG03_in_the_Northern_Barents_Sea.nc&quot;                               
+ [36] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_NLEG05_in_the_Northern_Barents_Sea.nc&quot;                               
+ [37] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_NLEG06_in_the_Northern_Barents_Sea.nc&quot;                               
+ [38] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_NLEG08_in_the_Northern_Barents_Sea.nc&quot;                               
+ [39] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_NLEG09_in_the_Northern_Barents_Sea.nc&quot;                               
+ [40] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_NLEG10_in_the_Northern_Barents_Sea.nc&quot;                               
+ [41] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_NLEG12_in_the_Northern_Barents_Sea.nc&quot;                               
+ [42] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_NLEG14_in_the_Northern_Barents_Sea.nc&quot;                               
+ [43] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_NLEG15_in_the_Northern_Barents_Sea.nc&quot;                               
+ [44] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_NLEG19_in_the_Northern_Barents_Sea.nc&quot;                               
+ [45] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_NLEG23_in_the_Northern_Barents_Sea.nc&quot;                               
+ [46] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_P1_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [47] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_P2_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [48] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_P3_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [49] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_P4_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [50] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_P5_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [51] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_P6_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [52] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021703_station_P7_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [53] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG02_in_the_Northern_Barents_Sea.nc&quot;                               
+ [54] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG03_in_the_Northern_Barents_Sea.nc&quot;                               
+ [55] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG05_in_the_Northern_Barents_Sea.nc&quot;                               
+ [56] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG06_in_the_Northern_Barents_Sea.nc&quot;                               
+ [57] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG08_in_the_Northern_Barents_Sea.nc&quot;                               
+ [58] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG09_in_the_Northern_Barents_Sea.nc&quot;                               
+ [59] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG10_in_the_Northern_Barents_Sea.nc&quot;                               
+ [60] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG12_in_the_Northern_Barents_Sea.nc&quot;                               
+ [61] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG14_in_the_Northern_Barents_Sea.nc&quot;                               
+ [62] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG15_in_the_Northern_Barents_Sea.nc&quot;                               
+ [63] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG16_in_the_Northern_Barents_Sea.nc&quot;                               
+ [64] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG17_in_the_Northern_Barents_Sea.nc&quot;                               
+ [65] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG18_in_the_Northern_Barents_Sea.nc&quot;                               
+ [66] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG19_in_the_Northern_Barents_Sea.nc&quot;                               
+ [67] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG20_in_the_Northern_Barents_Sea.nc&quot;                               
+ [68] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG22_in_the_Northern_Barents_Sea.nc&quot;                               
+ [69] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG23_in_the_Northern_Barents_Sea.nc&quot;                               
+ [70] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_NLEG24_in_the_Northern_Barents_Sea.nc&quot;                               
+ [71] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_P1_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [72] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_P2_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [73] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_P3_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [74] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_P4_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [75] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_P5_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [76] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_P6_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [77] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_P7_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [78] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021704_station_P7_second_sampling_in_the_Northern_Barents_Sea.nc&quot;                   
+ [79] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_NLEG02_in_the_Northern_Barents_Sea.nc&quot;                               
+ [80] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_NLEG03_in_the_Northern_Barents_Sea.nc&quot;                               
+ [81] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_NLEG05_in_the_Northern_Barents_Sea.nc&quot;                               
+ [82] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_NLEG06_in_the_Northern_Barents_Sea.nc&quot;                               
+ [83] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_NLEG08_in_the_Northern_Barents_Sea.nc&quot;                               
+ [84] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_NLEG09_in_the_Northern_Barents_Sea.nc&quot;                               
+ [85] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_NLEG12_in_the_Northern_Barents_Sea.nc&quot;                               
+ [86] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_NLEG14_in_the_Northern_Barents_Sea.nc&quot;                               
+ [87] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_NLEG15_in_the_Northern_Barents_Sea.nc&quot;                               
+ [88] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_NLEG19_in_the_Northern_Barents_Sea.nc&quot;                               
+ [89] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_NLEG23_in_the_Northern_Barents_Sea.nc&quot;                               
+ [90] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_P1_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [91] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_P2_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [92] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_P3_extra_high_resolution_chla_max_CTD_in_the_Northern_Barents_Sea.nc&quot;
+ [93] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_P3_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [94] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_P4_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [95] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_P5_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [96] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_P6_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [97] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021708_station_P7_in_the_Northern_Barents_Sea.nc&quot;                                   
+ [98] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_NLEG26_in_the_Arctic_Ocean.nc&quot;                                       
+ [99] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_NLEG27_in_the_Arctic_Ocean.nc&quot;                                       
+[100] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_NLEG28_in_the_Arctic_Ocean.nc&quot;                                       
+[101] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_NLEG30_in_the_Arctic_Ocean.nc&quot;                                       
+[102] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_NLEG31_in_the_Arctic_Ocean.nc&quot;                                       
+[103] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_NLEG32_in_the_Arctic_Ocean.nc&quot;                                       
+[104] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_NLEG34_in_the_Arctic_Ocean.nc&quot;                                       
+[105] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_NLEG35_in_the_Arctic_Ocean.nc&quot;                                       
+[106] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_NLEG37-thinice_in_the_Arctic_Ocean.nc&quot;                               
+[107] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_NLEG37_in_the_Arctic_Ocean.nc&quot;                                       
+[108] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_NLEG40_in_the_Arctic_Ocean.nc&quot;                                       
+[109] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_NLEG41_in_the_Arctic_Ocean.nc&quot;                                       
+[110] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P10-meltpond_in_the_Arctic_Ocean.nc&quot;                                 
+[111] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P10-thinice_in_the_Arctic_Ocean.nc&quot;                                  
+[112] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P10_in_the_Arctic_Ocean.nc&quot;                                          
+[113] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P10_seaice_in_the_Arctic_Ocean.nc&quot;                                   
+[114] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P11-meltpond_in_the_Arctic_Ocean.nc&quot;                                 
+[115] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P11-thinice_in_the_Arctic_Ocean.nc&quot;                                  
+[116] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P11_in_the_Arctic_Ocean.nc&quot;                                          
+[117] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P11_seaice_in_the_Arctic_Ocean.nc&quot;                                   
+[118] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P7_in_the_Arctic_Ocean.nc&quot;                                           
+[119] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P8-meltpond_in_the_Arctic_Ocean.nc&quot;                                  
+[120] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P8_in_the_Arctic_Ocean.nc&quot;                                           
+[121] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P8_seaice_in_the_Arctic_Ocean.nc&quot;                                    
+[122] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P9-meltpond_in_the_Arctic_Ocean.nc&quot;                                  
+[123] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P9-thinice_in_the_Arctic_Ocean.nc&quot;                                   
+[124] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P9_in_the_Arctic_Ocean.nc&quot;                                           
+[125] &quot;https://opendap1.nodc.no/opendap//projects/nansen_legacy/cytometry/Flow_cytometry_measurements_during_Nansen_Legacy_cruise_2021710_station_P9_seaice_in_the_Arctic_Ocean.nc&quot;                                    
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we need to use a for loop to access each file in turn. Here is a quick example of how a for loop works if you are not familiar.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">animals</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;pig&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;dog&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;horse&#39;</span><span class="p">)</span>
+
+<span class="nf">for </span><span class="p">(</span><span class="n">animal</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">animals</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">message</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="s">&#39;Hello there,&#39;</span><span class="p">,</span><span class="n">animal</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;Hello there, pig&quot;
+[1] &quot;Hello there, dog&quot;
+[1] &quot;Hello there, horse&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s write the data from each NetCDF file to a different CSV file.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">for </span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">full_urls</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="n">depth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;depth&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">taxon_names</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;taxon_name&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">abundance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;abundance&#39;</span><span class="p">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Writing the data to a dataframe</span>
+<span class="w">    </span><span class="n">abundance_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="n">abundance</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">colnames</span><span class="p">(</span><span class="n">abundance_df</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">taxon_names</span>
+<span class="w">    </span><span class="n">abundance_df</span><span class="o">$</span><span class="n">depth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">depth</span>
+<span class="w">    </span><span class="n">abundance_df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">abundance_df</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="nf">ncol</span><span class="p">(</span><span class="n">abundance_df</span><span class="p">),</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="nf">ncol</span><span class="p">(</span><span class="n">abundance_df</span><span class="p">)</span><span class="m">-1</span><span class="p">))]</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="n">filename</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">basename</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w"> </span><span class="c1"># Extract the filename of the NetCDF file</span>
+<span class="w">    </span><span class="n">csv_filename</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="s">&quot;\\.nc$&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="p">)</span><span class="w"> </span><span class="c1"># Replace .nc extension with .csv</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Write to CSV</span>
+<span class="w">    </span><span class="c1"># write.csv(abundance_df, paste0(&quot;../data/&quot;, csv_filename), row.names = FALSE)   </span>
+<span class="w">    </span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="citing-the-data">
+<h2>Citing the data<a class="headerlink" href="#citing-the-data" title="Permalink to this heading">#</a></h2>
+<p>Parent-child relationships have been used in this data publication. Here is the landing page for all the data from all cruises.
+<a class="reference external" href="https://doi.org/10.21335/NMDC-1588963816">https://doi.org/10.21335/NMDC-1588963816</a></p>
+<p>This is the recommended citation if you use all of the data or data from many different cruises.</p>
+<p><em>Oliver Müller; Elzbieta Petelenz; Tatiana Tsagkaraki; Maria Langvad; Lasse Olsen; Anna Grytaas; Stefan Thiele; Hilde Stabell; Evy Skjoldal; Selina Våge; Gunnar Bratbak (2023) Flow cytometry measurements (abundance of virus, bacteria and small protists (primarily &lt;20μm)) during Nansen Legacy cruises <a class="reference external" href="https://doi.org/10.21335/NMDC-1588963816">https://doi.org/10.21335/NMDC-1588963816</a></em></p>
+<p>You can navigate to different <em>parts</em> and there is one part per cruise on the landing page. There is one citation per cruise that you can use if you cite if you are using data only from one cruise. For example</p>
+<p><em>Oliver Müller; Elzbieta Petelenz; Tatiana Tsagkaraki; Maria Langvad; Hilde Stabell; Gunnar Bratbak (2023) Flow cytometry measurements (abundance of virus, bacteria and small protists (primarily &lt;20μm)) during Nansen Legacy cruise 2019711 (from November 28th to December 17th in 2019) in the Northern Barents Sea <a class="reference external" href="https://doi.org/10.21335/NMDC-2099951995">https://doi.org/10.21335/NMDC-2099951995</a></em></p>
+<p>You can also navigate further to one part per cast. You can cite one of a couple of casts if these are the only data you have used in this collection. For example</p>
+<p><em>Oliver Müller; Elzbieta Petelenz; Tatiana Tsagkaraki; Maria Langvad; Hilde Stabell; Gunnar Bratbak (2023) Flow cytometry measurements (abundance of virus, bacteria and small protists (primarily &lt;20μm)) during Nansen Legacy cruise 2019711 (from November 28th to December 17th in 2019) at station P3 (NLEG07) in the Northern Barents Sea <a class="reference external" href="https://doi.org/10.21335/NMDC-2099951995_P3(NLEG07)">https://doi.org/10.21335/NMDC-2099951995_P3(NLEG07)</a></em></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="POC%20PON%20data.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">POC/PON data</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-the-data">Accessing the data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#depth">Depth</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#taxon-names">Taxon names</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#abundance">Abundance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-dataframe-including-all-of-this-information-together">Creating a dataframe including all of this information together</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#looping-through-multiple-files">Looping through multiple files</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Looping through multiple files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Luke Marsden
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

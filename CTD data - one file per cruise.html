@@ -1,0 +1,1296 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>CTD data - one file per cruise &#8212; Accessing Nansen Legacy data in R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'CTD data - one file per cruise';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Chlorophyll A data" href="Chlorophyll%20A%20data.html" />
+    <link rel="prev" title="CTD data - one file per cast" href="CTD%20data%20-%20one%20file%20per%20cast.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Accessing Nansen Legacy data in R - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Accessing Nansen Legacy data in R - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Accessing Nansen Legacy data in R
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="CTD%20data%20-%20one%20file%20per%20cast.html">CTD data - one file per cast</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">CTD data - one file per cruise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Chlorophyll%20A%20data.html">Chlorophyll A data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Nutrients%20data.html">Nutrients data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="POC%20PON%20data.html">POC/PON data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Flow%20cytometry%20data.html">Flow cytometry</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/lhmarsden/Accessing_Nansen_Legacy_data_in_R" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/lhmarsden/Accessing_Nansen_Legacy_data_in_R/issues/new?title=Issue%20on%20page%20%2FCTD data - one file per cruise.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/CTD data - one file per cruise.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>CTD data - one file per cruise</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-data-for-one-cast">Accessing data for one cast</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#based-on-latitude-longitude">Based on latitude/longitude</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#based-on-time">Based on time</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="ctd-data-one-file-per-cruise">
+<h1>CTD data - one file per cruise<a class="headerlink" href="#ctd-data-one-file-per-cruise" title="Permalink to this heading">#</a></h1>
+<p>Let’s first load in some libraries that we are going to use today. If you are not sure whether you have the library installed, you can embed <em>install.packages</em> within an <em>if</em> statement, like this</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;RNetCDF&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;RNetCDF&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">RNetCDF</span><span class="p">)</span>
+<span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;writexl&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;writexl&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">writexl</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The data are available via a THREDDS server that you can find here:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/physics/point/cruise/nansen_legacy/contents.html">https://opendap1.nodc.no/opendap/physics/point/cruise/nansen_legacy/contents.html</a></p>
+<p>If you open the link above, you can navigate to different NetCDF files, and you will be linked to OPeNDAP data access forms like this one:
+<a class="reference external" href="https://opendap1.nodc.no:443/opendap/physics/point/cruise/nansen_legacy/NMDC_Nansen-Legacy_PR_CT_58US_2021708.nc.html">https://opendap1.nodc.no:443/opendap/physics/point/cruise/nansen_legacy/NMDC_Nansen-Legacy_PR_CT_58US_2021708.nc.html</a></p>
+<p>OPeNDAP makes it possible to access data over the internet without you having to download the data to your computer first. You can just remove the <em>html</em> suffix from the URL above and include it in your R script in the same way that you might include some absolute filepath to a file on your computer.</p>
+<p>So now let’s load the data into R for this cast.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no:443/opendap/physics/point/cruise/nansen_legacy/NMDC_Nansen-Legacy_PR_CT_58US_2021708.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf classic {
+dimensions:
+	DEPTH = 3367 ;
+	LATITUDE = 63 ;
+	LONGITUDE = 63 ;
+	POSITION = 63 ;
+	TIME = 63 ;
+	maxStrlen64 = 64 ;
+variables:
+	NC_DOUBLE TIME(TIME) ;
+		NC_CHAR TIME:long_name = &quot;Time&quot; ;
+		NC_CHAR TIME:standard_name = &quot;time&quot; ;
+		NC_CHAR TIME:units = &quot;days since 1950-01-01T00:00:00Z&quot; ;
+		NC_DOUBLE TIME:valid_min = -90000 ;
+		NC_DOUBLE TIME:valid_max = 90000 ;
+		NC_CHAR TIME:axis = &quot;T&quot; ;
+		NC_INT TIME:QC_indicator = 1 ;
+		NC_CHAR TIME:uncertainty = &quot; &quot; ;
+		NC_CHAR TIME:comment = &quot; &quot; ;
+		NC_CHAR TIME:ancillary_variables = &quot;TIME_QC&quot; ;
+		NC_CHAR TIME:calendar = &quot;standard&quot; ;
+	NC_FLOAT LATITUDE(LATITUDE) ;
+		NC_CHAR LATITUDE:axis = &quot;Y&quot; ;
+		NC_INT LATITUDE:QC_indicator = 1 ;
+		NC_CHAR LATITUDE:uncertainty = &quot; &quot; ;
+		NC_CHAR LATITUDE:comment = &quot; &quot; ;
+		NC_CHAR LATITUDE:ancillary_variables = &quot;POSITION_QC&quot; ;
+		NC_CHAR LATITUDE:standard_name = &quot;latitude&quot; ;
+		NC_CHAR LATITUDE:long_name = &quot;Latitude of each location&quot; ;
+		NC_CHAR LATITUDE:units = &quot;degree_north&quot; ;
+		NC_DOUBLE LATITUDE:valid_min = -90 ;
+		NC_DOUBLE LATITUDE:valid_max = 90 ;
+	NC_FLOAT LONGITUDE(LONGITUDE) ;
+		NC_CHAR LONGITUDE:axis = &quot;X&quot; ;
+		NC_INT LONGITUDE:QC_indicator = 1 ;
+		NC_CHAR LONGITUDE:uncertainty = &quot; &quot; ;
+		NC_CHAR LONGITUDE:comment = &quot; &quot; ;
+		NC_CHAR LONGITUDE:ancillary_variables = &quot;POSITION_QC&quot; ;
+		NC_CHAR LONGITUDE:standard_name = &quot;longitude&quot; ;
+		NC_CHAR LONGITUDE:long_name = &quot;Longitude of each location&quot; ;
+		NC_CHAR LONGITUDE:units = &quot;degree_east&quot; ;
+		NC_DOUBLE LONGITUDE:valid_min = -180 ;
+		NC_DOUBLE LONGITUDE:valid_max = 180 ;
+	NC_SHORT POSITION_QC(POSITION) ;
+		NC_SHORT POSITION_QC:_FillValue = -127 ;
+		NC_CHAR POSITION_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT POSITION_QC:valid_min = 0 ;
+		NC_SHORT POSITION_QC:valid_max = 9 ;
+		NC_SHORT POSITION_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR POSITION_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR POSITION_QC:long_name = &quot;Position quality flag&quot; ;
+	NC_CHAR DIRECTION(maxStrlen64) ;
+		NC_CHAR DIRECTION:_FillValue = &quot; &quot; ;
+		NC_CHAR DIRECTION:long_name = &quot;Direction of the profiles&quot; ;
+		NC_CHAR DIRECTION:conventions = &quot;A: ascending profile, D: descending profile&quot; ;
+		NC_INT DIRECTION:string_length = 63 ;
+	NC_FLOAT PRES(DEPTH, TIME) ;
+		NC_FLOAT PRES:_FillValue = 9.96920996838687e+36 ;
+		NC_CHAR PRES:axis = &quot;Z&quot; ;
+		NC_CHAR PRES:uncertainty = &quot; &quot; ;
+		NC_CHAR PRES:comment = &quot; &quot; ;
+		NC_CHAR PRES:ancillary_variables = &quot;PRES_QC&quot; ;
+		NC_CHAR PRES:standard_name = &quot;sea_water_pressure&quot; ;
+		NC_CHAR PRES:long_name = &quot;Sea pressure&quot; ;
+		NC_CHAR PRES:units = &quot;dbar&quot; ;
+		NC_CHAR PRES:positive = &quot;down&quot; ;
+		NC_CHAR PRES:data_mode = &quot;D&quot; ;
+	NC_SHORT PRES_QC(DEPTH, TIME) ;
+		NC_SHORT PRES_QC:_FillValue = -127 ;
+		NC_CHAR PRES_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT PRES_QC:valid_min = 0 ;
+		NC_SHORT PRES_QC:valid_max = 9 ;
+		NC_SHORT PRES_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR PRES_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR PRES_QC:long_name = &quot;Sea pressure quality flag&quot; ;
+	NC_INT TEMP(DEPTH, TIME) ;
+		NC_INT TEMP:_FillValue = -2147483647 ;
+		NC_DOUBLE TEMP:scale_factor = 0.001 ;
+		NC_DOUBLE TEMP:add_offset = 0 ;
+		NC_CHAR TEMP:standard_name = &quot;sea_water_temperature&quot; ;
+		NC_CHAR TEMP:long_name = &quot;Sea temperature&quot; ;
+		NC_CHAR TEMP:units = &quot;degrees_C&quot; ;
+		NC_INT TEMP:valid_min = -2500 ;
+		NC_INT TEMP:valid_max = 40000 ;
+		NC_CHAR TEMP:ancillary_variables = &quot;TEMP_QC TEMP_DM&quot; ;
+		NC_CHAR TEMP:data_mode = &quot;D&quot; ;
+	NC_INT PSAL(DEPTH, TIME) ;
+		NC_INT PSAL:_FillValue = -2147483647 ;
+		NC_DOUBLE PSAL:scale_factor = 0.001 ;
+		NC_DOUBLE PSAL:add_offset = 0 ;
+		NC_CHAR PSAL:standard_name = &quot;sea_water_practical_salinity&quot; ;
+		NC_CHAR PSAL:long_name = &quot;Practical salinity&quot; ;
+		NC_CHAR PSAL:units = &quot;0.001&quot; ;
+		NC_INT PSAL:valid_min = 2000 ;
+		NC_INT PSAL:valid_max = 41000 ;
+		NC_CHAR PSAL:ancillary_variables = &quot;PSAL_QC PSAL_DM&quot; ;
+		NC_CHAR PSAL:data_mode = &quot;D&quot; ;
+	NC_INT FLU2(DEPTH, TIME) ;
+		NC_INT FLU2:_FillValue = -2147483647 ;
+		NC_DOUBLE FLU2:scale_factor = 0.001 ;
+		NC_DOUBLE FLU2:add_offset = 0 ;
+		NC_CHAR FLU2:standard_name = &quot;mass_concentration_of_chlorophyll_a_in_sea_water&quot; ;
+		NC_CHAR FLU2:long_name = &quot;Chlorophyll-a fluorescence&quot; ;
+		NC_CHAR FLU2:units = &quot;mg m-3&quot; ;
+		NC_INT FLU2:valid_min = 0 ;
+		NC_INT FLU2:valid_max = 1e+05 ;
+		NC_CHAR FLU2:ancillary_variables = &quot;FLU2_QC FLU2_DM&quot; ;
+		NC_CHAR FLU2:data_mode = &quot;R&quot; ;
+		NC_CHAR FLU2:comment = &quot;Fluorescence, WET Labs ECO-AFL/FL [mg/m^3]&quot; ;
+	NC_INT CNDC(DEPTH, TIME) ;
+		NC_INT CNDC:_FillValue = -2147483647 ;
+		NC_DOUBLE CNDC:scale_factor = 0.001 ;
+		NC_DOUBLE CNDC:add_offset = 0 ;
+		NC_CHAR CNDC:standard_name = &quot;sea_water_electrical_conductivity&quot; ;
+		NC_CHAR CNDC:long_name = &quot;Electrical conductivity&quot; ;
+		NC_CHAR CNDC:units = &quot;S m-1&quot; ;
+		NC_INT CNDC:valid_min = 0 ;
+		NC_INT CNDC:valid_max = 50000 ;
+		NC_CHAR CNDC:ancillary_variables = &quot;CNDC_QC CNDC_DM&quot; ;
+		NC_CHAR CNDC:data_mode = &quot;D&quot; ;
+	NC_INT DENS(DEPTH, TIME) ;
+		NC_INT DENS:_FillValue = -2147483647 ;
+		NC_DOUBLE DENS:scale_factor = 0.001 ;
+		NC_DOUBLE DENS:add_offset = 0 ;
+		NC_CHAR DENS:standard_name = &quot;sea_water_sigma_theta&quot; ;
+		NC_CHAR DENS:long_name = &quot;Sea density (sigma-theta)&quot; ;
+		NC_CHAR DENS:units = &quot;kg m-3&quot; ;
+		NC_INT DENS:valid_min = 20000 ;
+		NC_INT DENS:valid_max = 40000 ;
+		NC_CHAR DENS:ancillary_variables = &quot;DENS_QC DENS_DM&quot; ;
+		NC_CHAR DENS:data_mode = &quot;R&quot; ;
+		NC_CHAR DENS:comment = &quot;density, sigma-theta [kg/m^3]&quot; ;
+	NC_INT SVEL(DEPTH, TIME) ;
+		NC_INT SVEL:_FillValue = -2147483647 ;
+		NC_DOUBLE SVEL:scale_factor = 0.001 ;
+		NC_DOUBLE SVEL:add_offset = 0 ;
+		NC_CHAR SVEL:standard_name = &quot;speed_of_sound_in_sea_water&quot; ;
+		NC_CHAR SVEL:long_name = &quot;Sound velocity&quot; ;
+		NC_CHAR SVEL:units = &quot;m s-1&quot; ;
+		NC_INT SVEL:valid_min = 0 ;
+		NC_INT SVEL:valid_max = 1e+06 ;
+		NC_CHAR SVEL:ancillary_variables = &quot;SVEL_QC SVEL_DM&quot; ;
+		NC_CHAR SVEL:data_mode = &quot;R&quot; ;
+		NC_CHAR SVEL:comment = &quot;Sound Velocity [Chen-Millero, m/s]&quot; ;
+	NC_INT CCOMD003(DEPTH, TIME) ;
+		NC_INT CCOMD003:_FillValue = -2147483647 ;
+		NC_DOUBLE CCOMD003:scale_factor = 0.001 ;
+		NC_DOUBLE CCOMD003:add_offset = 0 ;
+		NC_CHAR CCOMD003:standard_name = &quot;concentration_of_colored_dissolved_organic_matter_in_sea_water_expressed_as_equivalent_mass_fraction_of_quinine_sulfate_dihydrate&quot; ;
+		NC_CHAR CCOMD003:long_name = &quot;CDOM Gelbstoff per unit volume of the water body by in-situ fluorometer&quot; ;
+		NC_CHAR CCOMD003:units = &quot;mg m-3&quot; ;
+		NC_INT CCOMD003:valid_min = 0 ;
+		NC_INT CCOMD003:valid_max = 1e+05 ;
+		NC_CHAR CCOMD003:ancillary_variables = &quot;CCOMD003_QC CCOMD003_DM&quot; ;
+		NC_CHAR CCOMD003:data_mode = &quot;R&quot; ;
+		NC_CHAR CCOMD003:comment = &quot;Fluorescence, WET Labs CDOM [mg/m^3]&quot; ;
+	NC_INT DOX1-1(DEPTH, TIME) ;
+		NC_INT DOX1-1:_FillValue = -2147483647 ;
+		NC_DOUBLE DOX1-1:scale_factor = 0.001 ;
+		NC_DOUBLE DOX1-1:add_offset = 0 ;
+		NC_CHAR DOX1-1:standard_name = &quot;volume_fraction_of_oxygen_in_sea_water&quot; ;
+		NC_CHAR DOX1-1:long_name = &quot;Dissolved oxygen&quot; ;
+		NC_CHAR DOX1-1:units = &quot;ml l-1&quot; ;
+		NC_INT DOX1-1:valid_min = 0 ;
+		NC_INT DOX1-1:valid_max = 1e+06 ;
+		NC_CHAR DOX1-1:ancillary_variables = &quot;DOX1-1_QC DOX1-1_DM&quot; ;
+		NC_CHAR DOX1-1:data_mode = &quot;R&quot; ;
+		NC_CHAR DOX1-1:comment = &quot;Oxygen, SBE 43 [ml/l], WS = 2&quot; ;
+	NC_INT DOX2-1(DEPTH, TIME) ;
+		NC_INT DOX2-1:_FillValue = -2147483647 ;
+		NC_DOUBLE DOX2-1:scale_factor = 0.001 ;
+		NC_DOUBLE DOX2-1:add_offset = 0 ;
+		NC_CHAR DOX2-1:standard_name = &quot;moles_of_oxygen_per_unit_mass_in_sea_water&quot; ;
+		NC_CHAR DOX2-1:long_name = &quot;Dissolved oxygen&quot; ;
+		NC_CHAR DOX2-1:units = &quot;µmol kg-1&quot; ;
+		NC_INT DOX2-1:valid_min = 0 ;
+		NC_INT DOX2-1:valid_max = 1e+06 ;
+		NC_CHAR DOX2-1:ancillary_variables = &quot;DOX2-1_QC DOX2-1_DM&quot; ;
+		NC_CHAR DOX2-1:data_mode = &quot;R&quot; ;
+		NC_CHAR DOX2-1:comment = &quot;Sbox0Mm/Kg&quot; ;
+	NC_INT CNDC-2(DEPTH, TIME) ;
+		NC_INT CNDC-2:_FillValue = -2147483647 ;
+		NC_DOUBLE CNDC-2:scale_factor = 0.001 ;
+		NC_DOUBLE CNDC-2:add_offset = 0 ;
+		NC_CHAR CNDC-2:standard_name = &quot;sea_water_electrical_conductivity&quot; ;
+		NC_CHAR CNDC-2:long_name = &quot;Electrical conductivity&quot; ;
+		NC_CHAR CNDC-2:units = &quot;S m-1&quot; ;
+		NC_INT CNDC-2:valid_min = 0 ;
+		NC_INT CNDC-2:valid_max = 50000 ;
+		NC_CHAR CNDC-2:ancillary_variables = &quot;CNDC-2_QC CNDC-2_DM&quot; ;
+		NC_CHAR CNDC-2:data_mode = &quot;R&quot; ;
+		NC_CHAR CNDC-2:comment = &quot;Conductivity, 2 [S/m]&quot; ;
+	NC_INT OXYOCPVL-1(DEPTH, TIME) ;
+		NC_INT OXYOCPVL-1:_FillValue = -2147483647 ;
+		NC_DOUBLE OXYOCPVL-1:scale_factor = 0.001 ;
+		NC_DOUBLE OXYOCPVL-1:add_offset = 0 ;
+		NC_CHAR OXYOCPVL-1:standard_name = &quot;&#39;’&quot; ;
+		NC_CHAR OXYOCPVL-1:long_name = &quot;Raw signal (voltage) of instrument output by oxygen senso&quot; ;
+		NC_CHAR OXYOCPVL-1:units = &quot;V&quot; ;
+		NC_INT OXYOCPVL-1:valid_min = 0 ;
+		NC_INT OXYOCPVL-1:valid_max = 1e+06 ;
+		NC_CHAR OXYOCPVL-1:ancillary_variables = &quot;OXYOCPVL-1_QC OXYOCPVL-1_DM&quot; ;
+		NC_CHAR OXYOCPVL-1:data_mode = &quot;R&quot; ;
+		NC_CHAR OXYOCPVL-1:comment = &quot;Oxygen Voltage, SBE 43&quot; ;
+	NC_INT SPAR(DEPTH, TIME) ;
+		NC_INT SPAR:_FillValue = -2147483647 ;
+		NC_DOUBLE SPAR:scale_factor = 0.001 ;
+		NC_DOUBLE SPAR:add_offset = 0 ;
+		NC_CHAR SPAR:standard_name = &quot;&#39;’&quot; ;
+		NC_CHAR SPAR:long_name = &quot;Photosynthetically active radiation&quot; ;
+		NC_CHAR SPAR:units = &quot;μmol m-2 s-1&quot; ;
+		NC_INT SPAR:valid_min = 0 ;
+		NC_INT SPAR:valid_max = 1e+07 ;
+		NC_CHAR SPAR:ancillary_variables = &quot;SPAR_QC SPAR_DM&quot; ;
+		NC_CHAR SPAR:data_mode = &quot;R&quot; ;
+		NC_CHAR SPAR:comment = &quot;SPAR/Surface Irradiance&quot; ;
+	NC_INT PAR(DEPTH, TIME) ;
+		NC_INT PAR:_FillValue = -2147483647 ;
+		NC_DOUBLE PAR:scale_factor = 0.001 ;
+		NC_DOUBLE PAR:add_offset = 0 ;
+		NC_CHAR PAR:standard_name = &quot;&#39;’&quot; ;
+		NC_CHAR PAR:long_name = &quot;Photosynthetically active radiation&quot; ;
+		NC_CHAR PAR:units = &quot;μmol m-2 s-1&quot; ;
+		NC_INT PAR:valid_min = 0 ;
+		NC_INT PAR:valid_max = 1e+07 ;
+		NC_CHAR PAR:ancillary_variables = &quot;PAR_QC PAR_DM&quot; ;
+		NC_CHAR PAR:data_mode = &quot;R&quot; ;
+		NC_CHAR PAR:comment = &quot;PAR/Irradiance, Biospherical/Licor&quot; ;
+	NC_INT PSAL-2(DEPTH, TIME) ;
+		NC_INT PSAL-2:_FillValue = -2147483647 ;
+		NC_DOUBLE PSAL-2:scale_factor = 0.001 ;
+		NC_DOUBLE PSAL-2:add_offset = 0 ;
+		NC_CHAR PSAL-2:standard_name = &quot;sea_water_practical_salinity&quot; ;
+		NC_CHAR PSAL-2:long_name = &quot;Practical salinity&quot; ;
+		NC_CHAR PSAL-2:units = &quot;0.001&quot; ;
+		NC_INT PSAL-2:valid_min = 2000 ;
+		NC_INT PSAL-2:valid_max = 40000 ;
+		NC_CHAR PSAL-2:ancillary_variables = &quot;PSAL-2_QC PSAL-2_DM&quot; ;
+		NC_CHAR PSAL-2:data_mode = &quot;R&quot; ;
+		NC_CHAR PSAL-2:comment = &quot;Salinity, 2 [PSU]&quot; ;
+	NC_INT TEMP-2(DEPTH, TIME) ;
+		NC_INT TEMP-2:_FillValue = -2147483647 ;
+		NC_DOUBLE TEMP-2:scale_factor = 0.001 ;
+		NC_DOUBLE TEMP-2:add_offset = 0 ;
+		NC_CHAR TEMP-2:standard_name = &quot;sea_water_temperature&quot; ;
+		NC_CHAR TEMP-2:long_name = &quot;Sea temperature&quot; ;
+		NC_CHAR TEMP-2:units = &quot;degrees_C&quot; ;
+		NC_INT TEMP-2:valid_min = -2500 ;
+		NC_INT TEMP-2:valid_max = 40000 ;
+		NC_CHAR TEMP-2:ancillary_variables = &quot;TEMP-2_QC TEMP-2_DM&quot; ;
+		NC_CHAR TEMP-2:data_mode = &quot;R&quot; ;
+		NC_CHAR TEMP-2:comment = &quot;Temperature, 2 [ITS-68, deg C]&quot; ;
+	NC_INT ATTNZS01(DEPTH, TIME) ;
+		NC_INT ATTNZS01:_FillValue = -2147483647 ;
+		NC_DOUBLE ATTNZS01:scale_factor = 0.001 ;
+		NC_DOUBLE ATTNZS01:add_offset = 0 ;
+		NC_CHAR ATTNZS01:standard_name = &quot;&#39;’&quot; ;
+		NC_CHAR ATTNZS01:long_name = &quot;WET Labs transmissometer calibrated to zero in clear water&quot; ;
+		NC_CHAR ATTNZS01:units = &quot;%&quot; ;
+		NC_INT ATTNZS01:valid_min = 0 ;
+		NC_INT ATTNZS01:valid_max = 1e+05 ;
+		NC_CHAR ATTNZS01:ancillary_variables = &quot;ATTNZS01_QC ATTNZS01_DM&quot; ;
+		NC_CHAR ATTNZS01:data_mode = &quot;R&quot; ;
+		NC_CHAR ATTNZS01:comment = &quot;Beam Transmission, WET Labs C-Star [%]&quot; ;
+	NC_SHORT TEMP_QC(DEPTH, TIME) ;
+		NC_SHORT TEMP_QC:_FillValue = -127 ;
+		NC_CHAR TEMP_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT TEMP_QC:valid_min = 0 ;
+		NC_SHORT TEMP_QC:valid_max = 9 ;
+		NC_SHORT TEMP_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR TEMP_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR TEMP_QC:long_name = &quot;Sea temperature quality flag&quot; ;
+	NC_SHORT PSAL_QC(DEPTH, TIME) ;
+		NC_SHORT PSAL_QC:_FillValue = -127 ;
+		NC_CHAR PSAL_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT PSAL_QC:valid_min = 0 ;
+		NC_SHORT PSAL_QC:valid_max = 9 ;
+		NC_SHORT PSAL_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR PSAL_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR PSAL_QC:long_name = &quot;Practical salinity quality flag&quot; ;
+	NC_SHORT FLU2_QC(DEPTH, TIME) ;
+		NC_SHORT FLU2_QC:_FillValue = -127 ;
+		NC_CHAR FLU2_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT FLU2_QC:valid_min = 0 ;
+		NC_SHORT FLU2_QC:valid_max = 9 ;
+		NC_SHORT FLU2_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR FLU2_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR FLU2_QC:long_name = &quot;Chlorophyll-a fluorescence quality flag&quot; ;
+	NC_SHORT CNDC_QC(DEPTH, TIME) ;
+		NC_SHORT CNDC_QC:_FillValue = -127 ;
+		NC_CHAR CNDC_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT CNDC_QC:valid_min = 0 ;
+		NC_SHORT CNDC_QC:valid_max = 9 ;
+		NC_SHORT CNDC_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR CNDC_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR CNDC_QC:long_name = &quot;Electrical conductivity quality flag&quot; ;
+	NC_SHORT DENS_QC(DEPTH, TIME) ;
+		NC_SHORT DENS_QC:_FillValue = -127 ;
+		NC_CHAR DENS_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT DENS_QC:valid_min = 0 ;
+		NC_SHORT DENS_QC:valid_max = 9 ;
+		NC_SHORT DENS_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR DENS_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR DENS_QC:long_name = &quot;Sea density (sigma-theta) quality flag&quot; ;
+	NC_SHORT SVEL_QC(DEPTH, TIME) ;
+		NC_SHORT SVEL_QC:_FillValue = -127 ;
+		NC_CHAR SVEL_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT SVEL_QC:valid_min = 0 ;
+		NC_SHORT SVEL_QC:valid_max = 9 ;
+		NC_SHORT SVEL_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR SVEL_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR SVEL_QC:long_name = &quot;Sound velocity quality flag&quot; ;
+	NC_SHORT CCOMD003_QC(DEPTH, TIME) ;
+		NC_SHORT CCOMD003_QC:_FillValue = -127 ;
+		NC_CHAR CCOMD003_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT CCOMD003_QC:valid_min = 0 ;
+		NC_SHORT CCOMD003_QC:valid_max = 9 ;
+		NC_SHORT CCOMD003_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR CCOMD003_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR CCOMD003_QC:long_name = &quot;CDOM Gelbstoff per unit volume of the water body by in-situ fluorometer quality flag&quot; ;
+	NC_SHORT DOX1-1_QC(DEPTH, TIME) ;
+		NC_SHORT DOX1-1_QC:_FillValue = -127 ;
+		NC_CHAR DOX1-1_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT DOX1-1_QC:valid_min = 0 ;
+		NC_SHORT DOX1-1_QC:valid_max = 9 ;
+		NC_SHORT DOX1-1_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR DOX1-1_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR DOX1-1_QC:long_name = &quot;Dissolved oxygen quality flag&quot; ;
+	NC_SHORT DOX2-1_QC(DEPTH, TIME) ;
+		NC_SHORT DOX2-1_QC:_FillValue = -127 ;
+		NC_CHAR DOX2-1_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT DOX2-1_QC:valid_min = 0 ;
+		NC_SHORT DOX2-1_QC:valid_max = 9 ;
+		NC_SHORT DOX2-1_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR DOX2-1_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR DOX2-1_QC:long_name = &quot;Dissolved oxygen quality flag&quot; ;
+	NC_SHORT CNDC-2_QC(DEPTH, TIME) ;
+		NC_SHORT CNDC-2_QC:_FillValue = -127 ;
+		NC_CHAR CNDC-2_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT CNDC-2_QC:valid_min = 0 ;
+		NC_SHORT CNDC-2_QC:valid_max = 9 ;
+		NC_SHORT CNDC-2_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR CNDC-2_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR CNDC-2_QC:long_name = &quot;Electrical conductivity quality flag&quot; ;
+	NC_SHORT OXYOCPVL-1_QC(DEPTH, TIME) ;
+		NC_SHORT OXYOCPVL-1_QC:_FillValue = -127 ;
+		NC_CHAR OXYOCPVL-1_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT OXYOCPVL-1_QC:valid_min = 0 ;
+		NC_SHORT OXYOCPVL-1_QC:valid_max = 9 ;
+		NC_SHORT OXYOCPVL-1_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR OXYOCPVL-1_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR OXYOCPVL-1_QC:long_name = &quot;Raw signal (voltage) of instrument output by oxygen senso quality flag&quot; ;
+	NC_SHORT SPAR_QC(DEPTH, TIME) ;
+		NC_SHORT SPAR_QC:_FillValue = -127 ;
+		NC_CHAR SPAR_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT SPAR_QC:valid_min = 0 ;
+		NC_SHORT SPAR_QC:valid_max = 9 ;
+		NC_SHORT SPAR_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR SPAR_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR SPAR_QC:long_name = &quot;Photosynthetically active radiation quality flag&quot; ;
+	NC_SHORT PAR_QC(DEPTH, TIME) ;
+		NC_SHORT PAR_QC:_FillValue = -127 ;
+		NC_CHAR PAR_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT PAR_QC:valid_min = 0 ;
+		NC_SHORT PAR_QC:valid_max = 9 ;
+		NC_SHORT PAR_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR PAR_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR PAR_QC:long_name = &quot;Photosynthetically active radiation quality flag&quot; ;
+	NC_SHORT PSAL-2_QC(DEPTH, TIME) ;
+		NC_SHORT PSAL-2_QC:_FillValue = -127 ;
+		NC_CHAR PSAL-2_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT PSAL-2_QC:valid_min = 0 ;
+		NC_SHORT PSAL-2_QC:valid_max = 9 ;
+		NC_SHORT PSAL-2_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR PSAL-2_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR PSAL-2_QC:long_name = &quot;Practical salinity quality flag&quot; ;
+	NC_SHORT TEMP-2_QC(DEPTH, TIME) ;
+		NC_SHORT TEMP-2_QC:_FillValue = -127 ;
+		NC_CHAR TEMP-2_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT TEMP-2_QC:valid_min = 0 ;
+		NC_SHORT TEMP-2_QC:valid_max = 9 ;
+		NC_SHORT TEMP-2_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR TEMP-2_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR TEMP-2_QC:long_name = &quot;Sea temperature quality flag&quot; ;
+	NC_SHORT ATTNZS01_QC(DEPTH, TIME) ;
+		NC_SHORT ATTNZS01_QC:_FillValue = -127 ;
+		NC_CHAR ATTNZS01_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT ATTNZS01_QC:valid_min = 0 ;
+		NC_SHORT ATTNZS01_QC:valid_max = 9 ;
+		NC_SHORT ATTNZS01_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR ATTNZS01_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR ATTNZS01_QC:long_name = &quot;WET Labs transmissometer calibrated to zero in clear water quality flag&quot; ;
+	NC_SHORT TIME_QC(TIME) ;
+		NC_SHORT TIME_QC:_FillValue = -127 ;
+		NC_CHAR TIME_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT TIME_QC:valid_min = 0 ;
+		NC_SHORT TIME_QC:valid_max = 9 ;
+		NC_SHORT TIME_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR TIME_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR TIME_QC:long_name = &quot;Time quality flag&quot; ;
+
+// global attributes:
+		NC_CHAR :_NCProperties = &quot;version=2,netcdf=4.7.4,hdf5=1.12.0,&quot; ;
+		NC_CHAR :qc_manual = &quot;Recommendations for in-situ data Near Real Time Quality Control https://doi.org/10.13155/36230&quot; ;
+		NC_CHAR :contact = &quot;datahjelp@hi.no&quot; ;
+		NC_CHAR :distribution_statement = &quot;These data are public and free of charge. User assumes all risk for use of data. User must display citation in any publication or product using data. User must contact PI prior to any commercial use of data.&quot; ;
+		NC_CHAR :naming_authority = &quot;Norwegian Marine Datacenter&quot; ;
+		NC_CHAR :license = &quot;https://creativecommons.org/licenses/by/4.0/ https://creativecommons.org/licenses/by/4.0/&quot; ;
+		NC_CHAR :data_assembly_center = &quot;IMR&quot; ;
+		NC_CHAR :update_interval = &quot;void&quot; ;
+		NC_CHAR :area = &quot;Arctic Ocean&quot; ;
+		NC_CHAR :author = &quot;&quot; ;
+		NC_CHAR :Conventions = &quot;CF-1.8, ACDD-1.3, OceanSITES Manual 1.4&quot; ;
+		NC_CHAR :data_mode = &quot;M&quot; ;
+		NC_CHAR :comment = &quot;&quot; ;
+		NC_CHAR :history = &quot;&quot; ;
+		NC_CHAR :netcdf_version = &quot;netCDF-4 classic model&quot; ;
+		NC_CHAR :quality_index = &quot;A&quot; ;
+		NC_CHAR :quality_control_indicator = &quot;0&quot; ;
+		NC_CHAR :publisher_name = &quot;The Norwegian Marine Data Centre (NMD)&quot; ;
+		NC_CHAR :publisher_email = &quot;datahjelp@hi.no&quot; ;
+		NC_CHAR :wmo_platform_code = &quot;&quot; ;
+		NC_CHAR :ices_platform_code = &quot;&quot; ;
+		NC_CHAR :site_code = &quot;&quot; ;
+		NC_CHAR :bottom_depth = &quot;&quot; ;
+		NC_CHAR :wmo_inst_type = &quot;&quot; ;
+		NC_CHAR :geospatial_vertical_positive = &quot;down&quot; ;
+		NC_CHAR :platform_code = &quot;58US&quot; ;
+		NC_CHAR :platform_name = &quot;Kronprins Haakon&quot; ;
+		NC_CHAR :source = &quot;research vessel&quot; ;
+		NC_CHAR :institution_country = &quot;Norway&quot; ;
+		NC_CHAR :source_platform_category_code = &quot;31&quot; ;
+		NC_CHAR :data_type = &quot;OceanSITES vertical profile&quot; ;
+		NC_CHAR :cdm_data_type = &quot;PROFILE&quot; ;
+		NC_CHAR :instrument = &quot;CTD Seabird&quot; ;
+		NC_CHAR :keywords = &quot;EARTH SCIENCE &gt; OCEANS &gt; OCEAN OPTICS &gt; FLUORESCENCE, EARTH SCIENCE &gt; OCEANS &gt; SALINITY/DENSITY &gt; DENSITY, EARTH SCIENCE &gt; OCEANS &gt; SALINITY/DENSITY &gt; OCEAN SALINITY, EARTH SCIENCE &gt; OCEANS &gt; OCEAN ACOUSTICS &gt; ACOUSTIC VELOCITY, EARTH SCIENCE &gt; OCEANS &gt; OCEAN TEMPERATURE &gt; WATER TEMPERATURE, EARTH SCIENCE &gt; OCEANS &gt; SALINITY/DENSITY &gt; CONDUCTIVITY&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD:GCMD Keywords&quot; ;
+		NC_CHAR :id = &quot;NMDC_Nansen-Legacy_PR_CT_58US_2021708&quot; ;
+		NC_CHAR :time_coverage_start = &quot;2021-07-12T19:05:04Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-07-25T09:24:43Z&quot; ;
+		NC_CHAR :last_date_observation = &quot;2021-07-25T09:24:43Z&quot; ;
+		NC_CHAR :date_update = &quot;2022-06-07T08:38:15Z&quot; ;
+		NC_CHAR :date_created = &quot;2022-06-07T08:38:15Z&quot; ;
+		NC_CHAR :geospatial_lat_min = &quot;75.99980&quot; ;
+		NC_CHAR :geospatial_lat_max = &quot;82.02200&quot; ;
+		NC_CHAR :last_latitude_observation = &quot;82.02200&quot; ;
+		NC_CHAR :geospatial_lon_min = &quot;14.00320&quot; ;
+		NC_CHAR :geospatial_lon_max = &quot;34.07570&quot; ;
+		NC_CHAR :last_longitude_observation = &quot;30.21030&quot; ;
+		NC_CHAR :geospatial_vertical_min = &quot;1.00000&quot; ;
+		NC_CHAR :geospatial_vertical_max = &quot;3371.00000&quot; ;
+		NC_CHAR :citation = &quot;These data were collected and made freely available by the Nansen Legacy project and the programs that contribute to it.&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy&quot; ;
+		NC_CHAR :references = &quot;https://www.nmdc.no/, https://arvenetternansen.com/&quot; ;
+		NC_CHAR :featureType = &quot;Profile&quot; ;
+		NC_CHAR :summary = &quot;The Joint Cruise 2-1 addressed objectives of the work packages ‘Physical drivers’ (Research Foci 1), ‘Human impact’ (Research Foci 2) and ‘The living Barents Sea’ (Research Foci 3) along the Nansen Legacy transect in open water and within the sea ice. The cruise focussed on comparing the state of the physical, chemical and biological conditions in the southern and northern parts of the study area.&quot; ;
+		NC_CHAR :doi = &quot;10.21335/NMDC-2085836005&quot; ;
+		NC_CHAR :pi_name = &quot;Elisabeth Jones&quot; ;
+		NC_CHAR :institution = &quot;Institute of Marine Research&quot; ;
+		NC_INT :institution_edmo_code = 1351 ;
+		NC_CHAR :institution_references = &quot;https://www.hi.no/hi&quot; ;
+		NC_CHAR :title = &quot;CTD data from Nansen Legacy Cruise - Joint cruise 2-1&quot; ;
+		NC_CHAR :creator_institution = &quot;Institute of Marine Research&quot; ;
+		NC_CHAR :creator_name = &quot;Elisabeth Jones&quot; ;
+		NC_CHAR :creator_type = &quot;person&quot; ;
+		NC_CHAR :creator_email = &quot;elizabeth.jones@hi.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://www.hi.no/hi&quot; ;
+		NC_CHAR :publisher = &quot;The Norwegian Marine Data Centre (NMD)&quot; ;
+		NC_CHAR :publisher_url = &quot;https://www.nmdc.no/&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<p>At a glance, we can see it has 5 dimensions; they they show that there are data from 63 different locations. There are 3367 points of depth. This doesn’t mean that there are 3367 samples for every station; more likely there is a lot of ‘empty’ space in this file where a measurement was not taken at a certain depth. This is necessary for us to use a single depth dimension for a range of different depth profiles, which each sample different depths.</p>
+<p>There is then a whole host of variables and attributes which correspond. The coordinate variables are first, with the same name as their respective dimension. For example TIME(TIME) is the VARIABLE(DIMENSION). The dimension states how many times have been sampled, the variable states what these times are.</p>
+<p>There is no coordinate variable for depth. Therefore, we can’t be certain what depths have been sampled. However, we can see from the ‘geospatial_vertical_min’ global attribute that the minimum depth sampled was 5 m, and from ‘geospatial_vertical_max’ that the maximum depth sampled was 3367 m. Since there are 3367 depth points, we can assume that there is a 1 m sampling increment between these depths. The pressure variable might also be able to help us if we are uncertain.</p>
+<p>Most of the variables have two dimensions; depth and time. Latitude and longitude are only used in coordinate variables, but we can assume here that each coordinate corresponds to a single time. There are other ways to create a netcdf file to more explicitly state this, by having longitude and latitude variables that each have the dimension of time, thus linking them together. An important point to take away is that different people have different ways of doing things, but we should be able to easily understand what has been done and adapt our code accordingly.</p>
+<p>Let’s write the data that we are interested in to variables we can easily use later. Some of the variables have a variable attribute ‘scale_factor’. This means that the values have been scaled by this factor before storing the values. This is done to save space. For example, let’s look at the temperature variable.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TEMP&quot;</span><span class="p">)[</span><span class="m">1</span><span class="o">:</span><span class="m">50</span><span class="p">]</span><span class="w"> </span><span class="c1"># Just the first 50 values</span>
+<span class="nf">att.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TEMP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;scale_factor&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>3226</li><li>3211</li><li>3202</li><li>3205</li><li>3213</li><li>3215</li><li>3210</li><li>3215</li><li>3191</li><li>3162</li><li>3144</li><li>3118</li><li>3081</li><li>2993</li><li>2913</li><li>2861</li><li>2837</li><li>2826</li><li>2809</li><li>2776</li><li>2743</li><li>2703</li><li>2687</li><li>2652</li><li>2587</li><li>2544</li><li>2508</li><li>2483</li><li>2472</li><li>2434</li><li>2399</li><li>2355</li><li>2298</li><li>2277</li><li>2252</li><li>2225</li><li>2201</li><li>2173</li><li>2113</li><li>2073</li><li>2060</li><li>2040</li><li>2022</li><li>2006</li><li>2004</li><li>2008</li><li>2067</li><li>2126</li><li>2145</li><li>2143</li></ol>
+</div><div class="output text_html">0.001</div></div>
+</div>
+<p>These values are far too high. They have been divided by 0.001 before they have been stored. So we need to multiply by 0.001 to correct for this. Some softwares will do this for us automatically (e.g. xarray in Python) but RNetCDF does not.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">time</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TIME&quot;</span><span class="p">)</span>
+<span class="n">latitude</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;LATITUDE&quot;</span><span class="p">)</span>
+<span class="n">longitude</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;LONGITUDE&quot;</span><span class="p">)</span>
+<span class="n">pressure</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PRES&quot;</span><span class="p">)</span>
+<span class="n">psal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PSAL&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">att.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PSAL&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;scale_factor&quot;</span><span class="p">)</span>
+<span class="n">temp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TEMP&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">att.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TEMP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;scale_factor&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Our time variable is currently in ‘days since 1950-01-01T00:00:00Z’ Let’s convert these values to timestamps that are more useful to us. Again, some other softwares will do this for us.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">att.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TIME&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;units&quot;</span><span class="p">)</span>
+<span class="n">date0</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">strptime</span><span class="p">(</span><span class="s">&quot;01/01/1950 00:00:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;%m/%d/%Y %H:%M:%S&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tz</span><span class="o">=</span><span class="s">&quot;UTC&quot;</span><span class="p">)</span>
+<span class="n">timestamps</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">date0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="m">3600</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">24</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">time</span><span class="p">)</span>
+<span class="n">timestamps</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">'days since 1950-01-01T00:00:00Z'</div><div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> [1] &quot;2021-07-12 19:05:04 UTC&quot; &quot;2021-07-14 08:14:43 UTC&quot;
+ [3] &quot;2021-07-14 11:15:08 UTC&quot; &quot;2021-07-14 19:56:03 UTC&quot;
+ [5] &quot;2021-07-14 23:59:51 UTC&quot; &quot;2021-07-15 02:01:30 UTC&quot;
+ [7] &quot;2021-07-15 03:35:31 UTC&quot; &quot;2021-07-15 04:45:26 UTC&quot;
+ [9] &quot;2021-07-15 05:55:33 UTC&quot; &quot;2021-07-15 07:25:12 UTC&quot;
+[11] &quot;2021-07-15 08:44:11 UTC&quot; &quot;2021-07-15 12:31:06 UTC&quot;
+[13] &quot;2021-07-15 17:10:07 UTC&quot; &quot;2021-07-16 07:17:43 UTC&quot;
+[15] &quot;2021-07-16 10:32:26 UTC&quot; &quot;2021-07-16 17:22:03 UTC&quot;
+[17] &quot;2021-07-16 20:34:01 UTC&quot; &quot;2021-07-16 21:18:06 UTC&quot;
+[19] &quot;2021-07-16 22:07:07 UTC&quot; &quot;2021-07-16 23:09:27 UTC&quot;
+[21] &quot;2021-07-16 23:56:54 UTC&quot; &quot;2021-07-17 01:30:20 UTC&quot;
+[23] &quot;2021-07-17 06:00:16 UTC&quot; &quot;2021-07-17 10:37:39 UTC&quot;
+[25] &quot;2021-07-17 11:38:07 UTC&quot; &quot;2021-07-17 12:46:16 UTC&quot;
+[27] &quot;2021-07-17 15:14:44 UTC&quot; &quot;2021-07-17 16:43:03 UTC&quot;
+[29] &quot;2021-07-17 18:32:21 UTC&quot; &quot;2021-07-17 22:19:12 UTC&quot;
+[31] &quot;2021-07-18 00:28:46 UTC&quot; &quot;2021-07-18 02:17:32 UTC&quot;
+[33] &quot;2021-07-18 04:17:28 UTC&quot; &quot;2021-07-18 08:52:44 UTC&quot;
+[35] &quot;2021-07-18 10:43:45 UTC&quot; &quot;2021-07-18 13:17:47 UTC&quot;
+[37] &quot;2021-07-18 20:15:33 UTC&quot; &quot;2021-07-18 21:27:45 UTC&quot;
+[39] &quot;2021-07-18 22:40:02 UTC&quot; &quot;2021-07-19 07:01:11 UTC&quot;
+[41] &quot;2021-07-19 10:33:42 UTC&quot; &quot;2021-07-19 13:04:46 UTC&quot;
+[43] &quot;2021-07-19 14:29:47 UTC&quot; &quot;2021-07-20 13:58:18 UTC&quot;
+[45] &quot;2021-07-20 19:58:27 UTC&quot; &quot;2021-07-21 02:48:25 UTC&quot;
+[47] &quot;2021-07-21 09:48:37 UTC&quot; &quot;2021-07-21 11:44:35 UTC&quot;
+[49] &quot;2021-07-21 12:42:50 UTC&quot; &quot;2021-07-21 13:27:51 UTC&quot;
+[51] &quot;2021-07-21 14:14:05 UTC&quot; &quot;2021-07-21 15:54:37 UTC&quot;
+[53] &quot;2021-07-21 17:35:04 UTC&quot; &quot;2021-07-22 13:57:51 UTC&quot;
+[55] &quot;2021-07-23 06:12:20 UTC&quot; &quot;2021-07-23 09:25:55 UTC&quot;
+[57] &quot;2021-07-23 11:17:50 UTC&quot; &quot;2021-07-23 13:34:06 UTC&quot;
+[59] &quot;2021-07-23 17:07:27 UTC&quot; &quot;2021-07-24 01:04:37 UTC&quot;
+[61] &quot;2021-07-24 14:31:40 UTC&quot; &quot;2021-07-25 03:02:53 UTC&quot;
+[63] &quot;2021-07-25 09:24:43 UTC&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>The file doesn’t explicitly tell us, but we will assume that each of our 63 coordinates relates to a single one of our 63 times. Before we output these data to Excel, we can first combine them into a dataframe (basically a table).</p>
+<p>There are a number of different ways to do this depending on how we want to structure our data. Here, we will create one file for each depth profile. Each file will have multiple columns; time, latitude, longitude, pressure, salinity and temperature.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">for </span><span class="p">(</span><span class="n">profile</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="nf">length</span><span class="p">(</span><span class="n">time</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Isolating the values for each profile</span>
+<span class="w">    </span><span class="c1"># 2D variables</span>
+<span class="w">    </span><span class="n">psal_profile</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">psal</span><span class="p">[,</span><span class="n">profile</span><span class="p">]</span>
+<span class="w">    </span><span class="n">temp_profile</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">temp</span><span class="p">[,</span><span class="n">profile</span><span class="p">]</span>
+<span class="w">    </span><span class="n">pressure_profile</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">pressure</span><span class="p">[,</span><span class="n">profile</span><span class="p">]</span>
+<span class="w">    </span><span class="c1"># 1D variables</span>
+<span class="w">    </span><span class="n">time</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">timestamps</span><span class="p">[</span><span class="n">profile</span><span class="p">]</span>
+<span class="w">    </span><span class="n">lat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">latitude</span><span class="p">[</span><span class="n">profile</span><span class="p">]</span>
+<span class="w">    </span><span class="n">lon</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">longitude</span><span class="p">[</span><span class="n">profile</span><span class="p">]</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="n">df_profile</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">        </span><span class="n">Time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">time</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="n">Latitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lat</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Longitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lon</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Pressure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pressure_profile</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="n">Temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp_profile</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="n">PracticalSalinity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">psal_profile</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="n">output_filepath_profile</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;../data/ctd_data_profile_&quot;</span><span class="p">,</span><span class="n">profile</span><span class="p">,</span><span class="s">&quot;.xlsx&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">#write_xlsx(df_profile, output_filepath_profile)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="accessing-data-for-one-cast">
+<h2>Accessing data for one cast<a class="headerlink" href="#accessing-data-for-one-cast" title="Permalink to this heading">#</a></h2>
+<section id="based-on-latitude-longitude">
+<h3>Based on latitude/longitude<a class="headerlink" href="#based-on-latitude-longitude" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">latitude</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;LATITUDE&quot;</span><span class="p">)</span>
+<span class="n">latitude</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>78.1281967163086</li><li>76</li><li>75.9998016357422</li><li>76</li><li>76.4998016357422</li><li>76.5958023071289</li><li>76.693000793457</li><li>76.7645034790039</li><li>76.8122024536133</li><li>76.9147033691406</li><li>77.0001983642578</li><li>77.5</li><li>77.4998016357422</li><li>77.5017013549805</li><li>77.5</li><li>78</li><li>78.4000015258789</li><li>78.4505004882812</li><li>78.4992980957031</li><li>78.5459976196289</li><li>78.5934982299805</li><li>78.75</li><li>78.75</li><li>78.75</li><li>78.7498016357422</li><li>78.7498016357422</li><li>78.8767013549805</li><li>79</li><li>79.1169967651367</li><li>79.2482986450195</li><li>79.3758010864258</li><li>79.5007019042969</li><li>79.6251983642578</li><li>79.75</li><li>79.75</li><li>79.7498016357422</li><li>79.7997970581055</li><li>79.9002990722656</li><li>79.9998016357422</li><li>80.5015029907227</li><li>80.4987030029297</li><li>80.502799987793</li><li>80.5121994018555</li><li>80.4800033569336</li><li>80.7324981689453</li><li>81.0012969970703</li><li>81.3123016357422</li><li>81.3792037963867</li><li>81.4104995727539</li><li>81.4317016601562</li><li>81.4567031860352</li><li>81.5027008056641</li><li>81.5477981567383</li><li>81.5466995239258</li><li>81.5425033569336</li><li>81.5427017211914</li><li>81.5871963500977</li><li>81.6204986572266</li><li>81.6787033081055</li><li>82.0009994506836</li><li>81.9816970825195</li><li>82.0037994384766</li><li>82.0220031738281</li></ol>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">desired_latitude</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">78.8767013549805</span>
+<span class="c1"># Finding index of the value</span>
+<span class="n">latitude_index</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">which</span><span class="p">(</span><span class="n">latitude</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">desired_latitude</span><span class="p">)</span>
+
+<span class="c1"># Extract values just for that latitude</span>
+<span class="n">temperature</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TEMP&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">latitude_index</span><span class="p">),</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">))</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">att.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TEMP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;scale_factor&quot;</span><span class="p">)</span>
+<span class="c1"># Get the associated pressure values</span>
+<span class="n">pres</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PRES&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">latitude_index</span><span class="p">),</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+
+<span class="nf">plot</span><span class="p">(</span>
+<span class="w">    </span><span class="n">temperature</span><span class="p">,</span>
+<span class="w">    </span><span class="n">pres</span><span class="p">,</span>
+<span class="w">    </span><span class="n">type</span><span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ylim</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">pres</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">ylab</span><span class="o">=</span><span class="s">&#39;sea water pressure (dbar)&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">xlab</span><span class="o">=</span><span class="w"> </span><span class="s">&#39;sea water temperature (degrees_C)&#39;</span>
+<span class="w">    </span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/46283eab0ce71a1c218f69bf1ecea5915744de6a4c97cda01bb18b929ca3c8a1.png" src="_images/46283eab0ce71a1c218f69bf1ecea5915744de6a4c97cda01bb18b929ca3c8a1.png" />
+</div>
+</div>
+</section>
+<section id="based-on-time">
+<h3>Based on time<a class="headerlink" href="#based-on-time" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">att.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&quot;TIME&quot;</span><span class="p">,</span><span class="s">&quot;units&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">'days since 1950-01-01T00:00:00Z'</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">days_since_1950</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&quot;TIME&quot;</span><span class="p">)</span>
+<span class="n">days_since_1950</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>26125.7951851852</li><li>26127.3435532407</li><li>26127.4688425926</li><li>26127.8305902778</li><li>26127.9998958333</li><li>26128.084375</li><li>26128.1496643519</li><li>26128.1982175926</li><li>26128.2469097222</li><li>26128.3091666667</li><li>26128.3640162037</li><li>26128.5215972222</li><li>26128.7153587963</li><li>26129.3039699074</li><li>26129.4391898148</li><li>26129.7236458333</li><li>26129.8569560185</li><li>26129.8875694444</li><li>26129.9216087963</li><li>26129.9648958333</li><li>26129.9978472222</li><li>26130.0627314815</li><li>26130.2501851852</li><li>26130.4428125</li><li>26130.4848032407</li><li>26130.5321296296</li><li>26130.6352314815</li><li>26130.6965625</li><li>26130.7724652778</li><li>26130.93</li><li>26131.0199768519</li><li>26131.0955092593</li><li>26131.1787962963</li><li>26131.3699537037</li><li>26131.4470486111</li><li>26131.5540162037</li><li>26131.8441319444</li><li>26131.8942708333</li><li>26131.9444675926</li><li>26132.2924884259</li><li>26132.4400694444</li><li>26132.5449768519</li><li>26132.6040162037</li><li>26133.5821527778</li><li>26133.8322569444</li><li>26134.1169560185</li><li>26134.4087615741</li><li>26134.4892939815</li><li>26134.5297453704</li><li>26134.5610069444</li><li>26134.5931134259</li><li>26134.6629282407</li><li>26134.7326851852</li><li>26135.5818402778</li><li>26136.2585648148</li><li>26136.3929976852</li><li>26136.4707175926</li><li>26136.5653472222</li><li>26136.7135069444</li><li>26137.0448726852</li><li>26137.6053240741</li><li>26138.1270023148</li><li>26138.3921643519</li></ol>
+</div></div>
+</div>
+<p>Let’s convert these to timestamps so we can see what times are in our dataset.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the origin date</span>
+<span class="n">origin_date</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.POSIXct</span><span class="p">(</span><span class="s">&quot;1950-01-01 00:00:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;UTC&quot;</span><span class="p">)</span>
+
+<span class="c1"># Convert days to seconds</span>
+<span class="n">seconds_since_1950</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">days_since_1950</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">24</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">60</span>
+
+<span class="c1"># Convert to timestamps</span>
+<span class="n">timestamps</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">origin_date</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">seconds_since_1950</span>
+<span class="n">timestamps</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> [1] &quot;2021-07-12 19:05:04 UTC&quot; &quot;2021-07-14 08:14:43 UTC&quot;
+ [3] &quot;2021-07-14 11:15:08 UTC&quot; &quot;2021-07-14 19:56:03 UTC&quot;
+ [5] &quot;2021-07-14 23:59:51 UTC&quot; &quot;2021-07-15 02:01:29 UTC&quot;
+ [7] &quot;2021-07-15 03:35:31 UTC&quot; &quot;2021-07-15 04:45:26 UTC&quot;
+ [9] &quot;2021-07-15 05:55:33 UTC&quot; &quot;2021-07-15 07:25:11 UTC&quot;
+[11] &quot;2021-07-15 08:44:11 UTC&quot; &quot;2021-07-15 12:31:06 UTC&quot;
+[13] &quot;2021-07-15 17:10:07 UTC&quot; &quot;2021-07-16 07:17:43 UTC&quot;
+[15] &quot;2021-07-16 10:32:26 UTC&quot; &quot;2021-07-16 17:22:03 UTC&quot;
+[17] &quot;2021-07-16 20:34:01 UTC&quot; &quot;2021-07-16 21:18:06 UTC&quot;
+[19] &quot;2021-07-16 22:07:07 UTC&quot; &quot;2021-07-16 23:09:26 UTC&quot;
+[21] &quot;2021-07-16 23:56:53 UTC&quot; &quot;2021-07-17 01:30:20 UTC&quot;
+[23] &quot;2021-07-17 06:00:16 UTC&quot; &quot;2021-07-17 10:37:39 UTC&quot;
+[25] &quot;2021-07-17 11:38:06 UTC&quot; &quot;2021-07-17 12:46:16 UTC&quot;
+[27] &quot;2021-07-17 15:14:44 UTC&quot; &quot;2021-07-17 16:43:03 UTC&quot;
+[29] &quot;2021-07-17 18:32:20 UTC&quot; &quot;2021-07-17 22:19:12 UTC&quot;
+[31] &quot;2021-07-18 00:28:46 UTC&quot; &quot;2021-07-18 02:17:32 UTC&quot;
+[33] &quot;2021-07-18 04:17:27 UTC&quot; &quot;2021-07-18 08:52:44 UTC&quot;
+[35] &quot;2021-07-18 10:43:45 UTC&quot; &quot;2021-07-18 13:17:47 UTC&quot;
+[37] &quot;2021-07-18 20:15:33 UTC&quot; &quot;2021-07-18 21:27:45 UTC&quot;
+[39] &quot;2021-07-18 22:40:02 UTC&quot; &quot;2021-07-19 07:01:11 UTC&quot;
+[41] &quot;2021-07-19 10:33:41 UTC&quot; &quot;2021-07-19 13:04:46 UTC&quot;
+[43] &quot;2021-07-19 14:29:47 UTC&quot; &quot;2021-07-20 13:58:18 UTC&quot;
+[45] &quot;2021-07-20 19:58:26 UTC&quot; &quot;2021-07-21 02:48:25 UTC&quot;
+[47] &quot;2021-07-21 09:48:37 UTC&quot; &quot;2021-07-21 11:44:34 UTC&quot;
+[49] &quot;2021-07-21 12:42:50 UTC&quot; &quot;2021-07-21 13:27:50 UTC&quot;
+[51] &quot;2021-07-21 14:14:04 UTC&quot; &quot;2021-07-21 15:54:37 UTC&quot;
+[53] &quot;2021-07-21 17:35:04 UTC&quot; &quot;2021-07-22 13:57:50 UTC&quot;
+[55] &quot;2021-07-23 06:12:20 UTC&quot; &quot;2021-07-23 09:25:55 UTC&quot;
+[57] &quot;2021-07-23 11:17:49 UTC&quot; &quot;2021-07-23 13:34:06 UTC&quot;
+[59] &quot;2021-07-23 17:07:26 UTC&quot; &quot;2021-07-24 01:04:37 UTC&quot;
+[61] &quot;2021-07-24 14:31:40 UTC&quot; &quot;2021-07-25 03:02:53 UTC&quot;
+[63] &quot;2021-07-25 09:24:42 UTC&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>So we need to time series (above), work out what index in the time series our desired date corresponds to, and then select from the data variable based on that index.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">desired_time</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.POSIXct</span><span class="p">(</span><span class="s">&quot;2021-07-16 17:22:03&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;UTC&quot;</span><span class="p">)</span>
+
+<span class="c1"># Finding the index of that value</span>
+<span class="n">time_index</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">which</span><span class="p">(</span><span class="n">timestamps</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">desired_time</span><span class="p">)</span>
+
+<span class="c1"># Extract values just for that time</span>
+<span class="n">temperature</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TEMP&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">time_index</span><span class="p">),</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">))</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">att.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TEMP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;scale_factor&quot;</span><span class="p">)</span>
+<span class="c1"># Get the associated pressure values</span>
+<span class="n">pres</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PRES&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">time_index</span><span class="p">),</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+
+<span class="nf">plot</span><span class="p">(</span>
+<span class="w">    </span><span class="n">temperature</span><span class="p">,</span>
+<span class="w">    </span><span class="n">pres</span><span class="p">,</span>
+<span class="w">    </span><span class="n">type</span><span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ylim</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">pres</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">ylab</span><span class="o">=</span><span class="s">&#39;sea water pressure (dbar)&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">xlab</span><span class="o">=</span><span class="w"> </span><span class="s">&#39;sea water temperature (degrees_C)&#39;</span>
+<span class="w">    </span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/9f234592560f7a8cb948a096b82a7036415207b3f623f9ad7bb491a4224c0d9a.png" src="_images/9f234592560f7a8cb948a096b82a7036415207b3f623f9ad7bb491a4224c0d9a.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="citing-the-data">
+<h2>Citing the data<a class="headerlink" href="#citing-the-data" title="Permalink to this heading">#</a></h2>
+<p>Please cite the data for the cruise or cruises you have used the data from.</p>
+<p>For the data used in this notebook, the citation is:</p>
+<p><em>Elisabeth Jones (2022) CTD data from Nansen Legacy Cruise - Joint cruise 2-1 <a class="reference external" href="https://doi.org/10.21335/NMDC-2085836005">https://doi.org/10.21335/NMDC-2085836005</a></em></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="CTD%20data%20-%20one%20file%20per%20cast.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">CTD data - one file per cast</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Chlorophyll%20A%20data.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Chlorophyll A data</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-data-for-one-cast">Accessing data for one cast</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#based-on-latitude-longitude">Based on latitude/longitude</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#based-on-time">Based on time</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Luke Marsden
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1503 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Chlorophyll A data &#8212; Accessing Nansen Legacy data in R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Chlorophyll A data';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Nutrients data" href="Nutrients%20data.html" />
+    <link rel="prev" title="CTD data - one file per cruise" href="CTD%20data%20-%20one%20file%20per%20cruise.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Accessing Nansen Legacy data in R - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Accessing Nansen Legacy data in R - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Accessing Nansen Legacy data in R
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="CTD%20data%20-%20one%20file%20per%20cast.html">CTD data - one file per cast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CTD%20data%20-%20one%20file%20per%20cruise.html">CTD data - one file per cruise</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Chlorophyll A data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Nutrients%20data.html">Nutrients data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="POC%20PON%20data.html">POC/PON data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Flow%20cytometry%20data.html">Flow cytometry</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/lhmarsden/Accessing_Nansen_Legacy_data_in_R" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/lhmarsden/Accessing_Nansen_Legacy_data_in_R/issues/new?title=Issue%20on%20page%20%2FChlorophyll A data.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/Chlorophyll A data.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Chlorophyll A data</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-niskin-bottles-on-ctd-cast">From Niskin bottles on CTD cast</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-file">One file</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#looping-through-multiple-files">Looping through multiple files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ice-core-data">Ice core data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#under-ice-water">Under ice water</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#melt-ponds">Melt ponds</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slurp-guns">Slurp guns</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="chlorophyll-a-data">
+<h1>Chlorophyll A data<a class="headerlink" href="#chlorophyll-a-data" title="Permalink to this heading">#</a></h1>
+<section id="from-niskin-bottles-on-ctd-cast">
+<h2>From Niskin bottles on CTD cast<a class="headerlink" href="#from-niskin-bottles-on-ctd-cast" title="Permalink to this heading">#</a></h2>
+<p>Let’s first load in some libraries that we are going to use today. If you are not sure whether you have the library installed, you can embed <em>install.packages</em> within an <em>if</em> statement, like this</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;RNetCDF&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;RNetCDF&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">RNetCDF</span><span class="p">)</span>
+<span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;writexl&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;writexl&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">writexl</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="one-file">
+<h3>One file<a class="headerlink" href="#one-file" title="Permalink to this heading">#</a></h3>
+<p>The data are available via a THREDDS server that you can find here:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/">https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/</a></p>
+<p>If you open the link above, you can navigate to different NetCDF files, and you will be linked to OPeNDAP data access forms like this one:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T023742.nc.html">https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T023742.nc.html</a></p>
+<p>OPeNDAP makes it possible to access data over the internet without you having to download the data to your computer first. You can just remove the <em>html</em> suffix from the URL above and include it in your R script in the same way that you might include some absolute filepath to a file on your computer.</p>
+<p>So now let’s load the data into R for this cast.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T035837.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf classic {
+dimensions:
+	DEPTH = 7 ;
+	maxStrlen64 = 64 ;
+variables:
+	NC_FLOAT DEPTH(DEPTH) ;
+		NC_CHAR DEPTH:standard_name = &quot;depth&quot; ;
+		NC_CHAR DEPTH:long_name = &quot;Depth sampled below sea level, positive is increasing depth.&quot; ;
+		NC_CHAR DEPTH:units = &quot;m&quot; ;
+		NC_CHAR DEPTH:coverage_content_type = &quot;coordinate&quot; ;
+		NC_CHAR DEPTH:positive = &quot;down&quot; ;
+	NC_DOUBLE CHLOROPHYLL_A_TOTAL(DEPTH) ;
+		NC_DOUBLE CHLOROPHYLL_A_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:standard_name = &quot;mass_concentration_of_chlorophyll_a_in_sea_water&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:long_name = &quot;Mass concentration of Chlorophyll A in sea water, after acid correction&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:units = &quot;μg L-1&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:ancillary_variables = &quot;FILTERED_VOL_TOTAL, EVENTID_TOTAL&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE PHAEOPIGMENTS_TOTAL(DEPTH) ;
+		NC_DOUBLE PHAEOPIGMENTS_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:standard_name = &quot;mass_concentration_of_phaeopigments_in_sea_water&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:long_name = &quot;Mass concentration of phaeopigment in sea water, after acid correction&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:units = &quot;μg L-1&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:ancillary_variables = &quot;FILTERED_VOL_TOTAL, EVENTID_TOTAL&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE FILTERED_VOL_TOTAL(DEPTH) ;
+		NC_DOUBLE FILTERED_VOL_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR FILTERED_VOL_TOTAL:long_name = &quot;Volume of sea water filtered for measurement&quot; ;
+		NC_CHAR FILTERED_VOL_TOTAL:units = &quot;L&quot; ;
+		NC_CHAR FILTERED_VOL_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_CHAR EVENTID_TOTAL(maxStrlen64, DEPTH) ;
+		NC_CHAR EVENTID_TOTAL:long_name = &quot;Event ID is a universally unique ID (UUID) for each event. This can be linked to the metadata catalogue on the SIOS webpage https://sios-svalbard.org/reports/aen_multi&quot; ;
+		NC_CHAR EVENTID_TOTAL:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_DOUBLE CHLOROPHYLL_A_10um(DEPTH) ;
+		NC_DOUBLE CHLOROPHYLL_A_10um:_FillValue = 1e+32 ;
+		NC_CHAR CHLOROPHYLL_A_10um:standard_name = &quot;mass_concentration_of_chlorophyll_a_in_sea_water&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:long_name = &quot;Mass concentration of Chlorophyll A in sea water, after acid correction&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:units = &quot;μg L-1&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:ancillary_variables = &quot;FILTERED_VOL_10um, EVENTID_10um&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE PHAEOPIGMENTS_10um(DEPTH) ;
+		NC_DOUBLE PHAEOPIGMENTS_10um:_FillValue = 1e+32 ;
+		NC_CHAR PHAEOPIGMENTS_10um:standard_name = &quot;mass_concentration_of_phaeopigments_in_sea_water&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:long_name = &quot;Mass concentration of phaeopigment in sea water, after acid correction&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:units = &quot;μg L-1&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE FILTERED_VOL_10um(DEPTH) ;
+		NC_DOUBLE FILTERED_VOL_10um:_FillValue = 1e+32 ;
+		NC_CHAR FILTERED_VOL_10um:long_name = &quot;Volume of sea water filtered for measurement&quot; ;
+		NC_CHAR FILTERED_VOL_10um:units = &quot;L&quot; ;
+		NC_CHAR FILTERED_VOL_10um:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_CHAR EVENTID_10um(maxStrlen64, DEPTH) ;
+		NC_CHAR EVENTID_10um:long_name = &quot;Event ID is a universally unique ID (UUID) for each event. This can be linked to the metadata catalogue on the SIOS webpage https://sios-svalbard.org/reports/aen_multi&quot; ;
+		NC_CHAR EVENTID_10um:coverage_content_type = &quot;referenceInformation&quot; ;
+
+// global attributes:
+		NC_CHAR :id = &quot;b8cda2bc-50c5-50b6-9898-d7c00d132adf&quot; ;
+		NC_CHAR :naming_authority = &quot;The University Centre in Svalbard, Norway&quot; ;
+		NC_CHAR :title = &quot;Chlorophyll A and phaeopigments Nansen Legacy cruise 2021704 station P1 (NLEG01) 2021-04-30T03:58:37&quot; ;
+		NC_CHAR :summary = &quot;&#39;This dataset is a collection of the acid-corrected chlorophyll A and phaeopigments 
+                        measurements taken as part of the Nansen Legacy project (www.arvenetternansen.com), as part
+                        of the &#39;2021 Seasonal Study Q2&#39; cruise.
+                        The data are collected from a CTD with Niskin bottles (depth profile) from station P1 (NLEG01) taken on 2021-04-30T03:58:37.182Z at 31.2199748°E and 
+                        76.0000058333333°N.
+                        Both total Chlorophyll A and collected after passing through a 10µm filter are enclosed if available.&quot; ;
+		NC_CHAR :keywords = &quot;Oceans &gt; Ocean chemistry &gt; Chlorophyll&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD Science Keywords&quot; ;
+		NC_DOUBLE :geospatial_lat_min = 76.0000058333333 ;
+		NC_DOUBLE :geospatial_lat_max = 76.0000058333333 ;
+		NC_DOUBLE :geospatial_lon_min = 31.2199748 ;
+		NC_DOUBLE :geospatial_lon_max = 31.2199748 ;
+		NC_CHAR :time_coverage_start = &quot;2021-04-30T03:58:37.182Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-04-30T03:58:37.182Z&quot; ;
+		NC_CHAR :Conventions = &quot;ACDD-1.3, CF-1.9&quot; ;
+		NC_CHAR :history = &quot;File created at 2022-04-22T12:09:42 using Python&#39;s xarray&quot; ;
+		NC_CHAR :source = &quot;Chlorophyll A from Niskin bottle&quot; ;
+		NC_CHAR :processing_level = &quot;
+                        Acid corrected Chlorophyll A and Phaeopigment data.
+                        For more information on the sampling protocols, please see
+                        {sampling_protocols}&quot; ;
+		NC_CHAR :date_created = &quot;2022-04-22T12:09:42&quot; ;
+		NC_CHAR :creator_type = &quot;person&quot; ;
+		NC_CHAR :creator_institution = &quot;University Centre in Svalbard, University of Tromsø, Norwegian University of Science and Technology, University Centre in Svalbard, Norwegian Polar Institute&quot; ;
+		NC_CHAR :creator_name = &quot;Anna Vader, Miriam Marquardt, Natalie Summers, Snorre Flo, Philipp Assmy&quot; ;
+		NC_CHAR :creator_email = &quot;annav@unis.no, miriam.marquardt@uit.no, natalie.summers@ntnu.no, snorref@unis.no, philipp.assmy@npolar.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://www.unis.no/staff/anna-vader/, https://en.uit.no/ansatte/miriam.marquardt, https://www.ntnu.edu/employees/natalie.summers, https://www.unis.no/staff/snorre-flo/, https://arctos.uit.no/?page_id=10&amp;cn-entry-slug=philipp-assmy&quot; ;
+		NC_CHAR :institution = &quot;University Centre in Svalbard (UNIS)&quot; ;
+		NC_CHAR :publisher_name = &quot;Norwegian Marine Data Centre&quot; ;
+		NC_CHAR :publisher_email = &quot;datahjelp@imr.no&quot; ;
+		NC_CHAR :publisher_url = &quot;https://www.nmdc.no&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :acknowledgements = &quot;Funded by the Research Council of Norway&quot; ;
+		NC_CHAR :stationName = &quot;P1 (NLEG01)&quot; ;
+		NC_CHAR :cruiseNumber = &quot;Attribute edlided: Unsupported attribute type (NC_INT64)&quot; ;
+		NC_CHAR :cruiseName = &quot;&#39;2021 Seasonal Study Q2&#39;&quot; ;
+		NC_CHAR :samplingProtocol = &quot;Nansen Legacy sampling protocols version 8 section 7.13&quot; ;
+		NC_CHAR :pi_name = &quot;Anna Vader&quot; ;
+		NC_CHAR :pi_institution = &quot;University Centre in Svalbard&quot; ;
+		NC_CHAR :pi_email = &quot;annav@unis.no&quot; ;
+		NC_DOUBLE :sea_floor_depth_below_sea_surface = 325.76 ;
+		NC_CHAR :_NCProperties = &quot;version=2,netcdf=4.6.3,hdf5=1.10.5&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<p>The data have a single dimension, pressure. For the profile I have chosen above, there are 82 data points for each variable.</p>
+<p>Now let’s access a few of the variables.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">depth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;DEPTH&#39;</span><span class="p">)</span>
+<span class="n">chla_total</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;CHLOROPHYLL_A_TOTAL&#39;</span><span class="p">)</span>
+<span class="n">chla_10um</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;CHLOROPHYLL_A_10um&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s make a basic plot.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the first dataset with depth on the y-axis</span>
+<span class="nf">plot</span><span class="p">(</span>
+<span class="w">    </span><span class="n">chla_total</span><span class="p">,</span>
+<span class="w">    </span><span class="n">depth</span><span class="p">,</span>
+<span class="w">    </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;l&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;blue&quot;</span><span class="p">,</span><span class="w">      </span><span class="c1"># Choose a color for the first line</span>
+<span class="w">    </span><span class="n">ylab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Depth&quot;</span><span class="p">,</span><span class="w">    </span><span class="c1"># Label for the y-axis</span>
+<span class="w">    </span><span class="n">xlab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Chlorophyll&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1"># Label for the x-axis</span>
+<span class="w">    </span><span class="n">xlim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="nf">max</span><span class="p">(</span><span class="n">chla_total</span><span class="p">)),</span>
+<span class="w">    </span><span class="n">ylim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nf">rev</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="n">depth</span><span class="p">)))</span><span class="w"> </span><span class="c1"># Reverse the y-axis to make depth increase downwards</span>
+<span class="p">)</span>
+
+<span class="c1"># Add the second dataset to the existing plot</span>
+<span class="nf">lines</span><span class="p">(</span>
+<span class="w">    </span><span class="n">chla_10um</span><span class="p">,</span>
+<span class="w">    </span><span class="n">depth</span><span class="p">,</span>
+<span class="w">    </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;red&quot;</span><span class="w">        </span><span class="c1"># Choose a different color for the second line</span>
+<span class="p">)</span>
+
+<span class="c1"># Add a legend to distinguish the lines</span>
+<span class="nf">legend</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;topleft&quot;</span><span class="p">,</span><span class="w">       </span><span class="c1"># Position of the legend</span>
+<span class="w">    </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Total Chlorophyll&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Chlorophyll &gt; 10µm&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;blue&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;red&quot;</span><span class="p">),</span><span class="w"> </span><span class="c1"># Colors corresponding to the lines</span>
+<span class="w">    </span><span class="n">lty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w">           </span><span class="c1"># Line type</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/d12882afbbf52a71d27178f25502a1acf30c5014f1d2615e6da996471ba0fcb4.png" src="_images/d12882afbbf52a71d27178f25502a1acf30c5014f1d2615e6da996471ba0fcb4.png" />
+</div>
+</div>
+<p>Now let’s write the data to a dataframe that.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">Depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">depth</span><span class="p">,</span><span class="w"> </span><span class="n">Chlorophyll_A_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chla_total</span><span class="p">,</span><span class="w"> </span><span class="n">Chlorophyll_A_10um</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chla_10um</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can write that out to a CSV file or XLSX file if we like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Write to CSV</span>
+<span class="nf">write.csv</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;../data/chlrophyll_a_data_one_cast.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="c1"># Write to XLSX using writexl</span>
+<span class="nf">write_xlsx</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;../data/chlrophyll_a_data_one_cast.xlsx&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="looping-through-multiple-files">
+<h3>Looping through multiple files<a class="headerlink" href="#looping-through-multiple-files" title="Permalink to this heading">#</a></h3>
+<p>What if we want to loop through and access all the casts from, for example, a single cruise?</p>
+<p>We can think of this as the human interface:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/contents.html">https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/contents.html</a></p>
+<p>And this as the machine interface:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/catalog.xml">https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/catalog.xml</a></p>
+<p>If you have never looked at an XML file like this before, don’t worry. What we want to do is access the URL paths of each file and dump them to a list that we can loop through. We need to install another package first.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;xml2&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;xml2&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">xml2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s make a list of the OPeNDAP URLs for each file.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read the XML file</span>
+<span class="n">xml_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/catalog.xml&#39;</span>
+<span class="n">xml_content</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read_xml</span><span class="p">(</span><span class="n">xml_url</span><span class="p">)</span>
+
+<span class="c1"># Extract all &lt;thredds:access&gt; nodes with serviceName=&quot;dap&quot;</span>
+<span class="n">dap_nodes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">xml_find_all</span><span class="p">(</span><span class="n">xml_content</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.//thredds:access[@serviceName=&#39;dap&#39;]&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">xml_ns</span><span class="p">(</span><span class="n">xml_content</span><span class="p">))</span>
+
+<span class="c1"># Extract the URLs</span>
+<span class="n">dap_urls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">xml_attr</span><span class="p">(</span><span class="n">dap_nodes</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;urlPath&quot;</span><span class="p">)</span>
+
+<span class="c1"># Base URL</span>
+<span class="n">base_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;https://opendap1.nodc.no/opendap/&quot;</span>
+
+<span class="c1"># Combine base URL with URL paths to get full URLs</span>
+<span class="n">full_urls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span><span class="w"> </span><span class="n">dap_urls</span><span class="p">)</span>
+
+<span class="c1"># Print the full URLs</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">full_urls</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> [1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T133217.nc&quot;                               
+ [2] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T141507.nc&quot;                               
+ [3] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T043651.nc&quot;                               
+ [4] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T045538.nc&quot;                               
+ [5] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGA_20210516T181751.nc&quot;                                
+ [6] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGB_20210517T001244.nc&quot;                                
+ [7] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGC_20210517T210252.nc&quot;                                
+ [8] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGD_20210518T142143.nc&quot;                                
+ [9] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T023742.nc&quot;                            
+[10] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T035837.nc&quot;                            
+[11] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T044113.nc&quot;                            
+[12] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T101857.nc&quot;                            
+[13] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T035943.nc&quot;                            
+[14] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T043150.nc&quot;                            
+[15] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_Ice_20210502T133216Z_ice_core.nc&quot;              
+[16] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T210116.nc&quot;                            
+[17] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T212005.nc&quot;                            
+[18] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T221452.nc&quot;                            
+[19] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T064610.nc&quot;                            
+[20] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T171510.nc&quot;                            
+[21] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T183338.nc&quot;                            
+[22] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_ice_core.nc&quot;              
+[23] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_slurp_gun.nc&quot;             
+[24] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T161534.nc&quot;                            
+[25] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T162309.nc&quot;                            
+[26] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_Ice_20210508T070815Z_ice_core.nc&quot;              
+[27] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T214530.nc&quot;                     
+[28] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T225046.nc&quot;                     
+[29] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T234300Z.nc&quot;                    
+[30] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_ice_core.nc&quot;       
+[31] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_slurp_gun.nc&quot;      
+[32] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_under_ice_water.nc&quot;
+[33] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210511T073146Z_slurp_gun.nc&quot;      
+[34] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210513T212217.nc&quot;                     
+[35] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T011506.nc&quot;                     
+[36] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T012126.nc&quot;                     
+[37] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210516T052902.nc&quot;                     
+[38] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_ice_core.nc&quot;       
+[39] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_slurp_gun.nc&quot;      
+[40] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_under_ice_water.nc&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we need to use a for loop to access each file in turn. Here is a quick example of how a for loop works if you are not familiar.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">animals</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;pig&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;dog&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;horse&#39;</span><span class="p">)</span>
+
+<span class="nf">for </span><span class="p">(</span><span class="n">animal</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">animals</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">message</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="s">&#39;Hello there,&#39;</span><span class="p">,</span><span class="n">animal</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;Hello there, pig&quot;
+[1] &quot;Hello there, dog&quot;
+[1] &quot;Hello there, horse&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now a more relevant example</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">for </span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">full_urls</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">   </span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T133217.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T141507.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T043651.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T045538.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGA_20210516T181751.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGB_20210517T001244.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGC_20210517T210252.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGD_20210518T142143.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T023742.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T035837.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T044113.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T101857.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T035943.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T043150.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_Ice_20210502T133216Z_ice_core.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T210116.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T212005.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T221452.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T064610.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T171510.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T183338.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_ice_core.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_slurp_gun.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T161534.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T162309.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_Ice_20210508T070815Z_ice_core.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T214530.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T225046.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T234300Z.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_ice_core.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_slurp_gun.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_under_ice_water.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210511T073146Z_slurp_gun.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210513T212217.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T011506.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T012126.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210516T052902.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_ice_core.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_slurp_gun.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_under_ice_water.nc&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>We want to access only the data from the Niskin bottles on the CTD casts. So we need to exclude some files.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">exclude</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;ice_core&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;slurp_gun&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;under_ice_water&#39;</span><span class="p">)</span>
+
+<span class="c1"># Function to check if a filename contains any of the excluded substrings</span>
+<span class="n">contains_excluded_substring</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="w"> </span><span class="n">exclude_list</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">any</span><span class="p">(</span><span class="nf">sapply</span><span class="p">(</span><span class="n">exclude_list</span><span class="p">,</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span><span class="w"> </span><span class="nf">grepl</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="p">)))</span>
+<span class="p">}</span>
+
+<span class="nf">for </span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">full_urls</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">filename</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">basename</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w"> </span><span class="c1"># Extract the filename</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Check if the filename contains any excluded substrings</span>
+<span class="w">    </span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">contains_excluded_substring</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="w"> </span><span class="n">exclude</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nf">print</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">  </span><span class="c1"># Print the URL if it does not contain excluded substrings</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T133217.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T141507.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T043651.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T045538.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGA_20210516T181751.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGB_20210517T001244.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGC_20210517T210252.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGD_20210518T142143.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T023742.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T035837.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T044113.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T101857.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T035943.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T043150.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T210116.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T212005.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T221452.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T064610.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T171510.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T183338.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T161534.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T162309.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T214530.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T225046.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T234300Z.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210513T212217.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T011506.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T012126.nc&quot;
+[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210516T052902.nc&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Some variables are present in some files and not others. So perhaps we just want to load in all the variables, regardless of their names, and dump the data to a CSV file. Let’s try that.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">exclude</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;ice_core&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;slurp_gun&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;under_ice_water&#39;</span><span class="p">)</span>
+
+<span class="c1"># Function to check if a filename contains any of the excluded substrings</span>
+<span class="n">contains_excluded_substring</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="w"> </span><span class="n">exclude_list</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">any</span><span class="p">(</span><span class="nf">sapply</span><span class="p">(</span><span class="n">exclude_list</span><span class="p">,</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span><span class="w"> </span><span class="nf">grepl</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="p">)))</span>
+<span class="p">}</span>
+
+<span class="nf">for </span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">full_urls</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">filename</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">basename</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w"> </span><span class="c1"># Extract the filename</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c1"># Check if the filename contains any excluded substrings</span>
+<span class="w">    </span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">contains_excluded_substring</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="w"> </span><span class="n">exclude</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">csv_filename</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="s">&quot;\\.nc$&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="p">)</span><span class="w"> </span><span class="c1"># Replace .nc extension with .csv</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="c1"># Open the file</span>
+<span class="w">        </span><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="w">        </span><span class="c1"># Get the number of variables in the file</span>
+<span class="w">        </span><span class="n">nvars</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="nf">file.inq.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)[</span><span class="s">&#39;nvars&#39;</span><span class="p">])</span>
+
+<span class="w">        </span><span class="c1"># Initialize an empty list to store the data</span>
+<span class="w">        </span><span class="n">data_list</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">()</span>
+
+<span class="w">        </span><span class="c1"># Loop through each variable, retrieve the data, and store it in the list</span>
+<span class="w">        </span><span class="nf">for </span><span class="p">(</span><span class="n">var</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">nvars</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="n">idx</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">var</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="c1"># Getting the index of the variable. Count starts at 0</span>
+<span class="w">          </span><span class="n">var_name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.inq.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">idx</span><span class="p">)</span><span class="o">$</span><span class="n">name</span>
+<span class="w">          </span><span class="n">data_list</span><span class="p">[[</span><span class="n">var_name</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1"># Convert the list to a dataframe and save it as a CSV file</span>
+<span class="w">        </span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="n">data_list</span><span class="p">)</span>
+<span class="w">        </span><span class="c1"># write.csv(df, paste0(&quot;../data/&quot;, csv_filename), row.names = FALSE)        </span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="ice-core-data">
+<h2>Ice core data<a class="headerlink" href="#ice-core-data" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_ice_core.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf classic {
+dimensions:
+	DEPTH = 4 ;
+	maxStrlen64 = 64 ;
+variables:
+	NC_DOUBLE CHLOROPHYLL_A_TOTAL(DEPTH) ;
+		NC_DOUBLE CHLOROPHYLL_A_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:standard_name = &quot;mass_concentration_of_chlorophyll_a_in_sea_ice&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:long_name = &quot;Total mass concentration of Chlorophyll A in sea ice core, after acid correction&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:units = &quot;μg L-1&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:ancillary_variables = &quot;FILTERED_VOL_TOTAL, EVENTID_TOTAL&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:coordinates = &quot;MAXIMUM_DEPTH MINIMUM_DEPTH&quot; ;
+	NC_DOUBLE PHAEOPIGMENTS_TOTAL(DEPTH) ;
+		NC_DOUBLE PHAEOPIGMENTS_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:standard_name = &quot;mass_concentration_of_phaeopigments_in_sea_ice&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:long_name = &quot;Total mass concentration of phaeopigment in sea ice core, after acid correction&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:units = &quot;μg L-1&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:ancillary_variables = &quot;FILTERED_VOL_TOTAL, EVENTID_TOTAL&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:coordinates = &quot;MAXIMUM_DEPTH MINIMUM_DEPTH&quot; ;
+	NC_DOUBLE FILTERED_VOL_TOTAL(DEPTH) ;
+		NC_DOUBLE FILTERED_VOL_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR FILTERED_VOL_TOTAL:long_name = &quot;Volume of sea water filtered for measurement of total chlorophyll a&quot; ;
+		NC_CHAR FILTERED_VOL_TOTAL:units = &quot;L&quot; ;
+		NC_CHAR FILTERED_VOL_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR FILTERED_VOL_TOTAL:coordinates = &quot;MAXIMUM_DEPTH MINIMUM_DEPTH&quot; ;
+	NC_CHAR EVENTID_TOTAL(maxStrlen64, DEPTH) ;
+		NC_CHAR EVENTID_TOTAL:long_name = &quot;Event ID is a universally unique ID (UUID) for each event related to total chlorophyll a measurements. This can be linked to the metadata catalogue on the SIOS webpage https://sios-svalbard.org/reports/aen_multi&quot; ;
+		NC_CHAR EVENTID_TOTAL:coverage_content_type = &quot;referenceInformation&quot; ;
+		NC_CHAR EVENTID_TOTAL:coordinates = &quot;MAXIMUM_DEPTH MINIMUM_DEPTH&quot; ;
+	NC_DOUBLE CHLOROPHYLL_A_10um(DEPTH) ;
+		NC_DOUBLE CHLOROPHYLL_A_10um:_FillValue = 1e+32 ;
+		NC_CHAR CHLOROPHYLL_A_10um:standard_name = &quot;mass_concentration_of_chlorophyll_a_in_sea_ice&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:long_name = &quot;Mass concentration of Chlorophyll A in sea ice core after passing through a 10um filter, after acid correction&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:units = &quot;μg L-1&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:ancillary_variables = &quot;FILTERED_VOL_10um, EVENTID_10um&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:coordinates = &quot;MAXIMUM_DEPTH MINIMUM_DEPTH&quot; ;
+	NC_DOUBLE PHAEOPIGMENTS_10um(DEPTH) ;
+		NC_DOUBLE PHAEOPIGMENTS_10um:_FillValue = 1e+32 ;
+		NC_CHAR PHAEOPIGMENTS_10um:standard_name = &quot;mass_concentration_of_phaeopigments_in_sea_ice&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:long_name = &quot;Mass concentration of phaeopigment in sea ice core after passing through a 10um filter, after acid correction&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:units = &quot;μg L-1&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:ancillary_variables = &quot;FILTERED_VOL_10um, EVENTID_10um&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:coordinates = &quot;MAXIMUM_DEPTH MINIMUM_DEPTH&quot; ;
+	NC_DOUBLE FILTERED_VOL_10um(DEPTH) ;
+		NC_DOUBLE FILTERED_VOL_10um:_FillValue = 1e+32 ;
+		NC_CHAR FILTERED_VOL_10um:long_name = &quot;Volume of sea water filtered for measurement of chlorophyll a after passing through a 10um filter&quot; ;
+		NC_CHAR FILTERED_VOL_10um:units = &quot;L&quot; ;
+		NC_CHAR FILTERED_VOL_10um:coverage_content_type = &quot;physicalMeasurement&quot; ;
+		NC_CHAR FILTERED_VOL_10um:coordinates = &quot;MAXIMUM_DEPTH MINIMUM_DEPTH&quot; ;
+	NC_CHAR EVENTID_10um(maxStrlen64, DEPTH) ;
+		NC_CHAR EVENTID_10um:long_name = &quot;Event ID is a universally unique ID (UUID) for each event related to measurements after passing through 10um filter. This can be linked to the metadata catalogue on the SIOS webpage https://sios-svalbard.org/reports/aen_multi&quot; ;
+		NC_CHAR EVENTID_10um:coverage_content_type = &quot;referenceInformation&quot; ;
+		NC_CHAR EVENTID_10um:coordinates = &quot;MAXIMUM_DEPTH MINIMUM_DEPTH&quot; ;
+	NC_FLOAT MINIMUM_DEPTH(DEPTH) ;
+		NC_CHAR MINIMUM_DEPTH:standard_name = &quot;depth&quot; ;
+		NC_CHAR MINIMUM_DEPTH:long_name = &quot;Minimum depth sampled in the chunk of the ice core, positive is increasing depth.&quot; ;
+		NC_CHAR MINIMUM_DEPTH:units = &quot;m&quot; ;
+		NC_CHAR MINIMUM_DEPTH:coverage_content_type = &quot;coordinate&quot; ;
+		NC_CHAR MINIMUM_DEPTH:positive = &quot;down&quot; ;
+	NC_FLOAT MAXIMUM_DEPTH(DEPTH) ;
+		NC_CHAR MAXIMUM_DEPTH:standard_name = &quot;depth&quot; ;
+		NC_CHAR MAXIMUM_DEPTH:long_name = &quot;Maximum depth sampled in the chunk of the ice core, positive is increasing depth.&quot; ;
+		NC_CHAR MAXIMUM_DEPTH:units = &quot;m&quot; ;
+		NC_CHAR MAXIMUM_DEPTH:coverage_content_type = &quot;coordinate&quot; ;
+		NC_CHAR MAXIMUM_DEPTH:positive = &quot;down&quot; ;
+
+// global attributes:
+		NC_CHAR :id = &quot;432f93a9-557a-531b-a83b-5797cce6570b&quot; ;
+		NC_CHAR :naming_authority = &quot;The University Centre in Svalbard, Norway&quot; ;
+		NC_CHAR :title = &quot;Chlorophyll A and phaeopigments Nansen Legacy cruise 2021704 station P4 (NLEG11)_Ice 2021-05-05T06:46:10Z ice core&quot; ;
+		NC_CHAR :summary = &quot;&#39;This dataset is a collection of the acid-corrected chlorophyll A and phaeopigments 
+                            measurements taken as part of the Nansen Legacy project (www.arvenetternansen.com), as part
+                            of the &#39;2021 Seasonal Study Q2&#39; cruise.
+                            The data an ice core divided into chunks from an ice station at P4 (NLEG11)_Ice taken on 2021-05-05T06:46:10.514Z at 33.52647305°E and 
+                            79.6782410666667°N. Both total Chlorophyll A and collected after passing through a 10µm filter are enclosed if available.&quot; ;
+		NC_CHAR :keywords = &quot;Oceans &gt; Ocean chemistry &gt; Chlorophyll&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD Science Keywords&quot; ;
+		NC_DOUBLE :geospatial_lat_min = 79.6782410666667 ;
+		NC_DOUBLE :geospatial_lat_max = 79.6782410666667 ;
+		NC_DOUBLE :geospatial_lon_min = 33.52647305 ;
+		NC_DOUBLE :geospatial_lon_max = 33.52647305 ;
+		NC_CHAR :time_coverage_start = &quot;2021-05-05T06:46:10.514Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-05-05T06:46:10.514Z&quot; ;
+		NC_CHAR :Conventions = &quot;ACDD-1.3, CF-1.9&quot; ;
+		NC_CHAR :history = &quot;File created at 2022-04-22T12:27:05 using Python&#39;s xarray&quot; ;
+		NC_CHAR :source = &quot;Chlorophyll A from melt pond water sampled with a bucket&quot; ;
+		NC_CHAR :processing_level = &quot;
+                            Acid corrected Chlorophyll A and Phaeopigment data.
+                            For more information on the sampling protocols, please see
+                            {sampling_protocols}&quot; ;
+		NC_CHAR :date_created = &quot;2022-04-22T12:27:05&quot; ;
+		NC_CHAR :creator_type = &quot;person&quot; ;
+		NC_CHAR :creator_institution = &quot;University Centre in Svalbard, University of Tromsø, Norwegian University of Science and Technology, University Centre in Svalbard, Norwegian Polar Institute&quot; ;
+		NC_CHAR :creator_name = &quot;Anna Vader, Miriam Marquardt, Natalie Summers, Snorre Flo, Philipp Assmy&quot; ;
+		NC_CHAR :creator_email = &quot;annav@unis.no, miriam.marquardt@uit.no, natalie.summers@ntnu.no, snorref@unis.no, philipp.assmy@npolar.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://www.unis.no/staff/anna-vader/, https://en.uit.no/ansatte/miriam.marquardt, https://www.ntnu.edu/employees/natalie.summers, https://www.unis.no/staff/snorre-flo/, https://arctos.uit.no/?page_id=10&amp;cn-entry-slug=philipp-assmy&quot; ;
+		NC_CHAR :institution = &quot;University Centre in Svalbard (UNIS)&quot; ;
+		NC_CHAR :publisher_name = &quot;Norwegian Marine Data Centre&quot; ;
+		NC_CHAR :publisher_email = &quot;datahjelp@imr.no&quot; ;
+		NC_CHAR :publisher_url = &quot;https://www.nmdc.no&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :acknowledgements = &quot;Funded by the Research Council of Norway&quot; ;
+		NC_CHAR :stationName = &quot;P4 (NLEG11)_Ice&quot; ;
+		NC_CHAR :cruiseNumber = &quot;Attribute edlided: Unsupported attribute type (NC_INT64)&quot; ;
+		NC_CHAR :cruiseName = &quot;&#39;2021 Seasonal Study Q2&#39;&quot; ;
+		NC_CHAR :samplingProtocol = &quot;Nansen Legacy sampling protocols version 8 section 14.8&quot; ;
+		NC_CHAR :pi_name = &quot;Anna Vader&quot; ;
+		NC_CHAR :pi_institution = &quot;University Centre in Svalbard&quot; ;
+		NC_CHAR :pi_email = &quot;annav@unis.no&quot; ;
+		NC_DOUBLE :sea_floor_depth_below_sea_surface = 360.79 ;
+		NC_CHAR :_NCProperties = &quot;version=2,netcdf=4.6.3,hdf5=1.10.5&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<p>In these data, you can see that the data variables again have a <em>DEPTH</em> dimension. However, each value is representative of a cell - a depth range for each chunk of the ice core that has been melted down.</p>
+<p>So the file also includes <em>MINIMUM_DEPTH</em> and <em>MAXIMUM_DEPTH</em> variables to show this range.</p>
+<p>This is actually not the best, most CF-compliant way to do this. These data are human-readable, but do not follow the recommend best practices. I should have used bounds instead when creating the files. You can read about cell bounds here.
+<a class="reference external" href="https://cfconventions.org/Data/cf-conventions/cf-conventions-1.11/cf-conventions.html#_data_representative_of_cells">https://cfconventions.org/Data/cf-conventions/cf-conventions-1.11/cf-conventions.html#_data_representative_of_cells</a></p>
+<p>Following the best practices is important as it encourages consistency between datasets and makes it easier for someone to build a service that works on not just one file but all similar files. I will cover how to encode data representative of cells in my tutorial series on working with NetCDF files in R, which is linked here. At the time of writing, this is not complete:
+<a class="reference external" href="https://lhmarsden.github.io/NetCDF_in_R_from_beginner_to_pro/intro.html">https://lhmarsden.github.io/NetCDF_in_R_from_beginner_to_pro/intro.html</a></p>
+<p>You can access the data in the same way you would the data from the Niskin bottles.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">min_depth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;MINIMUM_DEPTH&#39;</span><span class="p">)</span>
+<span class="n">max_depth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;MAXIMUM_DEPTH&#39;</span><span class="p">)</span>
+<span class="n">chla_total</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;CHLOROPHYLL_A_TOTAL&#39;</span><span class="p">)</span>
+<span class="n">chla_10um</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;CHLOROPHYLL_A_10um&#39;</span><span class="p">)</span>
+
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">    </span><span class="n">Min_depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">min_depth</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">Max_depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max_depth</span><span class="p">,</span>
+<span class="w">    </span><span class="n">Chlorophyll_A_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chla_total</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">Chlorophyll_A_10um</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chla_10um</span>
+<span class="p">)</span>
+
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 4 × 4</caption>
+<thead>
+	<tr><th scope=col>Min_depth</th><th scope=col>Max_depth</th><th scope=col>Chlorophyll_A_total</th><th scope=col>Chlorophyll_A_10um</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td> 0</td><td>  3</td><td>181.030451</td><td>138.751091</td></tr>
+	<tr><td> 3</td><td> 10</td><td>  4.538515</td><td>  3.046370</td></tr>
+	<tr><td>10</td><td> 20</td><td> 14.572600</td><td>  1.118798</td></tr>
+	<tr><td>20</td><td>NaN</td><td>  2.303262</td><td>  1.490862</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="under-ice-water">
+<h2>Under ice water<a class="headerlink" href="#under-ice-water" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no:443/opendap/chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_under_ice_water.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf classic {
+dimensions:
+	DEPTH = 1 ;
+	maxStrlen64 = 64 ;
+variables:
+	NC_FLOAT DEPTH(DEPTH) ;
+		NC_CHAR DEPTH:standard_name = &quot;depth&quot; ;
+		NC_CHAR DEPTH:long_name = &quot;Depth sampled below sea level, positive is increasing depth.&quot; ;
+		NC_CHAR DEPTH:units = &quot;m&quot; ;
+		NC_CHAR DEPTH:coverage_content_type = &quot;coordinate&quot; ;
+		NC_CHAR DEPTH:positive = &quot;down&quot; ;
+	NC_DOUBLE CHLOROPHYLL_A_TOTAL(DEPTH) ;
+		NC_DOUBLE CHLOROPHYLL_A_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:standard_name = &quot;mass_concentration_of_chlorophyll_a_in_sea_water&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:long_name = &quot;Mass concentration of Chlorophyll A in under ice sea water, after acid correction&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:units = &quot;μg L-1&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:ancillary_variables = &quot;FILTERED_VOL_TOTAL, EVENTID_TOTAL&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE PHAEOPIGMENTS_TOTAL(DEPTH) ;
+		NC_DOUBLE PHAEOPIGMENTS_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:standard_name = &quot;mass_concentration_of_phaeopigments_in_sea_water&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:long_name = &quot;Mass concentration of phaeopigment in under ice sea water, after acid correction&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:units = &quot;μg L-1&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:ancillary_variables = &quot;FILTERED_VOL_TOTAL, EVENTID_TOTAL&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE FILTERED_VOL_TOTAL(DEPTH) ;
+		NC_DOUBLE FILTERED_VOL_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR FILTERED_VOL_TOTAL:long_name = &quot;Volume of sea water filtered for measurement&quot; ;
+		NC_CHAR FILTERED_VOL_TOTAL:units = &quot;L&quot; ;
+		NC_CHAR FILTERED_VOL_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_CHAR EVENTID_TOTAL(maxStrlen64, DEPTH) ;
+		NC_CHAR EVENTID_TOTAL:long_name = &quot;Event ID is a universally unique ID (UUID) for each event. This can be linked to the metadata catalogue on the SIOS webpage https://sios-svalbard.org/reports/aen_multi&quot; ;
+		NC_CHAR EVENTID_TOTAL:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_DOUBLE CHLOROPHYLL_A_10um(DEPTH) ;
+		NC_DOUBLE CHLOROPHYLL_A_10um:_FillValue = 1e+32 ;
+		NC_CHAR CHLOROPHYLL_A_10um:standard_name = &quot;mass_concentration_of_chlorophyll_a_in_sea_water&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:long_name = &quot;Mass concentration of Chlorophyll A in under ice sea water, after acid correction&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:units = &quot;μg L-1&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:ancillary_variables = &quot;FILTERED_VOL_10um, EVENTID_10um&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE PHAEOPIGMENTS_10um(DEPTH) ;
+		NC_DOUBLE PHAEOPIGMENTS_10um:_FillValue = 1e+32 ;
+		NC_CHAR PHAEOPIGMENTS_10um:standard_name = &quot;mass_concentration_of_phaeopigments_in_sea_water&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:long_name = &quot;Mass concentration of phaeopigment in under ice sea water, after acid correction&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:units = &quot;μg L-1&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:ancillary_variables = &quot;FILTERED_VOL_10um, EVENTID_10um&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE FILTERED_VOL_10um(DEPTH) ;
+		NC_DOUBLE FILTERED_VOL_10um:_FillValue = 1e+32 ;
+		NC_CHAR FILTERED_VOL_10um:long_name = &quot;Volume of sea water filtered for measurement&quot; ;
+		NC_CHAR FILTERED_VOL_10um:units = &quot;L&quot; ;
+		NC_CHAR FILTERED_VOL_10um:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_CHAR EVENTID_10um(maxStrlen64, DEPTH) ;
+		NC_CHAR EVENTID_10um:long_name = &quot;Event ID is a universally unique ID (UUID) for each event. This can be linked to the metadata catalogue on the SIOS webpage https://sios-svalbard.org/reports/aen_multi&quot; ;
+		NC_CHAR EVENTID_10um:coverage_content_type = &quot;referenceInformation&quot; ;
+
+// global attributes:
+		NC_CHAR :id = &quot;3f81388c-781a-5d68-a45c-458240967e2d&quot; ;
+		NC_CHAR :naming_authority = &quot;The University Centre in Svalbard, Norway&quot; ;
+		NC_CHAR :title = &quot;Chlorophyll A and phaeopigments Nansen Legacy cruise 2021704 station P6 (NLEG21/NPAL15) Ice 2021-05-09T13:35:28Z under ice water&quot; ;
+		NC_CHAR :summary = &quot;&#39;This dataset is a collection of the acid-corrected chlorophyll A and phaeopigments 
+                            measurements taken as part of the Nansen Legacy project (www.arvenetternansen.com), as part
+                            of the &#39;2021 Seasonal Study Q2&#39; cruise.
+                            The data are from under ice water from an ice station at P6 (NLEG21/NPAL15) Ice taken on 2021-05-09T13:35:28.751Z at 30.8293846°E and 
+                            81.5625924833333°N. Both total Chlorophyll A and collected after passing through a 10µm filter are enclosed if available.&quot; ;
+		NC_CHAR :keywords = &quot;Oceans &gt; Ocean chemistry &gt; Chlorophyll&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD Science Keywords&quot; ;
+		NC_DOUBLE :geospatial_lat_min = 81.5625924833333 ;
+		NC_DOUBLE :geospatial_lat_max = 81.5625924833333 ;
+		NC_DOUBLE :geospatial_lon_min = 30.8293846 ;
+		NC_DOUBLE :geospatial_lon_max = 30.8293846 ;
+		NC_CHAR :time_coverage_start = &quot;2021-05-09T13:35:28.751Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-05-09T13:35:28.751Z&quot; ;
+		NC_CHAR :Conventions = &quot;ACDD-1.3, CF-1.9&quot; ;
+		NC_CHAR :history = &quot;File created at 2022-04-22T12:08:30 using Python&#39;s xarray&quot; ;
+		NC_CHAR :source = &quot;Chlorophyll A from Niskin bottle&quot; ;
+		NC_CHAR :processing_level = &quot;
+                            Acid corrected Chlorophyll A and Phaeopigment data.
+                            For more information on the sampling protocols, please see
+                            {sampling_protocols}&quot; ;
+		NC_CHAR :date_created = &quot;2022-04-22T12:08:30&quot; ;
+		NC_CHAR :creator_institution = &quot;University Centre in Svalbard, University of Tromsø, Norwegian University of Science and Technology, University Centre in Svalbard, Norwegian Polar Institute&quot; ;
+		NC_CHAR :creator_name = &quot;Anna Vader, Miriam Marquardt, Natalie Summers, Snorre Flo, Philipp Assmy&quot; ;
+		NC_CHAR :creator_email = &quot;annav@unis.no, miriam.marquardt@uit.no, natalie.summers@ntnu.no, snorref@unis.no, philipp.assmy@npolar.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://www.unis.no/staff/anna-vader/, https://en.uit.no/ansatte/miriam.marquardt, https://www.ntnu.edu/employees/natalie.summers, https://www.unis.no/staff/snorre-flo/, https://arctos.uit.no/?page_id=10&amp;cn-entry-slug=philipp-assmy&quot; ;
+		NC_CHAR :institution = &quot;University Centre in Svalbard (UNIS)&quot; ;
+		NC_CHAR :publisher_name = &quot;Norwegian Marine Data Centre&quot; ;
+		NC_CHAR :publisher_email = &quot;datahjelp@imr.no&quot; ;
+		NC_CHAR :publisher_url = &quot;https://www.nmdc.no&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :acknowledgements = &quot;Funded by the Research Council of Norway&quot; ;
+		NC_CHAR :stationName = &quot;P6 (NLEG21/NPAL15) Ice&quot; ;
+		NC_CHAR :cruiseNumber = &quot;Attribute edlided: Unsupported attribute type (NC_INT64)&quot; ;
+		NC_CHAR :cruiseName = &quot;&#39;2021 Seasonal Study Q2&#39;&quot; ;
+		NC_CHAR :samplingProtocol = &quot;Nansen Legacy sampling protocols version 8 section 14.7&quot; ;
+		NC_CHAR :pi_name = &quot;Anna Vader&quot; ;
+		NC_CHAR :pi_institution = &quot;University Centre in Svalbard&quot; ;
+		NC_CHAR :pi_email = &quot;annav@unis.no&quot; ;
+		NC_DOUBLE :sea_floor_depth_below_sea_surface = 1406.78 ;
+		NC_CHAR :_NCProperties = &quot;version=2,netcdf=4.6.3,hdf5=1.10.5&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<p>The under ice water files are structured in the same was as the files for the Niskins from the CTD casts. The only difference is that most of these files have only 1 or 2 data points.</p>
+</section>
+<section id="melt-ponds">
+<h2>Melt ponds<a class="headerlink" href="#melt-ponds" title="Permalink to this heading">#</a></h2>
+<p>For these data, I have used a dimension <em>MELTPOND_NUMBER</em> to number each of the meltponds sampled. So if multiple meltponds were sampled, each data point for each variable would be from a different meltpond.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no:443/opendap/chemistry/point/cruise/nansen_legacy/2021708/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021708_station_P6_NLEG21_NPAL15_Ice_20210722T061551Z_meltponds.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf classic {
+dimensions:
+	MELTPOND_NUMBER = 1 ;
+	maxStrlen64 = 64 ;
+variables:
+	NC_INT MELTPOND_NUMBER(MELTPOND_NUMBER) ;
+		NC_CHAR MELTPOND_NUMBER:long_name = &quot;Arbitrary number assigned of the meltpond sampled. Each number represents a different melt pond that was sampled at the ice station.&quot; ;
+		NC_CHAR MELTPOND_NUMBER:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_DOUBLE CHLOROPHYLL_A_TOTAL(MELTPOND_NUMBER) ;
+		NC_DOUBLE CHLOROPHYLL_A_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:standard_name = &quot;mass_concentration_of_chlorophyll_a_in_sea_water&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:long_name = &quot;Mass concentration of Chlorophyll A in melt pond, after acid correction&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:units = &quot;μg L-1&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:ancillary_variables = &quot;FILTERED_VOL_TOTAL, EVENTID_TOTAL&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE PHAEOPIGMENTS_TOTAL(MELTPOND_NUMBER) ;
+		NC_DOUBLE PHAEOPIGMENTS_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:standard_name = &quot;mass_concentration_of_phaeopigments_in_sea_water&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:long_name = &quot;Mass concentration of phaeopigment in melt pond, after acid correction&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:units = &quot;μg L-1&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:ancillary_variables = &quot;FILTERED_VOL_TOTAL, EVENTID_TOTAL&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE FILTERED_VOL_TOTAL(MELTPOND_NUMBER) ;
+		NC_DOUBLE FILTERED_VOL_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR FILTERED_VOL_TOTAL:long_name = &quot;Volume of sea water filtered for measurement&quot; ;
+		NC_CHAR FILTERED_VOL_TOTAL:units = &quot;L&quot; ;
+		NC_CHAR FILTERED_VOL_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_CHAR EVENTID_TOTAL(maxStrlen64, MELTPOND_NUMBER) ;
+		NC_CHAR EVENTID_TOTAL:long_name = &quot;Event ID is a universally unique ID (UUID) for each event. This can be linked to the metadata catalogue on the SIOS webpage https://sios-svalbard.org/reports/aen_multi&quot; ;
+		NC_CHAR EVENTID_TOTAL:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_DOUBLE CHLOROPHYLL_A_10um(MELTPOND_NUMBER) ;
+		NC_DOUBLE CHLOROPHYLL_A_10um:_FillValue = 1e+32 ;
+		NC_CHAR CHLOROPHYLL_A_10um:standard_name = &quot;mass_concentration_of_chlorophyll_a_in_sea_water&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:long_name = &quot;Mass concentration of Chlorophyll A in melt pond, after acid correction&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:units = &quot;μg L-1&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:ancillary_variables = &quot;FILTERED_VOL_10um, EVENTID_10um&quot; ;
+		NC_CHAR CHLOROPHYLL_A_10um:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE PHAEOPIGMENTS_10um(MELTPOND_NUMBER) ;
+		NC_DOUBLE PHAEOPIGMENTS_10um:_FillValue = 1e+32 ;
+		NC_CHAR PHAEOPIGMENTS_10um:standard_name = &quot;mass_concentration_of_phaeopigments_in_sea_water&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:long_name = &quot;Mass concentration of phaeopigment in melt pond, after acid correction&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:units = &quot;μg L-1&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:ancillary_variables = &quot;FILTERED_VOL_10um, EVENTID_10um&quot; ;
+		NC_CHAR PHAEOPIGMENTS_10um:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE FILTERED_VOL_10um(MELTPOND_NUMBER) ;
+		NC_DOUBLE FILTERED_VOL_10um:_FillValue = 1e+32 ;
+		NC_CHAR FILTERED_VOL_10um:long_name = &quot;Volume of sea water filtered for measurement&quot; ;
+		NC_CHAR FILTERED_VOL_10um:units = &quot;L&quot; ;
+		NC_CHAR FILTERED_VOL_10um:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_CHAR EVENTID_10um(maxStrlen64, MELTPOND_NUMBER) ;
+		NC_CHAR EVENTID_10um:long_name = &quot;Event ID is a universally unique ID (UUID) for each event. This can be linked to the metadata catalogue on the SIOS webpage https://sios-svalbard.org/reports/aen_multi&quot; ;
+		NC_CHAR EVENTID_10um:coverage_content_type = &quot;referenceInformation&quot; ;
+
+// global attributes:
+		NC_CHAR :id = &quot;8536d353-4d45-55d0-9b94-c6daebb40705&quot; ;
+		NC_CHAR :naming_authority = &quot;The University Centre in Svalbard, Norway&quot; ;
+		NC_CHAR :title = &quot;Chlorophyll A and phaeopigments Nansen Legacy cruise 2021708 station P6 (NLEG21/NPAL15) Ice 2021-07-22T06:15:51Z meltponds&quot; ;
+		NC_CHAR :summary = &quot;&#39;This dataset is a collection of the acid-corrected chlorophyll A and phaeopigments 
+                            measurements taken as part of the Nansen Legacy project (www.arvenetternansen.com), as part
+                            of the &#39;2021 Joint Cruise 2-1&#39; cruise.
+                            The data are from meltponds sampled at an ice station at P6 (NLEG21/NPAL15) Ice taken on 2021-07-22T06:15:51.936Z at 30.8165464°E and 
+                            81.5255066166667°N. Both total Chlorophyll A and collected after passing through a 10µm filter are enclosed if available.&quot; ;
+		NC_CHAR :keywords = &quot;Oceans &gt; Ocean chemistry &gt; Chlorophyll&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD Science Keywords&quot; ;
+		NC_DOUBLE :geospatial_lat_min = 81.5255066166667 ;
+		NC_DOUBLE :geospatial_lat_max = 81.5255066166667 ;
+		NC_DOUBLE :geospatial_lon_min = 30.8165464 ;
+		NC_DOUBLE :geospatial_lon_max = 30.8165464 ;
+		NC_CHAR :time_coverage_start = &quot;2021-07-22T06:15:51.936Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-07-22T06:15:51.936Z&quot; ;
+		NC_CHAR :Conventions = &quot;ACDD-1.3, CF-1.9&quot; ;
+		NC_CHAR :history = &quot;File created at 2022-04-22T12:16:31 using Python&#39;s xarray&quot; ;
+		NC_CHAR :source = &quot;Chlorophyll A from meltpond, sampled using a bucket&quot; ;
+		NC_CHAR :processing_level = &quot;
+                            Acid corrected Chlorophyll A and Phaeopigment data.
+                            For more information on the sampling protocols, please see
+                            {sampling_protocols}&quot; ;
+		NC_CHAR :date_created = &quot;2022-04-22T12:16:31&quot; ;
+		NC_CHAR :creator_institution = &quot;University Centre in Svalbard, Norwegian Polar Institute, University Centre in Svalbard&quot; ;
+		NC_CHAR :creator_name = &quot;Anna Vader, Lucie Goraguer, Luke Marsden&quot; ;
+		NC_CHAR :creator_email = &quot;annav@unis.no, lucie.goraguer@npolar.no, lukem@unis.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://www.unis.no/staff/anna-vader/, https://www.researchgate.net/profile/Lucie-Goraguer, https://www.unis.no/staff/luke-marsden/&quot; ;
+		NC_CHAR :institution = &quot;University Centre in Svalbard (UNIS)&quot; ;
+		NC_CHAR :publisher_name = &quot;Norwegian Marine Data Centre&quot; ;
+		NC_CHAR :publisher_email = &quot;datahjelp@imr.no&quot; ;
+		NC_CHAR :publisher_url = &quot;https://www.nmdc.no&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :acknowledgements = &quot;Funded by the Research Council of Norway&quot; ;
+		NC_CHAR :stationName = &quot;P6 (NLEG21/NPAL15) Ice&quot; ;
+		NC_CHAR :cruiseNumber = &quot;Attribute edlided: Unsupported attribute type (NC_INT64)&quot; ;
+		NC_CHAR :cruiseName = &quot;&#39;2021 Joint Cruise 2-1&#39;&quot; ;
+		NC_CHAR :samplingProtocol = &quot;Nansen Legacy sampling protocols version 8 section 14.7&quot; ;
+		NC_CHAR :pi_name = &quot;Anna Vader&quot; ;
+		NC_CHAR :pi_institution = &quot;University Centre in Svalbard&quot; ;
+		NC_CHAR :pi_email = &quot;annav@unis.no&quot; ;
+		NC_DOUBLE :sea_floor_depth_below_sea_surface = 733.62 ;
+		NC_CHAR :_NCProperties = &quot;version=2,netcdf=4.6.3,hdf5=1.10.5&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="slurp-guns">
+<h2>Slurp guns<a class="headerlink" href="#slurp-guns" title="Permalink to this heading">#</a></h2>
+<p>For these data, multiple samples were taken at the same point. Therefore, I have used <em>SAMPLE_NUMBER</em> as a dimension for all of the variables.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no:443/opendap/chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210511T073146Z_slurp_gun.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf classic {
+dimensions:
+	SAMPLE_NUMBER = 8 ;
+	maxStrlen64 = 64 ;
+variables:
+	NC_INT SAMPLE_NUMBER(SAMPLE_NUMBER) ;
+		NC_CHAR SAMPLE_NUMBER:long_name = &quot;Sequential counter for sample taken using a slurp gun at the station&quot; ;
+	NC_CHAR EVENTREMARKS(maxStrlen64, SAMPLE_NUMBER) ;
+		NC_CHAR EVENTREMARKS:long_name = &quot;Descriptive remarks about the sample and location sampled&quot; ;
+		NC_CHAR EVENTREMARKS:coverage_content_type = &quot;referenceInformation&quot; ;
+	NC_DOUBLE CHLOROPHYLL_A_TOTAL(SAMPLE_NUMBER) ;
+		NC_DOUBLE CHLOROPHYLL_A_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:standard_name = &quot;mass_concentration_of_chlorophyll_a_in_sea_water&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:long_name = &quot;Mass concentration of Chlorophyll A in sea water, after acid correction&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:units = &quot;μg L-1&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:ancillary_variables = &quot;FILTERED_VOL_TOTAL, EVENTID_TOTAL&quot; ;
+		NC_CHAR CHLOROPHYLL_A_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE PHAEOPIGMENTS_TOTAL(SAMPLE_NUMBER) ;
+		NC_DOUBLE PHAEOPIGMENTS_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:standard_name = &quot;mass_concentration_of_phaeopigments_in_sea_water&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:long_name = &quot;Mass concentration of phaeopigment in sea water, after acid correction&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:units = &quot;μg L-1&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:ancillary_variables = &quot;FILTERED_VOL_TOTAL, EVENTID_TOTAL&quot; ;
+		NC_CHAR PHAEOPIGMENTS_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_DOUBLE FILTERED_VOL_TOTAL(SAMPLE_NUMBER) ;
+		NC_DOUBLE FILTERED_VOL_TOTAL:_FillValue = 1e+32 ;
+		NC_CHAR FILTERED_VOL_TOTAL:long_name = &quot;Volume of sea water filtered for measurement&quot; ;
+		NC_CHAR FILTERED_VOL_TOTAL:units = &quot;L&quot; ;
+		NC_CHAR FILTERED_VOL_TOTAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_CHAR EVENTID_TOTAL(maxStrlen64, SAMPLE_NUMBER) ;
+		NC_CHAR EVENTID_TOTAL:long_name = &quot;Event ID is a universally unique ID (UUID) for each event. This can be linked to the metadata catalogue on the SIOS webpage https://sios-svalbard.org/reports/aen_multi&quot; ;
+		NC_CHAR EVENTID_TOTAL:coverage_content_type = &quot;referenceInformation&quot; ;
+
+// global attributes:
+		NC_CHAR :id = &quot;05d01b6c-2f69-5e38-bf4b-e69bc2f673c9&quot; ;
+		NC_CHAR :naming_authority = &quot;The University Centre in Svalbard, Norway&quot; ;
+		NC_CHAR :title = &quot;Chlorophyll A and phaeopigments Nansen Legacy cruise 2021704 station P6 (NLEG21/NPAL15) Ice 2021-05-11T07:31:46Z slurp gun&quot; ;
+		NC_CHAR :summary = &quot;&#39;This dataset is a collection of the acid-corrected total chlorophyll A and phaeopigments 
+                            measurements taken as part of the Nansen Legacy project (www.arvenetternansen.com), as part
+                            of the &#39;2021 Seasonal Study Q2&#39; cruise.
+                            The data are from slurp gun at an ice station, P6 (NLEG21/NPAL15) Ice taken on 2021-05-11T07:31:46.47Z at 29.5532435166667°E and 
+                            81.4730130166667°N.&quot; ;
+		NC_CHAR :keywords = &quot;Oceans &gt; Ocean chemistry &gt; Chlorophyll&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD Science Keywords&quot; ;
+		NC_DOUBLE :geospatial_lat_min = 81.4730130166667 ;
+		NC_DOUBLE :geospatial_lat_max = 81.4730130166667 ;
+		NC_DOUBLE :geospatial_lon_min = 29.5532435166667 ;
+		NC_DOUBLE :geospatial_lon_max = 29.5532435166667 ;
+		NC_CHAR :time_coverage_start = &quot;2021-05-11T07:31:46.47Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-05-11T07:31:46.47Z&quot; ;
+		NC_CHAR :Conventions = &quot;ACDD-1.3, CF-1.9&quot; ;
+		NC_CHAR :history = &quot;File created at 2022-04-22T12:08:57 using Python&#39;s xarray&quot; ;
+		NC_CHAR :source = &quot;Chlorophyll A from sea water sampled with slurp gun&quot; ;
+		NC_CHAR :processing_level = &quot;
+                            Acid corrected Chlorophyll A and Phaeopigment data.
+                            For more information on the sampling protocols, please see
+                            {sampling_protocols}&quot; ;
+		NC_CHAR :date_created = &quot;2022-04-22T12:08:57&quot; ;
+		NC_CHAR :creator_institution = &quot;University Centre in Svalbard, University of Tromsø, Norwegian University of Science and Technology, University Centre in Svalbard, Norwegian Polar Institute&quot; ;
+		NC_CHAR :creator_name = &quot;Anna Vader, Miriam Marquardt, Natalie Summers, Snorre Flo, Philipp Assmy&quot; ;
+		NC_CHAR :creator_email = &quot;annav@unis.no, miriam.marquardt@uit.no, natalie.summers@ntnu.no, snorref@unis.no, philipp.assmy@npolar.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://www.unis.no/staff/anna-vader/, https://en.uit.no/ansatte/miriam.marquardt, https://www.ntnu.edu/employees/natalie.summers, https://www.unis.no/staff/snorre-flo/, https://arctos.uit.no/?page_id=10&amp;cn-entry-slug=philipp-assmy&quot; ;
+		NC_CHAR :institution = &quot;University Centre in Svalbard (UNIS)&quot; ;
+		NC_CHAR :publisher_name = &quot;Norwegian Marine Data Centre&quot; ;
+		NC_CHAR :publisher_email = &quot;datahjelp@imr.no&quot; ;
+		NC_CHAR :publisher_url = &quot;https://www.nmdc.no&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy (RCN # 276730)&quot; ;
+		NC_CHAR :acknowledgements = &quot;Funded by the Research Council of Norway&quot; ;
+		NC_CHAR :stationName = &quot;P6 (NLEG21/NPAL15) Ice&quot; ;
+		NC_CHAR :cruiseNumber = &quot;Attribute edlided: Unsupported attribute type (NC_INT64)&quot; ;
+		NC_CHAR :cruiseName = &quot;&#39;2021 Seasonal Study Q2&#39;&quot; ;
+		NC_CHAR :samplingProtocol = &quot;Nansen Legacy sampling protocols version 8 section 14.7&quot; ;
+		NC_CHAR :pi_name = &quot;Anna Vader&quot; ;
+		NC_CHAR :pi_institution = &quot;University Centre in Svalbard&quot; ;
+		NC_CHAR :pi_email = &quot;annav@unis.no&quot; ;
+		NC_DOUBLE :sea_floor_depth_below_sea_surface = 297.11 ;
+		NC_CHAR :_NCProperties = &quot;version=2,netcdf=4.6.3,hdf5=1.10.5&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="citing-the-data">
+<h2>Citing the data<a class="headerlink" href="#citing-the-data" title="Permalink to this heading">#</a></h2>
+<p>Parent-child relationships have been used in this data publication. Here is the landing page for all the data from all cruises.
+<a class="reference external" href="https://doi.org/10.21335/NMDC-1371694848">https://doi.org/10.21335/NMDC-1371694848</a></p>
+<p>This is the recommended citation if you use all of the data or data from many different cruises.</p>
+<p><em>Anna Vader (2022) Chlorophyll A and phaeopigments Nansen Legacy <a class="reference external" href="https://doi.org/10.21335/NMDC-1371694848">https://doi.org/10.21335/NMDC-1371694848</a></em></p>
+<p>You can navigate to different <em>parts</em> and there is one part per cruise on the landing page. There is one citation per cruise that you can use if you cite if you are using data only from one cruise. For example</p>
+<p><em>Anna Vader, Lucie Goraguer, Luke Marsden (2022) Chlorophyll A and phaeopigments Nansen Legacy cruise 2021708 <a class="reference external" href="https://doi.org/10.21335/NMDC-1248407516">https://doi.org/10.21335/NMDC-1248407516</a></em></p>
+<p>You can also navigate further to one part per cast. You can cite one of a couple of casts if these are the only data you have used in this collection. For example</p>
+<p><em>Anna Vader, Lucie Goraguer, Luke Marsden (2022) Chlorophyll A and phaeopigments Nansen Legacy cruise 2021708 station P1 (NLEG01) 2021-07-14T08:15:29 <a class="reference external" href="https://doi.org/10.21335/NMDC-1248407516-P1(NLEG01)">https://doi.org/10.21335/NMDC-1248407516-P1(NLEG01)</a></em></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="CTD%20data%20-%20one%20file%20per%20cruise.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">CTD data - one file per cruise</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Nutrients%20data.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Nutrients data</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-niskin-bottles-on-ctd-cast">From Niskin bottles on CTD cast</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-file">One file</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#looping-through-multiple-files">Looping through multiple files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ice-core-data">Ice core data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#under-ice-water">Under ice water</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#melt-ponds">Melt ponds</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#slurp-guns">Slurp guns</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Luke Marsden
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

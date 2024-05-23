@@ -1,0 +1,865 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Nutrients data &#8212; Accessing Nansen Legacy data in R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Nutrients data';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="POC/PON data" href="POC%20PON%20data.html" />
+    <link rel="prev" title="Chlorophyll A data" href="Chlorophyll%20A%20data.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Accessing Nansen Legacy data in R - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Accessing Nansen Legacy data in R - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Accessing Nansen Legacy data in R
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="CTD%20data%20-%20one%20file%20per%20cast.html">CTD data - one file per cast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CTD%20data%20-%20one%20file%20per%20cruise.html">CTD data - one file per cruise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Chlorophyll%20A%20data.html">Chlorophyll A data</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Nutrients data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="POC%20PON%20data.html">POC/PON data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Flow%20cytometry%20data.html">Flow cytometry</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/lhmarsden/Accessing_Nansen_Legacy_data_in_R" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/lhmarsden/Accessing_Nansen_Legacy_data_in_R/issues/new?title=Issue%20on%20page%20%2FNutrients data.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/Nutrients data.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Nutrients data</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#access-data-for-one-latitude-or-longitude">Access data for one latitude (or longitude)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#access-data-for-one-time">Access data for one time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="nutrients-data">
+<h1>Nutrients data<a class="headerlink" href="#nutrients-data" title="Permalink to this heading">#</a></h1>
+<p>Let’s first load in some libraries that we are going to use today. If you are not sure whether you have the library installed, you can embed <em>install.packages</em> within an <em>if</em> statement, like this</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;RNetCDF&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;RNetCDF&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">RNetCDF</span><span class="p">)</span>
+<span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;writexl&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;writexl&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">writexl</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The data are available via a THREDDS server that you can find here:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/nutrients/contents.html">https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/nutrients/contents.html</a></p>
+<p>If you open the link above, you can navigate to different NetCDF files, and you will be linked to OPeNDAP data access forms like this one:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/nutrients/aen_q4_bottle_data_nutrients_2019711.nc.html">https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/nutrients/aen_q4_bottle_data_nutrients_2019711.nc.html</a></p>
+<p>OPeNDAP makes it possible to access data over the internet without you having to download the data to your computer first. You can just remove the <em>html</em> suffix from the URL above and include it in your R script in the same way that you might include some absolute filepath to a file on your computer.</p>
+<p>So now let’s load the data into R for this cast.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/nutrients/aen_q4_bottle_data_nutrients_2019711.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf classic {
+dimensions:
+	TIME = 17 ;
+	Z = 18 ;
+	maxStrlen64 = 64 ;
+variables:
+	NC_DOUBLE TIME(TIME) ;
+		NC_CHAR TIME:units = &quot;days since 1950-01-01T00:00:00Z&quot; ;
+		NC_CHAR TIME:calendar = &quot;standard&quot; ;
+		NC_CHAR TIME:standard_name = &quot;time&quot; ;
+		NC_CHAR TIME:long_name = &quot;Chronological Julian Date&quot; ;
+		NC_DOUBLE TIME:valid_min = 0 ;
+		NC_DOUBLE TIME:valid_max = 2500000 ;
+		NC_CHAR TIME:axis = &quot;T&quot; ;
+	NC_CHAR cruise(maxStrlen64, TIME) ;
+		NC_CHAR cruise:_FillValue = &quot;&quot; ;
+		NC_CHAR cruise:long_name = &quot;Cruise number&quot; ;
+		NC_INT cruise:string_length = 10 ;
+	NC_CHAR station(maxStrlen64, TIME) ;
+		NC_CHAR station:_FillValue = &quot;&quot; ;
+		NC_CHAR station:long_name = &quot;Station&quot; ;
+		NC_CHAR station:units = &quot;#&quot; ;
+		NC_INT station:string_length = 10 ;
+	NC_CHAR cast(maxStrlen64, TIME) ;
+		NC_CHAR cast:_FillValue = &quot;&quot; ;
+		NC_CHAR cast:long_name = &quot;CTD cast number&quot; ;
+		NC_INT cast:string_length = 3 ;
+	NC_FLOAT PSAL(Z, TIME) ;
+		NC_FLOAT PSAL:_FillValue = -9999 ;
+		NC_CHAR PSAL:units = &quot;Dmnless&quot; ;
+		NC_CHAR PSAL:standard_name = &quot;sea_water_practical_salinity&quot; ;
+		NC_DOUBLE PSAL:valid_min = 2 ;
+		NC_DOUBLE PSAL:valid_max = 41 ;
+	NC_FLOAT PRESSURE(Z, TIME) ;
+		NC_FLOAT PRESSURE:_FillValue = -9999 ;
+		NC_CHAR PRESSURE:positive = &quot;down&quot; ;
+		NC_CHAR PRESSURE:units = &quot;dbar&quot; ;
+		NC_CHAR PRESSURE:standard_name = &quot;sea_water_pressure&quot; ;
+		NC_CHAR PRESSURE:long_name = &quot;sea water pressure&quot; ;
+		NC_DOUBLE PRESSURE:valid_min = 0 ;
+		NC_DOUBLE PRESSURE:valid_max = 12000 ;
+		NC_CHAR PRESSURE:axis = &quot;Z&quot; ;
+	NC_FLOAT NTRA(Z, TIME) ;
+		NC_FLOAT NTRA:_FillValue = -9999 ;
+		NC_CHAR NTRA:units = &quot;umol/l&quot; ;
+		NC_CHAR NTRA:standard_name = &quot;mole_concentration_of_nitrate_in_sea_water&quot; ;
+	NC_FLOAT TEMP(Z, TIME) ;
+		NC_FLOAT TEMP:_FillValue = -9999 ;
+		NC_CHAR TEMP:units = &quot;degC&quot; ;
+		NC_CHAR TEMP:standard_name = &quot;sea_water_temperature&quot; ;
+		NC_DOUBLE TEMP:valid_min = -2.5 ;
+		NC_DOUBLE TEMP:valid_max = 40 ;
+	NC_FLOAT PHOS(Z, TIME) ;
+		NC_FLOAT PHOS:_FillValue = -9999 ;
+		NC_CHAR PHOS:units = &quot;umol/l&quot; ;
+		NC_CHAR PHOS:standard_name = &quot;mole_concentration_of_phosphate_in_sea_water&quot; ;
+	NC_FLOAT NTRI(Z, TIME) ;
+		NC_FLOAT NTRI:_FillValue = -9999 ;
+		NC_CHAR NTRI:units = &quot;umol/l&quot; ;
+		NC_CHAR NTRI:standard_name = &quot;mole_concentration_of_nitrite_in_sea_water&quot; ;
+	NC_INT niskin(Z, TIME) ;
+		NC_INT niskin:_FillValue = -128 ;
+		NC_CHAR niskin:long_name = &quot;Water bottle number&quot; ;
+		NC_CHAR niskin:units = &quot;#&quot; ;
+	NC_INT bot.depth(Z, TIME) ;
+		NC_INT bot.depth:_FillValue = -128 ;
+		NC_CHAR bot.depth:long_name = &quot;Bottom depth&quot; ;
+		NC_CHAR bot.depth:units = &quot;#&quot; ;
+	NC_FLOAT SLCA(Z, TIME) ;
+		NC_FLOAT SLCA:_FillValue = -9999 ;
+		NC_CHAR SLCA:units = &quot;umol/l&quot; ;
+		NC_CHAR SLCA:standard_name = &quot;mole_concentration_of_silicate_in_sea_water&quot; ;
+	NC_FLOAT LONGITUDE(TIME) ;
+		NC_CHAR LONGITUDE:standard_name = &quot;latitude&quot; ;
+		NC_CHAR LONGITUDE:long_name = &quot;Longitude&quot; ;
+		NC_CHAR LONGITUDE:units = &quot;degree_east&quot; ;
+		NC_DOUBLE LONGITUDE:valid_min = -180 ;
+		NC_DOUBLE LONGITUDE:valid_max = 180 ;
+		NC_CHAR LONGITUDE:axis = &quot;X&quot; ;
+	NC_FLOAT LATITUDE(TIME) ;
+		NC_CHAR LATITUDE:standard_name = &quot;longitude&quot; ;
+		NC_CHAR LATITUDE:long_name = &quot;Latitude&quot; ;
+		NC_CHAR LATITUDE:units = &quot;degree_north&quot; ;
+		NC_DOUBLE LATITUDE:valid_min = -90 ;
+		NC_DOUBLE LATITUDE:valid_max = 90 ;
+		NC_CHAR LATITUDE:axis = &quot;Y&quot; ;
+
+// global attributes:
+		NC_CHAR :_NCProperties = &quot;version=2,netcdf=4.9.3-development,hdf5=1.12.2&quot; ;
+		NC_CHAR :publisher_name = &quot;The Norwegian Marine Data Centre (NMD)&quot; ;
+		NC_CHAR :publisher_email = &quot;datahjelp@hi.no&quot; ;
+		NC_CHAR :publisher_url = &quot;https://www.nmdc.no/&quot; ;
+		NC_CHAR :data_assembly_center = &quot;The Norwegian Marine Data Centre (NMD)&quot; ;
+		NC_CHAR :license = &quot;https://creativecommons.org/licenses/by/4.0/&quot; ;
+		NC_CHAR :project = &quot;Nansen Legacy&quot; ;
+		NC_CHAR :title = &quot;Water column data on dissolved inorganic nutrients (nitrite, nitrate, phosphate and silicic acid) from the Nansen LEGACY seasonal cruise Q4, 2019711, with R.V. Kronprins Haakon, 30 November-13 December 2019&quot; ;
+		NC_CHAR :Conventions = &quot;CF-1.11, ACDD-1.3, OceanSITES Manual 1.4&quot; ;
+		NC_CHAR :mission_type = &quot;&quot; ;
+		NC_CHAR :instrument_type = &quot;&quot; ;
+		NC_CHAR :instrument_mount = &quot;&quot; ;
+		NC_CHAR :platform = &quot;&quot; ;
+		NC_CHAR :principal_investigator = &quot;Melissa Chierici&quot; ;
+		NC_CHAR :institution = &quot;&quot; ;
+		NC_CHAR :id = &quot;IMR_2021_waterColumn_2019711&quot; ;
+		NC_CHAR :summary = &quot;The cruise 2019711 aboard the Research Vessel Kronprins Haakon is the seasonal cruise Q4 of the project the Nansen LEGACY. LEGACY is the Norwegian Arctic research community’s joint effort to establish a holistic understanding of a changing marine Arctic climate and ecosystem. Water column temperature and salinity profiles were obtained with a conductivity-temperature-depth (CTD) sensor system Sea-Bird SBE 911+ mounted on a General Oceanic rosette sampler equipped with 24-Niskin bottles used for seawater sampling of chemical variables in the water column. Samples for determination of dissolved inorganic nutrients were collected from full water column at a total of 17 stations in the northern Barents Sea. The seawater samples were collected from Niskin bottles in 20 ml plastic HDPE vials (rinsed three times)  and preserved with 250 µL chloroform and stored +4C and dark until post-cruise analysis of nitrite, NO2, nitrate, NO3-, phosphate, PO43-, and silicate, Si(OH)4, following standard methods (Grasshoff et al., 2009) at the chemical laboratory at Institute of Marine Research, Bergen, Norway. Three replicates were analyzed for each sample. The detection limits are 0.06 µmol/L, 0.5 µmol/L, 0.06 µmol/L and 0.7 µmol/L for NO2, NO3-, PO43-, and Si(OH)4, respectively. The study was funded by the Research Council of Norway through the project The Nansen LEGACY (RCN #276730).&quot; ;
+		NC_CHAR :comment = &quot;2019-12-05T09:21:41 pressure = 49.831: problemer med konserverinng; 2019-12-06T06:53:43 pressure = 50.339: problemer med konserverinng; 2019-12-08T16:17:18 pressure = 50.355: preservation problems; 2019-12-06T06:53:43 pressure = 50.339: preservation problems; 2019-12-09T12:39:12 pressure = 30.436: preservation problems; 2019-12-09T12:40:45 pressure = 20.256: preservation problems; 2019-12-09T21:29:08 pressure = 200.712: preservation problems; 2019-12-10T10:18:50 pressure = 177.767: preservation problems; 2019-12-10T10:29:37 pressure = 60.698: preservation problems; 2019-12-10T10:31:25 pressure = 50.879: preservation problems; 2019-12-10T17:52:51 pressure = 150.535: preservation problems; 2019-12-10T17:57:03 pressure = 90.198: preservation problems&quot; ;
+		NC_CHAR :principal_investigator_email = &quot;melissa.chierici@hi.no&quot; ;
+		NC_CHAR :contributor_name = &quot;Elizabeth Jones, Helene Hodal Lødemel&quot; ;
+		NC_CHAR :contributor_email = &quot;elizabeth.jones@hi.no, helene.hodal.loedemel@hi.no&quot; ;
+		NC_CHAR :contributor_role = &quot;Technical Contact, Technical Contact&quot; ;
+		NC_CHAR :keywords = &quot;EARTH SCIENCE &gt; OCEANS &gt; OCEAN CHEMISTRY &gt; NUTRIENTS&quot; ;
+		NC_CHAR :citation = &quot;&quot; ;
+		NC_CHAR :references = &quot;https://arvenetternansen.com/seasonal-cruise-q4/&quot; ;
+		NC_CHAR :doi = &quot;10.21335/NMDC-1629206101&quot; ;
+		NC_CHAR :featureType = &quot;trajectoryProfile&quot; ;
+		NC_CHAR :time_coverage_start = &quot;2019-12-03T00:22:25Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2019-12-12T17:16:19Z&quot; ;
+		NC_DOUBLE :geospatial_lat_min = 75.9995 ;
+		NC_DOUBLE :geospatial_lat_max = 82.0698333333333 ;
+		NC_DOUBLE :geospatial_lon_min = 28.4971666666667 ;
+		NC_DOUBLE :geospatial_lon_max = 34.3156666666667 ;
+		NC_DOUBLE :geospatial_vertical_min = 9.983 ;
+		NC_DOUBLE :geospatial_vertical_max = 3621.132 ;
+		NC_CHAR :date_created = &quot;2024-03-22T09:13:43Z&quot; ;
+		NC_CHAR :time_update = &quot;2024-03-22T09:13:43Z&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<p>There are 3 dimensions; TIME, Z and maxStrlen64.</p>
+<p>We can deduce that there are 17 depth profiles and there are 18 points of depth in each. This doesn’t mean that there are 18 samples for every station; more likely there is a lot of ‘empty’ space in this file where a measurement was not taken at a certain depth. This is necessary for us to use a single depth dimension for a range of different depth profiles, which each sample different depths.</p>
+<p>There are some 1D variables, like <em>LONGITUDE</em> and <em>LATITUDE</em>, each a function of time. But most of the variables are 2D.</p>
+<p>Most of the data variables have dimensions <em>Z</em> and <em>TIME</em>.</p>
+<p>Some metadata is stored in variables like <em>station</em> and <em>cast</em> and <em>cruise</em>. These variables have dimensions <em>maxStrlen64</em> and <em>TIME</em>. This is because they contain text. <em>maxStrlen64</em> has a value of 64, which means that no text value should be longer than 64 characters long. So even though there are 2 dimensions, you have one text value (e.g. one station name) per time.</p>
+<p>Let’s access some of the coordinate and data variables.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">pressure</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PRESSURE&quot;</span><span class="p">)</span>
+<span class="n">pressure</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A matrix: 18 × 17 of type dbl</caption>
+<tbody>
+	<tr><td>3621.132</td><td>2927.991</td><td>2004.164</td><td>871.436</td><td>201.465</td><td>211.932</td><td>201.796</td><td>135.949</td><td>203.936</td><td>330.989</td><td>198.234</td><td>291.462</td><td>177.767</td><td>177.805</td><td>120.784</td><td>301.860</td><td>315.573</td></tr>
+	<tr><td>2500.721</td><td> 750.370</td><td>1750.716</td><td>751.068</td><td>150.900</td><td>200.174</td><td>120.500</td><td>120.362</td><td>150.334</td><td>200.580</td><td>151.539</td><td>200.712</td><td>150.295</td><td>150.535</td><td> 90.713</td><td>200.579</td><td>200.211</td></tr>
+	<tr><td>2000.283</td><td> 501.008</td><td>1501.269</td><td>501.803</td><td>120.667</td><td>151.198</td><td> 90.533</td><td> 90.597</td><td>120.386</td><td>150.342</td><td> 90.829</td><td>150.716</td><td>120.341</td><td>120.105</td><td> 50.513</td><td>150.725</td><td>150.154</td></tr>
+	<tr><td>1750.291</td><td> 200.965</td><td>1000.559</td><td>203.728</td><td> 90.370</td><td>120.736</td><td> 60.972</td><td> 60.412</td><td> 90.318</td><td>120.218</td><td> 60.488</td><td>120.353</td><td> 90.286</td><td> 90.198</td><td> 40.427</td><td>120.903</td><td> 90.265</td></tr>
+	<tr><td>1501.069</td><td> 150.542</td><td> 749.709</td><td>152.381</td><td> 60.016</td><td> 90.098</td><td> 50.346</td><td> 50.301</td><td> 60.876</td><td> 60.502</td><td> 50.378</td><td> 90.547</td><td> 60.698</td><td> 59.925</td><td> 30.455</td><td> 60.837</td><td> 39.418</td></tr>
+	<tr><td>1000.419</td><td> 120.306</td><td> 500.943</td><td>121.533</td><td> 49.875</td><td> 60.250</td><td> 40.553</td><td> 40.332</td><td> 50.402</td><td> 50.355</td><td> 40.429</td><td> 60.448</td><td> 50.879</td><td> 49.761</td><td> 20.076</td><td> 50.641</td><td> 30.484</td></tr>
+	<tr><td> 750.033</td><td>  90.308</td><td> 202.382</td><td> 91.170</td><td> 40.474</td><td> 50.339</td><td> 30.263</td><td> 30.110</td><td> 39.968</td><td> 40.898</td><td> 30.436</td><td> 49.860</td><td> 40.990</td><td> 40.532</td><td> 10.462</td><td> 40.791</td><td> 20.591</td></tr>
+	<tr><td> 500.130</td><td>  60.446</td><td> 151.072</td><td> 61.094</td><td> 29.979</td><td> 39.982</td><td> 20.123</td><td> 20.260</td><td> 30.616</td><td> 30.437</td><td> 20.256</td><td> 40.130</td><td> 30.122</td><td> 29.778</td><td>     NA</td><td>     NA</td><td> 10.237</td></tr>
+	<tr><td> 200.118</td><td>  50.363</td><td> 121.168</td><td> 49.831</td><td> 20.405</td><td> 29.955</td><td> 10.534</td><td>  9.983</td><td> 20.127</td><td> 19.957</td><td> 10.239</td><td> 30.033</td><td> 20.643</td><td> 20.175</td><td>     NA</td><td>     NA</td><td>     NA</td></tr>
+	<tr><td> 149.430</td><td>  40.254</td><td>  91.780</td><td> 40.401</td><td> 10.133</td><td> 20.313</td><td>     NA</td><td>     NA</td><td> 10.383</td><td> 10.182</td><td>     NA</td><td> 20.045</td><td>     NA</td><td> 10.053</td><td>     NA</td><td>     NA</td><td>     NA</td></tr>
+	<tr><td> 120.215</td><td>  30.312</td><td>  61.373</td><td> 30.413</td><td>     NA</td><td> 10.465</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td> 10.058</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td></tr>
+	<tr><td>  90.378</td><td>  20.225</td><td>  50.733</td><td> 20.323</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td></tr>
+	<tr><td>  60.158</td><td>  10.489</td><td>  40.543</td><td> 10.517</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td></tr>
+	<tr><td>  50.047</td><td>      NA</td><td>  30.808</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td></tr>
+	<tr><td>  40.180</td><td>      NA</td><td>  20.485</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td></tr>
+	<tr><td>  30.256</td><td>      NA</td><td>  10.584</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td></tr>
+	<tr><td>  19.994</td><td>      NA</td><td>      NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td></tr>
+	<tr><td>  10.005</td><td>      NA</td><td>      NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td><td>     NA</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>As you can see, <em>PRESSURE</em> is a 2D matrix. If we want the data for the 5th profile only:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PRESSURE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">5</span><span class="p">),</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>201.464996337891</li><li>150.899993896484</li><li>120.666999816895</li><li>90.370002746582</li><li>60.015998840332</li><li>49.875</li><li>40.4739990234375</li><li>29.9790000915527</li><li>20.4050006866455</li><li>10.1330003738403</li><li>&lt;NA&gt;</li><li>&lt;NA&gt;</li><li>&lt;NA&gt;</li><li>&lt;NA&gt;</li><li>&lt;NA&gt;</li><li>&lt;NA&gt;</li><li>&lt;NA&gt;</li><li>&lt;NA&gt;</li></ol>
+</div></div>
+</div>
+<p>Often, however, it is more useful to be able to access individual profiles based on the time or latitude and longitude.</p>
+<section id="access-data-for-one-latitude-or-longitude">
+<h2>Access data for one latitude (or longitude)<a class="headerlink" href="#access-data-for-one-latitude-or-longitude" title="Permalink to this heading">#</a></h2>
+<p>Let’s look at the latitudes in the data first.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">latitude</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;LATITUDE&quot;</span><span class="p">)</span>
+<span class="n">latitude</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>82.0698318481445</li><li>81.6928329467773</li><li>81.6181640625</li><li>81.5456695556641</li><li>81.4591674804688</li><li>81.313835144043</li><li>80.9980010986328</li><li>80.5206680297852</li><li>79.9964981079102</li><li>79.7320022583008</li><li>79.2386703491211</li><li>78.7501678466797</li><li>77.9990005493164</li><li>77.4996643066406</li><li>77.0051651000977</li><li>76.4988327026367</li><li>75.9994964599609</li></ol>
+</div></div>
+</div>
+<p>Let’s select data for only one of these latitudes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">desired_latitude</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">81.6181640625</span>
+<span class="c1"># Finding index of the value</span>
+<span class="n">latitude_index</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">which</span><span class="p">(</span><span class="n">latitude</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">desired_latitude</span><span class="p">)</span>
+<span class="c1"># Extract NTRI values just for that latitude</span>
+<span class="n">ntri</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;NTRI&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">latitude_index</span><span class="p">),</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+<span class="c1"># Get the associated pressure values</span>
+<span class="n">pres</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PRESSURE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">latitude_index</span><span class="p">),</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+
+<span class="nf">plot</span><span class="p">(</span>
+<span class="w">    </span><span class="n">ntri</span><span class="p">,</span>
+<span class="w">    </span><span class="n">pres</span><span class="p">,</span>
+<span class="w">    </span><span class="n">type</span><span class="o">=</span><span class="s">&#39;p&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ylim</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">pres</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">ylab</span><span class="o">=</span><span class="s">&#39;sea water pressure (dbar)&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">xlab</span><span class="o">=</span><span class="w"> </span><span class="s">&#39;mole_concentration_of_nitrite_in_sea_water (umol/l)&#39;</span>
+<span class="w">    </span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/0684b49a701b73c27ad34255915c300bffe730389e95298cbbae5685dacfe4ca.png" src="_images/0684b49a701b73c27ad34255915c300bffe730389e95298cbbae5685dacfe4ca.png" />
+</div>
+</div>
+</section>
+<section id="access-data-for-one-time">
+<h2>Access data for one time<a class="headerlink" href="#access-data-for-one-time" title="Permalink to this heading">#</a></h2>
+<p>This is similar to the above, but there is an extra step because of the units used for time.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">att.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&quot;TIME&quot;</span><span class="p">,</span><span class="s">&quot;units&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">'days since 1950-01-01T00:00:00Z'</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">days_since_1950</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&quot;TIME&quot;</span><span class="p">)</span>
+<span class="n">days_since_1950</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>25538.0155671296</li><li>25539.6234722222</li><li>25539.7941319444</li><li>25540.3431712963</li><li>25541.1488425926</li><li>25541.2703819444</li><li>25541.5777777778</li><li>25541.9844328704</li><li>25542.798587963</li><li>25543.6566203704</li><li>25544.5066550926</li><li>25544.8822337963</li><li>25545.4237268519</li><li>25545.7369097222</li><li>25546.3144328704</li><li>25546.7350925926</li><li>25547.7196643519</li></ol>
+</div></div>
+</div>
+<p>Let’s convert these to timestamps so we can see what times are in our dataset.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the origin date</span>
+<span class="n">origin_date</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.POSIXct</span><span class="p">(</span><span class="s">&quot;1950-01-01 00:00:00&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;UTC&quot;</span><span class="p">)</span>
+
+<span class="c1"># Convert days to seconds</span>
+<span class="n">seconds_since_1950</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">days_since_1950</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">24</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">60</span>
+
+<span class="c1"># Convert to timestamps</span>
+<span class="n">timestamps</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">origin_date</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">seconds_since_1950</span>
+<span class="n">timestamps</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> [1] &quot;2019-12-03 00:22:25 UTC&quot; &quot;2019-12-04 14:57:48 UTC&quot;
+ [3] &quot;2019-12-04 19:03:33 UTC&quot; &quot;2019-12-05 08:14:10 UTC&quot;
+ [5] &quot;2019-12-06 03:34:20 UTC&quot; &quot;2019-12-06 06:29:21 UTC&quot;
+ [7] &quot;2019-12-06 13:52:00 UTC&quot; &quot;2019-12-06 23:37:34 UTC&quot;
+ [9] &quot;2019-12-07 19:09:58 UTC&quot; &quot;2019-12-08 15:45:32 UTC&quot;
+[11] &quot;2019-12-09 12:09:35 UTC&quot; &quot;2019-12-09 21:10:25 UTC&quot;
+[13] &quot;2019-12-10 10:10:10 UTC&quot; &quot;2019-12-10 17:41:09 UTC&quot;
+[15] &quot;2019-12-11 07:32:47 UTC&quot; &quot;2019-12-11 17:38:32 UTC&quot;
+[17] &quot;2019-12-12 17:16:19 UTC&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>So we need to time series (above), work out what index in the time series our desired date corresponds to, and then select from the data variable based on that index.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">desired_time</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.POSIXct</span><span class="p">(</span><span class="s">&quot;2019-12-06 06:29:21&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;UTC&quot;</span><span class="p">)</span>
+
+<span class="c1"># Finding the index of that value</span>
+<span class="n">time_index</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">which</span><span class="p">(</span><span class="n">timestamps</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">desired_time</span><span class="p">)</span>
+
+<span class="c1"># Extract NTRI values just for that time</span>
+<span class="n">ntri</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;NTRI&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">time_index</span><span class="p">),</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+<span class="c1"># Get the associated pressure values</span>
+<span class="n">pres</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PRESSURE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="n">time_index</span><span class="p">),</span><span class="w"> </span><span class="n">count</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+
+<span class="nf">plot</span><span class="p">(</span>
+<span class="w">    </span><span class="n">ntri</span><span class="p">,</span>
+<span class="w">    </span><span class="n">pres</span><span class="p">,</span>
+<span class="w">    </span><span class="n">type</span><span class="o">=</span><span class="s">&#39;p&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ylim</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">pres</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">ylab</span><span class="o">=</span><span class="s">&#39;sea water pressure (dbar)&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">xlab</span><span class="o">=</span><span class="w"> </span><span class="s">&#39;mole_concentration_of_nitrite_in_sea_water (umol/l)&#39;</span>
+<span class="w">    </span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/560d63f7b26bf4d0720961fad659612d777c2003fc02df6452231fbb96617d05.png" src="_images/560d63f7b26bf4d0720961fad659612d777c2003fc02df6452231fbb96617d05.png" />
+</div>
+</div>
+</section>
+<section id="citing-the-data">
+<h2>Citing the data<a class="headerlink" href="#citing-the-data" title="Permalink to this heading">#</a></h2>
+<p>Please cite the data for the cruise or cruises you have used the data from.</p>
+<p>For the data used in this notebook, the citation is:</p>
+<p><em>Melissa Chierici, Elizabeth Jones, Helene Hodal Lødemel (2021) Water column data on dissolved inorganic nutrients (nitrite, nitrate, phosphate and silicic acid) from the Nansen LEGACY seasonal cruise Q4, 2019711 with R.V. Kronprins Haakon <a class="reference external" href="https://doi.org/10.21335/NMDC-1629206101">https://doi.org/10.21335/NMDC-1629206101</a></em></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Chlorophyll%20A%20data.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Chlorophyll A data</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="POC%20PON%20data.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">POC/PON data</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#access-data-for-one-latitude-or-longitude">Access data for one latitude (or longitude)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#access-data-for-one-time">Access data for one time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Luke Marsden
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

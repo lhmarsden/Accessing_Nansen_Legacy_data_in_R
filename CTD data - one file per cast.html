@@ -1,0 +1,1250 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>CTD data - one file per cast &#8212; Accessing Nansen Legacy data in R</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'CTD data - one file per cast';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CTD data - one file per cruise" href="CTD%20data%20-%20one%20file%20per%20cruise.html" />
+    <link rel="prev" title="Accessing Nansen Legacy data in R" href="intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Accessing Nansen Legacy data in R - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Accessing Nansen Legacy data in R - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Accessing Nansen Legacy data in R
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">CTD data - one file per cast</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CTD%20data%20-%20one%20file%20per%20cruise.html">CTD data - one file per cruise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Chlorophyll%20A%20data.html">Chlorophyll A data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Nutrients%20data.html">Nutrients data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="POC%20PON%20data.html">POC/PON data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Flow%20cytometry%20data.html">Flow cytometry</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/lhmarsden/Accessing_Nansen_Legacy_data_in_R" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/lhmarsden/Accessing_Nansen_Legacy_data_in_R/issues/new?title=Issue%20on%20page%20%2FCTD data - one file per cast.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/CTD data - one file per cast.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>CTD data - one file per cast</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-file">One file</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#looping-through-multiple-files">Looping through multiple files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="ctd-data-one-file-per-cast">
+<h1>CTD data - one file per cast<a class="headerlink" href="#ctd-data-one-file-per-cast" title="Permalink to this heading">#</a></h1>
+<p>Let’s first load in some libraries that we are going to use today. If you are not sure whether you have the library installed, you can embed <em>install.packages</em> within an <em>if</em> statement, like this</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;RNetCDF&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;RNetCDF&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">RNetCDF</span><span class="p">)</span>
+<span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;writexl&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;writexl&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">writexl</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="one-file">
+<h2>One file<a class="headerlink" href="#one-file" title="Permalink to this heading">#</a></h2>
+<p>The data are available via a THREDDS server that you can find here:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/physics/point/cruise/nansen_legacy-single_profile/">https://opendap1.nodc.no/opendap/physics/point/cruise/nansen_legacy-single_profile/</a></p>
+<p>If you open the link above, you can navigate to different NetCDF files, and you will be linked to OPeNDAP data access forms like this one:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P1_NLEG01-1_-">https://opendap1.nodc.no/opendap/physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P1_NLEG01-1_-</a><em>Nansen_Legacy_Cruise</em>-_2021_Seasonal_Study_Q2.nc.html</p>
+<p>OPeNDAP makes it possible to access data over the internet without you having to download the data to your computer first. You can just remove the <em>html</em> suffix from the URL above and include it in your R script in the same way that you might include some absolute filepath to a file on your computer.</p>
+<p>So now let’s load the data into R for this cast.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no/opendap/physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P1_NLEG01-1_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="nf">print.nc</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>netcdf classic {
+dimensions:
+	PRES = 88 ;
+variables:
+	NC_FLOAT PRES(PRES) ;
+		NC_FLOAT PRES:_FillValue = NaN ;
+		NC_CHAR PRES:axis = &quot;Z&quot; ;
+		NC_CHAR PRES:uncertainty = &quot; &quot; ;
+		NC_CHAR PRES:comment = &quot; &quot; ;
+		NC_CHAR PRES:ancillary_variables = &quot;PRES_QC&quot; ;
+		NC_CHAR PRES:standard_name = &quot;sea_water_pressure&quot; ;
+		NC_CHAR PRES:long_name = &quot;Sea pressure&quot; ;
+		NC_CHAR PRES:units = &quot;dbar&quot; ;
+		NC_CHAR PRES:positive = &quot;down&quot; ;
+		NC_CHAR PRES:data_mode = &quot;D&quot; ;
+		NC_CHAR PRES:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_SHORT PRES_QC(PRES) ;
+		NC_SHORT PRES_QC:_FillValue = -127 ;
+		NC_CHAR PRES_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT PRES_QC:valid_min = 0 ;
+		NC_SHORT PRES_QC:valid_max = 9 ;
+		NC_SHORT PRES_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR PRES_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR PRES_QC:long_name = &quot;Sea pressure quality flag&quot; ;
+	NC_FLOAT TEMP(PRES) ;
+		NC_FLOAT TEMP:_FillValue = -2147483648 ;
+		NC_CHAR TEMP:standard_name = &quot;sea_water_temperature&quot; ;
+		NC_CHAR TEMP:long_name = &quot;Sea temperature&quot; ;
+		NC_CHAR TEMP:units = &quot;degrees_C&quot; ;
+		NC_DOUBLE TEMP:valid_min = -2.5 ;
+		NC_DOUBLE TEMP:valid_max = 40 ;
+		NC_CHAR TEMP:ancillary_variables = &quot;TEMP_QC &quot; ;
+		NC_CHAR TEMP:data_mode = &quot;D&quot; ;
+		NC_CHAR TEMP:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT PSAL(PRES) ;
+		NC_FLOAT PSAL:_FillValue = -2147483648 ;
+		NC_CHAR PSAL:standard_name = &quot;sea_water_practical_salinity&quot; ;
+		NC_CHAR PSAL:long_name = &quot;Practical salinity&quot; ;
+		NC_CHAR PSAL:units = &quot;0.001&quot; ;
+		NC_DOUBLE PSAL:valid_min = 2 ;
+		NC_DOUBLE PSAL:valid_max = 41 ;
+		NC_CHAR PSAL:ancillary_variables = &quot;PSAL_QC &quot; ;
+		NC_CHAR PSAL:data_mode = &quot;D&quot; ;
+		NC_CHAR PSAL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT FLU2(PRES) ;
+		NC_FLOAT FLU2:_FillValue = -2147483648 ;
+		NC_CHAR FLU2:standard_name = &quot;mass_concentration_of_chlorophyll_a_in_sea_water&quot; ;
+		NC_CHAR FLU2:long_name = &quot;Chlorophyll-a fluorescence&quot; ;
+		NC_CHAR FLU2:units = &quot;mg m-3&quot; ;
+		NC_DOUBLE FLU2:valid_min = 0 ;
+		NC_DOUBLE FLU2:valid_max = 100 ;
+		NC_CHAR FLU2:ancillary_variables = &quot;FLU2_QC &quot; ;
+		NC_CHAR FLU2:data_mode = &quot;R&quot; ;
+		NC_CHAR FLU2:comment = &quot;Fluorescence, WET Labs ECO-AFL/FL [mg/m^3]&quot; ;
+		NC_CHAR FLU2:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT CNDC(PRES) ;
+		NC_FLOAT CNDC:_FillValue = -2147483648 ;
+		NC_CHAR CNDC:standard_name = &quot;sea_water_electrical_conductivity&quot; ;
+		NC_CHAR CNDC:long_name = &quot;Electrical conductivity&quot; ;
+		NC_CHAR CNDC:units = &quot;S m-1&quot; ;
+		NC_DOUBLE CNDC:valid_min = 0 ;
+		NC_DOUBLE CNDC:valid_max = 50 ;
+		NC_CHAR CNDC:ancillary_variables = &quot;CNDC_QC &quot; ;
+		NC_CHAR CNDC:data_mode = &quot;D&quot; ;
+		NC_CHAR CNDC:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT DENS(PRES) ;
+		NC_FLOAT DENS:_FillValue = -2147483648 ;
+		NC_CHAR DENS:standard_name = &quot;sea_water_sigma_theta&quot; ;
+		NC_CHAR DENS:long_name = &quot;Sea density (sigma-theta)&quot; ;
+		NC_CHAR DENS:units = &quot;kg m-3&quot; ;
+		NC_DOUBLE DENS:valid_min = 20 ;
+		NC_DOUBLE DENS:valid_max = 40 ;
+		NC_CHAR DENS:ancillary_variables = &quot;DENS_QC &quot; ;
+		NC_CHAR DENS:data_mode = &quot;R&quot; ;
+		NC_CHAR DENS:comment = &quot;density, sigma-theta [kg/m^3]&quot; ;
+		NC_CHAR DENS:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT SVEL(PRES) ;
+		NC_FLOAT SVEL:_FillValue = -2147483648 ;
+		NC_CHAR SVEL:standard_name = &quot;speed_of_sound_in_sea_water&quot; ;
+		NC_CHAR SVEL:long_name = &quot;Sound velocity&quot; ;
+		NC_CHAR SVEL:units = &quot;m s-1&quot; ;
+		NC_DOUBLE SVEL:valid_min = 0 ;
+		NC_DOUBLE SVEL:valid_max = 1000 ;
+		NC_CHAR SVEL:ancillary_variables = &quot;SVEL_QC &quot; ;
+		NC_CHAR SVEL:data_mode = &quot;R&quot; ;
+		NC_CHAR SVEL:comment = &quot;Sound Velocity [Chen-Millero, m/s]&quot; ;
+		NC_CHAR SVEL:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT CCOMD003(PRES) ;
+		NC_FLOAT CCOMD003:_FillValue = -2147483648 ;
+		NC_CHAR CCOMD003:standard_name = &quot;concentration_of_colored_dissolved_organic_matter_in_sea_water_expressed_as_equivalent_mass_fraction_of_quinine_sulfate_dihydrate&quot; ;
+		NC_CHAR CCOMD003:long_name = &quot;CDOM Gelbstoff per unit volume of the water body by in-situ fluorometer&quot; ;
+		NC_CHAR CCOMD003:units = &quot;mg m-3&quot; ;
+		NC_DOUBLE CCOMD003:valid_min = 0 ;
+		NC_DOUBLE CCOMD003:valid_max = 100 ;
+		NC_CHAR CCOMD003:ancillary_variables = &quot;CCOMD003_QC &quot; ;
+		NC_CHAR CCOMD003:data_mode = &quot;R&quot; ;
+		NC_CHAR CCOMD003:comment = &quot;Fluorescence, WET Labs CDOM [mg/m^3]&quot; ;
+		NC_CHAR CCOMD003:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT DOX1-1(PRES) ;
+		NC_FLOAT DOX1-1:_FillValue = -2147483648 ;
+		NC_CHAR DOX1-1:standard_name = &quot;volume_fraction_of_oxygen_in_sea_water&quot; ;
+		NC_CHAR DOX1-1:long_name = &quot;Dissolved oxygen&quot; ;
+		NC_CHAR DOX1-1:units = &quot;ml l-1&quot; ;
+		NC_DOUBLE DOX1-1:valid_min = 0 ;
+		NC_DOUBLE DOX1-1:valid_max = 1000 ;
+		NC_CHAR DOX1-1:ancillary_variables = &quot;DOX1-1_QC &quot; ;
+		NC_CHAR DOX1-1:data_mode = &quot;R&quot; ;
+		NC_CHAR DOX1-1:comment = &quot;Oxygen, SBE 43 [ml/l], WS = 2&quot; ;
+		NC_CHAR DOX1-1:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT DOX2-1(PRES) ;
+		NC_FLOAT DOX2-1:_FillValue = -2147483648 ;
+		NC_CHAR DOX2-1:standard_name = &quot;moles_of_oxygen_per_unit_mass_in_sea_water&quot; ;
+		NC_CHAR DOX2-1:long_name = &quot;Dissolved oxygen&quot; ;
+		NC_CHAR DOX2-1:units = &quot;\302\265mol kg-1&quot; ;
+		NC_DOUBLE DOX2-1:valid_min = 0 ;
+		NC_DOUBLE DOX2-1:valid_max = 1000 ;
+		NC_CHAR DOX2-1:ancillary_variables = &quot;DOX2-1_QC &quot; ;
+		NC_CHAR DOX2-1:data_mode = &quot;R&quot; ;
+		NC_CHAR DOX2-1:comment = &quot;Sbox0Mm/Kg&quot; ;
+		NC_CHAR DOX2-1:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT CNDC-2(PRES) ;
+		NC_FLOAT CNDC-2:_FillValue = -2147483648 ;
+		NC_CHAR CNDC-2:standard_name = &quot;sea_water_electrical_conductivity&quot; ;
+		NC_CHAR CNDC-2:long_name = &quot;Electrical conductivity&quot; ;
+		NC_CHAR CNDC-2:units = &quot;S m-1&quot; ;
+		NC_DOUBLE CNDC-2:valid_min = 0 ;
+		NC_DOUBLE CNDC-2:valid_max = 50 ;
+		NC_CHAR CNDC-2:ancillary_variables = &quot;CNDC-2_QC &quot; ;
+		NC_CHAR CNDC-2:data_mode = &quot;R&quot; ;
+		NC_CHAR CNDC-2:comment = &quot;Conductivity, 2 [S/m]&quot; ;
+		NC_CHAR CNDC-2:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT OXYOCPVL-1(PRES) ;
+		NC_FLOAT OXYOCPVL-1:_FillValue = -2147483648 ;
+		NC_CHAR OXYOCPVL-1:standard_name = &quot;&#39;\342\200\231&quot; ;
+		NC_CHAR OXYOCPVL-1:long_name = &quot;Raw signal (voltage) of instrument output by oxygen senso&quot; ;
+		NC_CHAR OXYOCPVL-1:units = &quot;V&quot; ;
+		NC_DOUBLE OXYOCPVL-1:valid_min = 0 ;
+		NC_DOUBLE OXYOCPVL-1:valid_max = 1000 ;
+		NC_CHAR OXYOCPVL-1:ancillary_variables = &quot;OXYOCPVL-1_QC &quot; ;
+		NC_CHAR OXYOCPVL-1:data_mode = &quot;R&quot; ;
+		NC_CHAR OXYOCPVL-1:comment = &quot;Oxygen Voltage, SBE 43&quot; ;
+		NC_CHAR OXYOCPVL-1:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT SPAR(PRES) ;
+		NC_FLOAT SPAR:_FillValue = -2147483648 ;
+		NC_CHAR SPAR:standard_name = &quot;&#39;\342\200\231&quot; ;
+		NC_CHAR SPAR:long_name = &quot;Photosynthetically active radiation&quot; ;
+		NC_CHAR SPAR:units = &quot;\316\274mol m-2 s-1&quot; ;
+		NC_DOUBLE SPAR:valid_min = 0 ;
+		NC_DOUBLE SPAR:valid_max = 10000 ;
+		NC_CHAR SPAR:ancillary_variables = &quot;SPAR_QC &quot; ;
+		NC_CHAR SPAR:data_mode = &quot;R&quot; ;
+		NC_CHAR SPAR:comment = &quot;SPAR/Surface Irradiance&quot; ;
+		NC_CHAR SPAR:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT PAR(PRES) ;
+		NC_FLOAT PAR:_FillValue = -2147483648 ;
+		NC_CHAR PAR:standard_name = &quot;&#39;\342\200\231&quot; ;
+		NC_CHAR PAR:long_name = &quot;Photosynthetically active radiation&quot; ;
+		NC_CHAR PAR:units = &quot;\316\274mol m-2 s-1&quot; ;
+		NC_DOUBLE PAR:valid_min = 0 ;
+		NC_DOUBLE PAR:valid_max = 10000 ;
+		NC_CHAR PAR:ancillary_variables = &quot;PAR_QC &quot; ;
+		NC_CHAR PAR:data_mode = &quot;R&quot; ;
+		NC_CHAR PAR:comment = &quot;PAR/Irradiance, Biospherical/Licor&quot; ;
+		NC_CHAR PAR:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT PSAL-2(PRES) ;
+		NC_FLOAT PSAL-2:_FillValue = -2147483648 ;
+		NC_CHAR PSAL-2:standard_name = &quot;sea_water_practical_salinity&quot; ;
+		NC_CHAR PSAL-2:long_name = &quot;Practical salinity&quot; ;
+		NC_CHAR PSAL-2:units = &quot;0.001&quot; ;
+		NC_DOUBLE PSAL-2:valid_min = 2 ;
+		NC_DOUBLE PSAL-2:valid_max = 40 ;
+		NC_CHAR PSAL-2:ancillary_variables = &quot;PSAL-2_QC &quot; ;
+		NC_CHAR PSAL-2:data_mode = &quot;R&quot; ;
+		NC_CHAR PSAL-2:comment = &quot;Salinity, 2 [PSU]&quot; ;
+		NC_CHAR PSAL-2:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT TEMP-2(PRES) ;
+		NC_FLOAT TEMP-2:_FillValue = -2147483648 ;
+		NC_CHAR TEMP-2:standard_name = &quot;sea_water_temperature&quot; ;
+		NC_CHAR TEMP-2:long_name = &quot;Sea temperature&quot; ;
+		NC_CHAR TEMP-2:units = &quot;degrees_C&quot; ;
+		NC_DOUBLE TEMP-2:valid_min = -2.5 ;
+		NC_DOUBLE TEMP-2:valid_max = 40 ;
+		NC_CHAR TEMP-2:ancillary_variables = &quot;TEMP-2_QC &quot; ;
+		NC_CHAR TEMP-2:data_mode = &quot;R&quot; ;
+		NC_CHAR TEMP-2:comment = &quot;Temperature, 2 [ITS-68, deg C]&quot; ;
+		NC_CHAR TEMP-2:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_FLOAT ATTNZS01(PRES) ;
+		NC_FLOAT ATTNZS01:_FillValue = -2147483648 ;
+		NC_CHAR ATTNZS01:standard_name = &quot;&#39;\342\200\231&quot; ;
+		NC_CHAR ATTNZS01:long_name = &quot;WET Labs transmissometer calibrated to zero in clear water&quot; ;
+		NC_CHAR ATTNZS01:units = &quot;%&quot; ;
+		NC_DOUBLE ATTNZS01:valid_min = 0 ;
+		NC_DOUBLE ATTNZS01:valid_max = 100 ;
+		NC_CHAR ATTNZS01:ancillary_variables = &quot;ATTNZS01_QC &quot; ;
+		NC_CHAR ATTNZS01:data_mode = &quot;R&quot; ;
+		NC_CHAR ATTNZS01:comment = &quot;Beam Transmission, WET Labs C-Star [%]&quot; ;
+		NC_CHAR ATTNZS01:coverage_content_type = &quot;physicalMeasurement&quot; ;
+	NC_SHORT TEMP_QC(PRES) ;
+		NC_SHORT TEMP_QC:_FillValue = -127 ;
+		NC_CHAR TEMP_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT TEMP_QC:valid_min = 0 ;
+		NC_SHORT TEMP_QC:valid_max = 9 ;
+		NC_SHORT TEMP_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR TEMP_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR TEMP_QC:long_name = &quot;Sea temperature quality flag&quot; ;
+	NC_SHORT PSAL_QC(PRES) ;
+		NC_SHORT PSAL_QC:_FillValue = -127 ;
+		NC_CHAR PSAL_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT PSAL_QC:valid_min = 0 ;
+		NC_SHORT PSAL_QC:valid_max = 9 ;
+		NC_SHORT PSAL_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR PSAL_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR PSAL_QC:long_name = &quot;Practical salinity quality flag&quot; ;
+	NC_SHORT FLU2_QC(PRES) ;
+		NC_SHORT FLU2_QC:_FillValue = -127 ;
+		NC_CHAR FLU2_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT FLU2_QC:valid_min = 0 ;
+		NC_SHORT FLU2_QC:valid_max = 9 ;
+		NC_SHORT FLU2_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR FLU2_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR FLU2_QC:long_name = &quot;Chlorophyll-a fluorescence quality flag&quot; ;
+	NC_SHORT CNDC_QC(PRES) ;
+		NC_SHORT CNDC_QC:_FillValue = -127 ;
+		NC_CHAR CNDC_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT CNDC_QC:valid_min = 0 ;
+		NC_SHORT CNDC_QC:valid_max = 9 ;
+		NC_SHORT CNDC_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR CNDC_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR CNDC_QC:long_name = &quot;Electrical conductivity quality flag&quot; ;
+	NC_SHORT DENS_QC(PRES) ;
+		NC_SHORT DENS_QC:_FillValue = -127 ;
+		NC_CHAR DENS_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT DENS_QC:valid_min = 0 ;
+		NC_SHORT DENS_QC:valid_max = 9 ;
+		NC_SHORT DENS_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR DENS_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR DENS_QC:long_name = &quot;Sea density (sigma-theta) quality flag&quot; ;
+	NC_SHORT SVEL_QC(PRES) ;
+		NC_SHORT SVEL_QC:_FillValue = -127 ;
+		NC_CHAR SVEL_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT SVEL_QC:valid_min = 0 ;
+		NC_SHORT SVEL_QC:valid_max = 9 ;
+		NC_SHORT SVEL_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR SVEL_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR SVEL_QC:long_name = &quot;Sound velocity quality flag&quot; ;
+	NC_SHORT CCOMD003_QC(PRES) ;
+		NC_SHORT CCOMD003_QC:_FillValue = -127 ;
+		NC_CHAR CCOMD003_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT CCOMD003_QC:valid_min = 0 ;
+		NC_SHORT CCOMD003_QC:valid_max = 9 ;
+		NC_SHORT CCOMD003_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR CCOMD003_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR CCOMD003_QC:long_name = &quot;CDOM Gelbstoff per unit volume of the water body by in-situ fluorometer quality flag&quot; ;
+	NC_SHORT DOX1-1_QC(PRES) ;
+		NC_SHORT DOX1-1_QC:_FillValue = -127 ;
+		NC_CHAR DOX1-1_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT DOX1-1_QC:valid_min = 0 ;
+		NC_SHORT DOX1-1_QC:valid_max = 9 ;
+		NC_SHORT DOX1-1_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR DOX1-1_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR DOX1-1_QC:long_name = &quot;Dissolved oxygen quality flag&quot; ;
+	NC_SHORT DOX2-1_QC(PRES) ;
+		NC_SHORT DOX2-1_QC:_FillValue = -127 ;
+		NC_CHAR DOX2-1_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT DOX2-1_QC:valid_min = 0 ;
+		NC_SHORT DOX2-1_QC:valid_max = 9 ;
+		NC_SHORT DOX2-1_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR DOX2-1_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR DOX2-1_QC:long_name = &quot;Dissolved oxygen quality flag&quot; ;
+	NC_SHORT CNDC-2_QC(PRES) ;
+		NC_SHORT CNDC-2_QC:_FillValue = -127 ;
+		NC_CHAR CNDC-2_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT CNDC-2_QC:valid_min = 0 ;
+		NC_SHORT CNDC-2_QC:valid_max = 9 ;
+		NC_SHORT CNDC-2_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR CNDC-2_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR CNDC-2_QC:long_name = &quot;Electrical conductivity quality flag&quot; ;
+	NC_SHORT OXYOCPVL-1_QC(PRES) ;
+		NC_SHORT OXYOCPVL-1_QC:_FillValue = -127 ;
+		NC_CHAR OXYOCPVL-1_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT OXYOCPVL-1_QC:valid_min = 0 ;
+		NC_SHORT OXYOCPVL-1_QC:valid_max = 9 ;
+		NC_SHORT OXYOCPVL-1_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR OXYOCPVL-1_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR OXYOCPVL-1_QC:long_name = &quot;Raw signal (voltage) of instrument output by oxygen senso quality flag&quot; ;
+	NC_SHORT SPAR_QC(PRES) ;
+		NC_SHORT SPAR_QC:_FillValue = -127 ;
+		NC_CHAR SPAR_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT SPAR_QC:valid_min = 0 ;
+		NC_SHORT SPAR_QC:valid_max = 9 ;
+		NC_SHORT SPAR_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR SPAR_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR SPAR_QC:long_name = &quot;Photosynthetically active radiation quality flag&quot; ;
+	NC_SHORT PAR_QC(PRES) ;
+		NC_SHORT PAR_QC:_FillValue = -127 ;
+		NC_CHAR PAR_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT PAR_QC:valid_min = 0 ;
+		NC_SHORT PAR_QC:valid_max = 9 ;
+		NC_SHORT PAR_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR PAR_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR PAR_QC:long_name = &quot;Photosynthetically active radiation quality flag&quot; ;
+	NC_SHORT PSAL-2_QC(PRES) ;
+		NC_SHORT PSAL-2_QC:_FillValue = -127 ;
+		NC_CHAR PSAL-2_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT PSAL-2_QC:valid_min = 0 ;
+		NC_SHORT PSAL-2_QC:valid_max = 9 ;
+		NC_SHORT PSAL-2_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR PSAL-2_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR PSAL-2_QC:long_name = &quot;Practical salinity quality flag&quot; ;
+	NC_SHORT TEMP-2_QC(PRES) ;
+		NC_SHORT TEMP-2_QC:_FillValue = -127 ;
+		NC_CHAR TEMP-2_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT TEMP-2_QC:valid_min = 0 ;
+		NC_SHORT TEMP-2_QC:valid_max = 9 ;
+		NC_SHORT TEMP-2_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR TEMP-2_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR TEMP-2_QC:long_name = &quot;Sea temperature quality flag&quot; ;
+	NC_SHORT ATTNZS01_QC(PRES) ;
+		NC_SHORT ATTNZS01_QC:_FillValue = -127 ;
+		NC_CHAR ATTNZS01_QC:conventions = &quot;Copernicus Marine In Situ reference table 2&quot; ;
+		NC_SHORT ATTNZS01_QC:valid_min = 0 ;
+		NC_SHORT ATTNZS01_QC:valid_max = 9 ;
+		NC_SHORT ATTNZS01_QC:flag_values = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ;
+		NC_CHAR ATTNZS01_QC:flag_meanings = &quot;no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed value_below_detection nominal_value interpolated_value missing_value&quot; ;
+		NC_CHAR ATTNZS01_QC:long_name = &quot;WET Labs transmissometer calibrated to zero in clear water quality flag&quot; ;
+
+// global attributes:
+		NC_CHAR :qc_manual = &quot;Recommendations for in-situ data Near Real Time Quality Control https://doi.org/10.13155/36230&quot; ;
+		NC_CHAR :contact = &quot;datahjelp@hi.no&quot; ;
+		NC_CHAR :distribution_statement = &quot;These data are public and free of charge. User assumes all risk for use of data. User must display citation in any publication or product using data. User must contact PI prior to any commercial use of data.&quot; ;
+		NC_CHAR :naming_authority = &quot;no.unis&quot; ;
+		NC_CHAR :license = &quot;https://creativecommons.org/licenses/by/4.0/ https://creativecommons.org/licenses/by/4.0/&quot; ;
+		NC_CHAR :data_assembly_center = &quot;IMR&quot; ;
+		NC_CHAR :update_interval = &quot;void&quot; ;
+		NC_CHAR :area = &quot;Arctic Ocean&quot; ;
+		NC_CHAR :author = &quot;&quot; ;
+		NC_CHAR :Conventions = &quot;CF-1.8, ACDD-1.3, OceanSITES Manual 1.4&quot; ;
+		NC_CHAR :data_mode = &quot;M&quot; ;
+		NC_CHAR :comment = &quot;Descending CTD profile&quot; ;
+		NC_CHAR :history = &quot;Created at 2022-08-08T12:43:17Z using the xarray library in Python&quot; ;
+		NC_CHAR :netcdf_version = &quot;netCDF-4 classic model&quot; ;
+		NC_CHAR :quality_index = &quot;A&quot; ;
+		NC_CHAR :quality_control_indicator = &quot;0&quot; ;
+		NC_CHAR :publisher_name = &quot;Martin Ludvigsen&quot; ;
+		NC_CHAR :publisher_email = &quot;datahjelp@imr.no&quot; ;
+		NC_CHAR :wmo_platform_code = &quot;&quot; ;
+		NC_CHAR :ices_platform_code = &quot;&quot; ;
+		NC_CHAR :site_code = &quot;&quot; ;
+		NC_CHAR :bottom_depth = &quot;&quot; ;
+		NC_CHAR :wmo_inst_type = &quot;&quot; ;
+		NC_CHAR :geospatial_vertical_positive = &quot;down&quot; ;
+		NC_CHAR :platform_code = &quot;58US&quot; ;
+		NC_CHAR :platform_name = &quot;Kronprins Haakon&quot; ;
+		NC_CHAR :source = &quot;research vessel&quot; ;
+		NC_CHAR :institution_country = &quot;Norway&quot; ;
+		NC_CHAR :source_platform_category_code = &quot;31&quot; ;
+		NC_CHAR :data_type = &quot;OceanSITES vertical profile&quot; ;
+		NC_CHAR :cdm_data_type = &quot;PROFILE&quot; ;
+		NC_CHAR :instrument = &quot;CTD Seabird&quot; ;
+		NC_CHAR :keywords = &quot;EARTH SCIENCE &gt; OCEANS &gt; OCEAN TEMPERATURE &gt; WATER TEMPERATURE, EARTH SCIENCE &gt; OCEANS &gt; SALINITY/DENSITY &gt; CONDUCTIVITY, EARTH SCIENCE &gt; OCEANS &gt; SALINITY/DENSITY &gt; DENSITY, EARTH SCIENCE &gt; OCEANS &gt; OCEAN OPTICS &gt; FLUORESCENCE, EARTH SCIENCE &gt; OCEANS &gt; OCEAN ACOUSTICS &gt; ACOUSTIC VELOCITY, EARTH SCIENCE &gt; OCEANS &gt; SALINITY/DENSITY &gt; OCEAN SALINITY&quot; ;
+		NC_CHAR :keywords_vocabulary = &quot;GCMD:GCMD Keywords&quot; ;
+		NC_CHAR :id = &quot;NMDC_Nansen-Legacy_PR_CT_58US_2021704_P1_(NLEG01)&quot; ;
+		NC_CHAR :time_coverage_start = &quot;2021-04-29T20:52:55Z&quot; ;
+		NC_CHAR :time_coverage_end = &quot;2021-04-29T20:52:55Z&quot; ;
+		NC_CHAR :date_update = &quot;2022-08-08T12:43:17Z&quot; ;
+		NC_FLOAT :geospatial_lat_min = 76 ;
+		NC_FLOAT :geospatial_lat_max = 76 ;
+		NC_FLOAT :geospatial_lon_min = 31.2199993133545 ;
+		NC_FLOAT :geospatial_lon_max = 31.2199993133545 ;
+		NC_FLOAT :geospatial_vertical_min = 5 ;
+		NC_FLOAT :geospatial_vertical_max = 93 ;
+		NC_CHAR :citation = &quot;These data were collected and made freely available by the Nansen Legacy project and the programs that contribute to it.&quot; ;
+		NC_CHAR :project = &quot;The Nansen Legacy Project (RCN # 276730)&quot; ;
+		NC_CHAR :references = &quot;https://doi.org/10.21335/NMDC-515075317&quot; ;
+		NC_CHAR :featureType = &quot;Profile&quot; ;
+		NC_CHAR :summary = &quot;The Nansen Legacy cruise Q2 (Q2: 2nd quarter of the year) was part of the seasonal investigation of the northern Barents Sea and adjacent Arctic Basin. The cruise was conducted during the spring period  a biologically critical time window when a large part of the annual primary production occurs  and focused on comparing the physical, chemical and biological conditions along the Nansen Legacy main transect in open waters and within the sea ice. The cruise addressed objectives of the work packages Physical drivers (Research Focus 1), Human impact (Research Focus 2), The living Barents Sea (Research Focus 3) and Technology and method development (Research Activity C). These data are created from the CTD data published by NMDC for the whole cruise (https://doi.org/10.21335/NMDC-515075317). The values have not be changed.&quot; ;
+		NC_CHAR :pi_name = &quot;Martin Ludvigsen&quot; ;
+		NC_CHAR :institution = &quot;University Centre in Svalbard&quot; ;
+		NC_INT :institution_edmo_code = 1420 ;
+		NC_CHAR :institution_references = &quot;https://www.unis.no/&quot; ;
+		NC_CHAR :creator_institution = &quot;University Centre in Svalbard&quot; ;
+		NC_CHAR :creator_name = &quot;Martin Ludvigsen&quot; ;
+		NC_CHAR :creator_type = &quot;person&quot; ;
+		NC_CHAR :creator_email = &quot;datahjelp@imr.no&quot; ;
+		NC_CHAR :creator_url = &quot;https://www.unis.no/&quot; ;
+		NC_CHAR :publisher = &quot;The Norwegian Marine Data Centre (NMD)&quot; ;
+		NC_CHAR :publisher_url = &quot;https://www.unis.no/&quot; ;
+		NC_CHAR :acknowledgement = &quot;The Nansen Legacy project is funded by the Research Council of Norway (RCN # 276730). These data are created from the CTD data published by NMDC for the whole cruise (10.21335/NMDC-515075317). The values have not be changed. For information about this process, please contact Luke Marsden at data.nleg@unis.no&quot; ;
+		NC_CHAR :cruiseNumber = &quot;2021704&quot; ;
+		NC_CHAR :cruiseName = &quot;2021 Seasonal Study Q2&quot; ;
+		NC_CHAR :geospatial_vertical_units = &quot;dbar&quot; ;
+		NC_CHAR :geospatial_vertical_resolution = &quot;1 dbar&quot; ;
+		NC_CHAR :pi_email = &quot;Martin.Ludvigsen@ntnu.no&quot; ;
+		NC_CHAR :pi_institution = &quot;Norwegian University of Science and Technology&quot; ;
+		NC_CHAR :station_name = &quot;P1 (NLEG01)&quot; ;
+		NC_CHAR :_NCProperties = &quot;version=2,netcdf=4.6.3,hdf5=1.10.5&quot; ;
+		NC_CHAR :date_created = &quot;2022-08-08T12:44:33Z&quot; ;
+		NC_CHAR :doi = &quot;10.21335/NMDC-515075317-P1_NLEG01-1&quot; ;
+		NC_CHAR :title = &quot;CTD_station_P1_NLEG01-1_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2&quot; ;
+		NC_CHAR :metadata_link = &quot;https://doi.org/10.21335/NMDC-515075317-P1_NLEG01-1&quot; ;
+}
+</pre></div>
+</div>
+</div>
+</div>
+<p>The data have a single dimension, pressure. For the profile I have chosen above, there are 82 data points for each variable.</p>
+<p>Now let’s access a few of the variables.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">pres</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;PRES&#39;</span><span class="p">)</span>
+<span class="n">temp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;TEMP&#39;</span><span class="p">)</span>
+<span class="n">psal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;PSAL&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s make a basic plot.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">plot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">temp</span><span class="p">,</span>
+<span class="w">  </span><span class="n">pres</span><span class="p">,</span>
+<span class="w">  </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;l&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/011b31ff4aac3b9a92cee99579f249e8eab138e54271deec9ed7ee8498edf74e.png" src="_images/011b31ff4aac3b9a92cee99579f249e8eab138e54271deec9ed7ee8498edf74e.png" />
+</div>
+</div>
+<p>Maybe something nicer.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">plot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">temp</span><span class="p">,</span>
+<span class="w">  </span><span class="n">pres</span><span class="p">,</span>
+<span class="w">  </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;l&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">lwd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w">     </span>
+<span class="w">  </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;blue&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">las</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w">     </span>
+<span class="w">  </span><span class="n">ylim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">pres</span><span class="p">),</span><span class="m">0</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Add points on the line plot</span>
+<span class="nf">points</span><span class="p">(</span>
+<span class="w">  </span><span class="n">temp</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="n">pres</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="n">pch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">19</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">  </span><span class="n">cex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.5</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/b6dd85d111059bd504e0d3f83dd998326b2e77bbe0aed41067117951b8950200.png" src="_images/b6dd85d111059bd504e0d3f83dd998326b2e77bbe0aed41067117951b8950200.png" />
+</div>
+</div>
+<p>Now let’s write the data to a dataframe that.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">Pressure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pres</span><span class="p">,</span><span class="w"> </span><span class="n">Temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp</span><span class="p">,</span><span class="w"> </span><span class="n">Salinity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">psal</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can write that out to a CSV file or XLSX file if we like.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Write to CSV</span>
+<span class="nf">write.csv</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;../data/ctd_data_one_cast.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="c1"># Write to XLSX using writexl</span>
+<span class="nf">write_xlsx</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;../data/ctd_data_one_cast.xlsx&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="looping-through-multiple-files">
+<h2>Looping through multiple files<a class="headerlink" href="#looping-through-multiple-files" title="Permalink to this heading">#</a></h2>
+<p>What if we want to loop through and access all the casts from, for example, a single cruise?</p>
+<p>We can think of this as the human interface:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/contents.html">https://opendap1.nodc.no/opendap/physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/contents.html</a></p>
+<p>And this as the machine interface:
+<a class="reference external" href="https://opendap1.nodc.no/opendap/physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/catalog.xml">https://opendap1.nodc.no/opendap/physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/catalog.xml</a></p>
+<p>If you have never looked at an XML file like this before, don’t worry. What we want to do is access the URL paths of each file and dump them to a list that we can loop through. We need to install another package first.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;xml2&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;xml2&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">xml2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s make a list of the OPeNDAP URLs for each file.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read the XML file</span>
+<span class="n">xml_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no/opendap/physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/catalog.xml&#39;</span>
+<span class="n">xml_content</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read_xml</span><span class="p">(</span><span class="n">xml_url</span><span class="p">)</span>
+
+<span class="c1"># Extract all &lt;thredds:access&gt; nodes with serviceName=&quot;dap&quot;</span>
+<span class="n">dap_nodes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">xml_find_all</span><span class="p">(</span><span class="n">xml_content</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.//thredds:access[@serviceName=&#39;dap&#39;]&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">xml_ns</span><span class="p">(</span><span class="n">xml_content</span><span class="p">))</span>
+
+<span class="c1"># Extract the URLs</span>
+<span class="n">dap_urls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">xml_attr</span><span class="p">(</span><span class="n">dap_nodes</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;urlPath&quot;</span><span class="p">)</span>
+
+<span class="c1"># Base URL</span>
+<span class="n">base_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;https://opendap1.nodc.no/opendap/&quot;</span>
+
+<span class="c1"># Combine base URL with URL paths to get full URLs</span>
+<span class="n">full_urls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span><span class="w"> </span><span class="n">dap_urls</span><span class="p">)</span>
+
+<span class="c1"># Print the full URLs</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">full_urls</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> [1] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG-A_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+ [2] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG-B_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+ [3] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG-C_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+ [4] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG-D_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+ [5] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG02_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+ [6] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG03_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+ [7] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG05_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+ [8] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG06_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+ [9] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG08_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[10] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG09_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[11] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG10_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[12] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG12_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[13] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG14_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[14] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG15_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[15] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG16_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[16] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG17_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[17] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG18_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[18] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG19_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[19] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG20_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[20] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG23_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[21] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_NLEG24_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;                
+[22] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P1_NLEG01-1_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[23] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P1_NLEG01-2_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[24] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P1_NLEG01-3_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[25] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P1_NLEG01-4_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[26] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P1_NLEG01-5_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[27] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P1_NLEG01-6_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[28] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P2_NLEG04-1_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[29] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P2_NLEG04-2_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[30] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P2_NLEG04-3_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[31] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P3_NLEG07-1_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[32] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P3_NLEG07-2_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[33] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P4_NLEG11-1_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[34] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P4_NLEG11-2_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[35] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P4_NLEG11-3_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[36] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P4_NLEG11-4_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[37] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P4_NLEG11-5_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[38] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P5_NLEG13-1_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[39] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P5_NLEG13-2_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[40] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P5_NLEG13-3_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;           
+[41] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P6_NLEG21_NPAL15-1_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;    
+[42] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P6_NLEG21_NPAL15-2_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;    
+[43] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P6_NLEG21_NPAL15-3_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;    
+[44] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P6_NLEG21_NPAL15-4_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;    
+[45] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P6_NLEG21_NPAL15-5_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;    
+[46] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P6_NLEG21_NPAL15-6_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;    
+[47] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P6_NLEG21_NPAL15_Ice_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;  
+[48] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P7_NLEG25_NPAL16_Ice-1_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;
+[49] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P7_NLEG25_NPAL16_Ice-2_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;
+[50] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P7_NLEG25_NPAL16_Ice-3_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;
+[51] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P7_NLEG25_NPAL16_Ice-4_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;
+[52] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P7_NLEG25_NPAL16_Ice-5_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;
+[53] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P7_NLEG25_NPAL16_Ice-6_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;
+[54] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_P7_NLEG25_NPAL16_Ice-7_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;
+[55] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/CTD_station_Prior_to_P1_NLEG01_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.nc&quot;    
+[56] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/Q2P1_sediment_properties.nc&quot;                                                          
+[57] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/Q2P2_sediment_properties.nc&quot;                                                          
+[58] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/Q2P4_sediment_properties.nc&quot;                                                          
+[59] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/Q2P6_sediment_properties.nc&quot;                                                          
+[60] &quot;https://opendap1.nodc.no/opendap//physics/point/cruise/nansen_legacy-single_profile/NMDC_Nansen-Legacy_PR_CT_58US_2021704/Q2P7_sediment_properties.nc&quot;                                                          
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we need to use a for loop to access each file in turn. Here is a quick example of how a for loop works if you are not familiar.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">animals</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;pig&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;dog&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;horse&#39;</span><span class="p">)</span>
+
+<span class="nf">for </span><span class="p">(</span><span class="n">animal</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">animals</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">message</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="s">&#39;Hello there,&#39;</span><span class="p">,</span><span class="n">animal</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;Hello there, pig&quot;
+[1] &quot;Hello there, dog&quot;
+[1] &quot;Hello there, horse&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now a more relevant example</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">for </span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">full_urls</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="w">    </span><span class="c1"># Open the file and extract the data</span>
+<span class="w">    </span><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="w">    </span><span class="n">pres</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;PRES&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">temp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;TEMP&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">psal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;PSAL&#39;</span><span class="p">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="n">filename</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">basename</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">  </span><span class="c1"># Extract the filename</span>
+<span class="w">    </span><span class="n">csv_filename</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="s">&quot;\\.nc$&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="p">)</span><span class="w"> </span><span class="c1"># Replace .nc extension with .csv</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">Pressure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pres</span><span class="p">,</span><span class="w"> </span><span class="n">Temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp</span><span class="p">,</span><span class="w"> </span><span class="n">Salinity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">psal</span><span class="p">)</span>
+<span class="w">    </span><span class="c1">#write.csv(df, paste0(&quot;../data/&quot;, csv_filename), row.names = FALSE)    </span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>There is a lot more you can do within the for loop. You could plot the data like above. Just include any code you want to be run on every file between the brackets, and make sure the indentation is okay.</p>
+<p>Maybe you want to just access a subset of the data. What about selecting based on the filename?</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">chosen_station</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;P3&#39;</span><span class="w"> </span><span class="c1"># Selecting files where this is in the filename</span>
+
+<span class="nf">for </span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">full_urls</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="n">filename</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">basename</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">  </span><span class="c1"># Extract the filename</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nf">if </span><span class="p">(</span><span class="nf">grepl</span><span class="p">(</span><span class="n">chosen_station</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">csv_filename</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="s">&quot;\\.nc$&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="p">)</span><span class="w"> </span><span class="c1"># Replace .nc extension with .csv</span>
+<span class="w">        </span><span class="nf">print</span><span class="p">(</span><span class="n">csv_filename</span><span class="p">)</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="c1"># Open the file and extract the data</span>
+<span class="w">        </span><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="w">        </span><span class="n">pres</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;PRES&#39;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">temp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;TEMP&#39;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">psal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;PSAL&#39;</span><span class="p">)</span>
+
+<span class="w">        </span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">Pressure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pres</span><span class="p">,</span><span class="w"> </span><span class="n">Temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp</span><span class="p">,</span><span class="w"> </span><span class="n">Salinity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">psal</span><span class="p">)</span>
+<span class="w">        </span><span class="c1">#write.csv(df, paste0(&quot;../data/&quot;, csv_filename), row.names = FALSE) </span>
+<span class="w">        </span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">       </span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;CTD_station_P3_NLEG07-1_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.csv&quot;
+[1] &quot;CTD_station_P3_NLEG07-2_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.csv&quot;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Or select based on the metadata within the NetCDF files</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">min_latitude</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">82</span><span class="w"> </span><span class="c1"># Selecting files where the latitude is above 82 degrees</span>
+
+<span class="nf">for </span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">full_urls</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="n">filename</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">basename</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">  </span><span class="c1"># Extract the filename</span>
+<span class="w">    </span><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="w">    </span><span class="n">latitude</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">att.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;NC_GLOBAL&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;geospatial_lat_max&quot;</span><span class="p">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nf">if </span><span class="p">(</span><span class="n">latitude</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">min_latitude</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">csv_filename</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="s">&quot;\\.nc$&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="p">)</span><span class="w"> </span><span class="c1"># Replace .nc extension with .csv</span>
+<span class="w">        </span><span class="nf">print</span><span class="p">(</span><span class="n">csv_filename</span><span class="p">)</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="c1"># Open the file and extract the data</span>
+<span class="w">        </span><span class="n">pres</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;PRES&#39;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">temp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;TEMP&#39;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">psal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;PSAL&#39;</span><span class="p">)</span>
+
+<span class="w">        </span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">Pressure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pres</span><span class="p">,</span><span class="w"> </span><span class="n">Temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp</span><span class="p">,</span><span class="w"> </span><span class="n">Salinity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">psal</span><span class="p">)</span>
+<span class="w">        </span><span class="c1">#write.csv(df, paste0(&quot;../data/&quot;, csv_filename), row.names = FALSE) </span>
+<span class="w">        </span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">       </span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;CTD_station_P7_NLEG25_NPAL16_Ice-1_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.csv&quot;
+[1] &quot;CTD_station_P7_NLEG25_NPAL16_Ice-2_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.csv&quot;
+[1] &quot;CTD_station_P7_NLEG25_NPAL16_Ice-3_-_Nansen_Legacy_Cruise_-_2021_Seasonal_Study_Q2.csv&quot;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="citing-the-data">
+<h2>Citing the data<a class="headerlink" href="#citing-the-data" title="Permalink to this heading">#</a></h2>
+<p>Parent-child relationships have been used in this data publication. Here is the landing page for the data from the cruise used in this tutorial.
+<a class="reference external" href="https://doi.org/10.21335/NMDC-515075317">https://doi.org/10.21335/NMDC-515075317</a></p>
+<p>Here is the recommended citation that you can include in your work if you use the data from this cruise.
+<em>Martin Ludvigsen (2022) CTD data from Nansen Legacy Cruise - Seasonal cruise Q2 <a class="reference external" href="https://doi.org/10.21335/NMDC-515075317">https://doi.org/10.21335/NMDC-515075317</a></em></p>
+<p>You can also navigate further to one part per cast. You can cite one of a couple of casts if these are the only data you have used in this collection. For example</p>
+<p><em>Martin Ludvigsen (2022) CTD data from Nansen Legacy Cruise - Seasonal cruise Q2 Staion: NLEG-D <a class="reference external" href="https://doi.org/10.21335/NMDC-515075317-NLEG-D">https://doi.org/10.21335/NMDC-515075317-NLEG-D</a></em></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Accessing Nansen Legacy data in R</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="CTD%20data%20-%20one%20file%20per%20cruise.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">CTD data - one file per cruise</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-file">One file</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#looping-through-multiple-files">Looping through multiple files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Luke Marsden
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
