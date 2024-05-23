@@ -1,0 +1,14 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: intro
+chapters:
+- file: CTD data - one file per cast.ipynb
+- file: CTD data - one file per cruise.ipynb
+- file: Chlorophyll A data.ipynb
+- file: Nutrients data.ipynb
+- file: POC PON data.ipynb
+- file: Flow cytometry data.ipynb
+
+
