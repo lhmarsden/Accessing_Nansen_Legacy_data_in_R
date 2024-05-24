@@ -8,3 +8,11 @@ Returning to this tutorial series now, each chapter is focused on how to extract
 
 The book can be found here:
 https://lhmarsden.github.io/Accessing_Nansen_Legacy_data_in_R/intro.html
+
+If you find this tutorial series useful for your work, consider citing the repository.
+
+Luke Marsden. (2024, May 24). Accessing Nansen Legacy data in R. Zenodo. https://doi.org/10.5281/zenodo.11277693
+
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11277693.svg)](https://doi.org/10.5281/zenodo.11277693)
+
