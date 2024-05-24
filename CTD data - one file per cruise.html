@@ -408,7 +408,7 @@ document.write(`
 <p>If you open the link above, you can navigate to different NetCDF files, and you will be linked to OPeNDAP data access forms like this one:
 <a class="reference external" href="https://opendap1.nodc.no:443/opendap/physics/point/cruise/nansen_legacy/NMDC_Nansen-Legacy_PR_CT_58US_2021708.nc.html">https://opendap1.nodc.no:443/opendap/physics/point/cruise/nansen_legacy/NMDC_Nansen-Legacy_PR_CT_58US_2021708.nc.html</a></p>
 <p>OPeNDAP makes it possible to access data over the internet without you having to download the data to your computer first. You can just remove the <em>html</em> suffix from the URL above and include it in your R script in the same way that you might include some absolute filepath to a file on your computer.</p>
-<p>So now let’s load the data into R for this cast.</p>
+<p>So now let’s load the data into R for one cruise.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no:443/opendap/physics/point/cruise/nansen_legacy/NMDC_Nansen-Legacy_PR_CT_58US_2021708.nc&#39;</span>
@@ -523,7 +523,7 @@ variables:
 		NC_CHAR FLU2:long_name = &quot;Chlorophyll-a fluorescence&quot; ;
 		NC_CHAR FLU2:units = &quot;mg m-3&quot; ;
 		NC_INT FLU2:valid_min = 0 ;
-		NC_INT FLU2:valid_max = 1e+05 ;
+		NC_INT FLU2:valid_max = 100000 ;
 		NC_CHAR FLU2:ancillary_variables = &quot;FLU2_QC FLU2_DM&quot; ;
 		NC_CHAR FLU2:data_mode = &quot;R&quot; ;
 		NC_CHAR FLU2:comment = &quot;Fluorescence, WET Labs ECO-AFL/FL [mg/m^3]&quot; ;
@@ -558,7 +558,7 @@ variables:
 		NC_CHAR SVEL:long_name = &quot;Sound velocity&quot; ;
 		NC_CHAR SVEL:units = &quot;m s-1&quot; ;
 		NC_INT SVEL:valid_min = 0 ;
-		NC_INT SVEL:valid_max = 1e+06 ;
+		NC_INT SVEL:valid_max = 1000000 ;
 		NC_CHAR SVEL:ancillary_variables = &quot;SVEL_QC SVEL_DM&quot; ;
 		NC_CHAR SVEL:data_mode = &quot;R&quot; ;
 		NC_CHAR SVEL:comment = &quot;Sound Velocity [Chen-Millero, m/s]&quot; ;
@@ -570,7 +570,7 @@ variables:
 		NC_CHAR CCOMD003:long_name = &quot;CDOM Gelbstoff per unit volume of the water body by in-situ fluorometer&quot; ;
 		NC_CHAR CCOMD003:units = &quot;mg m-3&quot; ;
 		NC_INT CCOMD003:valid_min = 0 ;
-		NC_INT CCOMD003:valid_max = 1e+05 ;
+		NC_INT CCOMD003:valid_max = 100000 ;
 		NC_CHAR CCOMD003:ancillary_variables = &quot;CCOMD003_QC CCOMD003_DM&quot; ;
 		NC_CHAR CCOMD003:data_mode = &quot;R&quot; ;
 		NC_CHAR CCOMD003:comment = &quot;Fluorescence, WET Labs CDOM [mg/m^3]&quot; ;
@@ -582,7 +582,7 @@ variables:
 		NC_CHAR DOX1-1:long_name = &quot;Dissolved oxygen&quot; ;
 		NC_CHAR DOX1-1:units = &quot;ml l-1&quot; ;
 		NC_INT DOX1-1:valid_min = 0 ;
-		NC_INT DOX1-1:valid_max = 1e+06 ;
+		NC_INT DOX1-1:valid_max = 1000000 ;
 		NC_CHAR DOX1-1:ancillary_variables = &quot;DOX1-1_QC DOX1-1_DM&quot; ;
 		NC_CHAR DOX1-1:data_mode = &quot;R&quot; ;
 		NC_CHAR DOX1-1:comment = &quot;Oxygen, SBE 43 [ml/l], WS = 2&quot; ;
@@ -594,7 +594,7 @@ variables:
 		NC_CHAR DOX2-1:long_name = &quot;Dissolved oxygen&quot; ;
 		NC_CHAR DOX2-1:units = &quot;µmol kg-1&quot; ;
 		NC_INT DOX2-1:valid_min = 0 ;
-		NC_INT DOX2-1:valid_max = 1e+06 ;
+		NC_INT DOX2-1:valid_max = 1000000 ;
 		NC_CHAR DOX2-1:ancillary_variables = &quot;DOX2-1_QC DOX2-1_DM&quot; ;
 		NC_CHAR DOX2-1:data_mode = &quot;R&quot; ;
 		NC_CHAR DOX2-1:comment = &quot;Sbox0Mm/Kg&quot; ;
@@ -618,7 +618,7 @@ variables:
 		NC_CHAR OXYOCPVL-1:long_name = &quot;Raw signal (voltage) of instrument output by oxygen senso&quot; ;
 		NC_CHAR OXYOCPVL-1:units = &quot;V&quot; ;
 		NC_INT OXYOCPVL-1:valid_min = 0 ;
-		NC_INT OXYOCPVL-1:valid_max = 1e+06 ;
+		NC_INT OXYOCPVL-1:valid_max = 1000000 ;
 		NC_CHAR OXYOCPVL-1:ancillary_variables = &quot;OXYOCPVL-1_QC OXYOCPVL-1_DM&quot; ;
 		NC_CHAR OXYOCPVL-1:data_mode = &quot;R&quot; ;
 		NC_CHAR OXYOCPVL-1:comment = &quot;Oxygen Voltage, SBE 43&quot; ;
@@ -630,7 +630,7 @@ variables:
 		NC_CHAR SPAR:long_name = &quot;Photosynthetically active radiation&quot; ;
 		NC_CHAR SPAR:units = &quot;μmol m-2 s-1&quot; ;
 		NC_INT SPAR:valid_min = 0 ;
-		NC_INT SPAR:valid_max = 1e+07 ;
+		NC_INT SPAR:valid_max = 10000000 ;
 		NC_CHAR SPAR:ancillary_variables = &quot;SPAR_QC SPAR_DM&quot; ;
 		NC_CHAR SPAR:data_mode = &quot;R&quot; ;
 		NC_CHAR SPAR:comment = &quot;SPAR/Surface Irradiance&quot; ;
@@ -642,7 +642,7 @@ variables:
 		NC_CHAR PAR:long_name = &quot;Photosynthetically active radiation&quot; ;
 		NC_CHAR PAR:units = &quot;μmol m-2 s-1&quot; ;
 		NC_INT PAR:valid_min = 0 ;
-		NC_INT PAR:valid_max = 1e+07 ;
+		NC_INT PAR:valid_max = 10000000 ;
 		NC_CHAR PAR:ancillary_variables = &quot;PAR_QC PAR_DM&quot; ;
 		NC_CHAR PAR:data_mode = &quot;R&quot; ;
 		NC_CHAR PAR:comment = &quot;PAR/Irradiance, Biospherical/Licor&quot; ;
@@ -678,7 +678,7 @@ variables:
 		NC_CHAR ATTNZS01:long_name = &quot;WET Labs transmissometer calibrated to zero in clear water&quot; ;
 		NC_CHAR ATTNZS01:units = &quot;%&quot; ;
 		NC_INT ATTNZS01:valid_min = 0 ;
-		NC_INT ATTNZS01:valid_max = 1e+05 ;
+		NC_INT ATTNZS01:valid_max = 100000 ;
 		NC_CHAR ATTNZS01:ancillary_variables = &quot;ATTNZS01_QC ATTNZS01_DM&quot; ;
 		NC_CHAR ATTNZS01:data_mode = &quot;R&quot; ;
 		NC_CHAR ATTNZS01:comment = &quot;Beam Transmission, WET Labs C-Star [%]&quot; ;

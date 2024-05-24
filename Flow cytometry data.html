@@ -376,7 +376,6 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-dataframe-including-all-of-this-information-together">Creating a dataframe including all of this information together</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#looping-through-multiple-files">Looping through multiple files</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Looping through multiple files</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>
@@ -492,7 +491,7 @@ EARTH SCIENCE &gt; OCEANS ; EARTH SCIENCE &gt; BIOLOGICAL CLASSIFICATION &gt; BA
 <p>Note that our file is a bit different because we have a depth profile instead of a time series.</p>
 <section id="depth">
 <h3>Depth<a class="headerlink" href="#depth" title="Permalink to this heading">#</a></h3>
-<p>This is one is. Depth is just a 1D variable.</p>
+<p>This is an easy one. <em>depth</em> is just a 1D variable.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">depth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;depth&quot;</span><span class="p">)</span>
@@ -626,167 +625,6 @@ EARTH SCIENCE &gt; OCEANS ; EARTH SCIENCE &gt; BIOLOGICAL CLASSIFICATION &gt; BA
 </div></div>
 </div>
 <p>To export the dataframe to a CSV or XLSX file</p>
-<section id="looping-through-multiple-files">
-<h3>Looping through multiple files<a class="headerlink" href="#looping-through-multiple-files" title="Permalink to this heading">#</a></h3>
-<p>What if we want to loop through and access all the casts from, for example, a single cruise?</p>
-<p>We can think of this as the human interface:
-<a class="reference external" href="https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/contents.html">https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/contents.html</a></p>
-<p>And this as the machine interface:
-<a class="reference external" href="https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/catalog.xml">https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/catalog.xml</a></p>
-<p>If you have never looked at an XML file like this before, don’t worry. What we want to do is access the URL paths of each file and dump them to a list that we can loop through. We need to install another package first.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;xml2&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;xml2&quot;</span><span class="p">)</span>
-<span class="p">}</span>
-<span class="nf">library</span><span class="p">(</span><span class="n">xml2</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Now let’s make a list of the OPeNDAP URLs for each file.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Read the XML file</span>
-<span class="n">xml_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&#39;https://opendap1.nodc.no/opendap/chemistry/point/cruise/nansen_legacy/2021704/catalog.xml&#39;</span>
-<span class="n">xml_content</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read_xml</span><span class="p">(</span><span class="n">xml_url</span><span class="p">)</span>
-
-<span class="c1"># Extract all &lt;thredds:access&gt; nodes with serviceName=&quot;dap&quot;</span>
-<span class="n">dap_nodes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">xml_find_all</span><span class="p">(</span><span class="n">xml_content</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;.//thredds:access[@serviceName=&#39;dap&#39;]&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">xml_ns</span><span class="p">(</span><span class="n">xml_content</span><span class="p">))</span>
-
-<span class="c1"># Extract the URLs</span>
-<span class="n">dap_urls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">xml_attr</span><span class="p">(</span><span class="n">dap_nodes</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;urlPath&quot;</span><span class="p">)</span>
-
-<span class="c1"># Base URL</span>
-<span class="n">base_url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;https://opendap1.nodc.no/opendap/&quot;</span>
-
-<span class="c1"># Combine base URL with URL paths to get full URLs</span>
-<span class="n">full_urls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span><span class="w"> </span><span class="n">dap_urls</span><span class="p">)</span>
-
-<span class="c1"># Print the full URLs</span>
-<span class="nf">print</span><span class="p">(</span><span class="n">full_urls</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> [1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T133217.nc&quot;                               
- [2] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T141507.nc&quot;                               
- [3] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T043651.nc&quot;                               
- [4] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T045538.nc&quot;                               
- [5] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGA_20210516T181751.nc&quot;                                
- [6] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGB_20210517T001244.nc&quot;                                
- [7] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGC_20210517T210252.nc&quot;                                
- [8] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGD_20210518T142143.nc&quot;                                
- [9] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T023742.nc&quot;                            
-[10] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T035837.nc&quot;                            
-[11] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T044113.nc&quot;                            
-[12] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T101857.nc&quot;                            
-[13] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T035943.nc&quot;                            
-[14] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T043150.nc&quot;                            
-[15] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_Ice_20210502T133216Z_ice_core.nc&quot;              
-[16] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T210116.nc&quot;                            
-[17] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T212005.nc&quot;                            
-[18] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T221452.nc&quot;                            
-[19] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T064610.nc&quot;                            
-[20] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T171510.nc&quot;                            
-[21] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T183338.nc&quot;                            
-[22] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_ice_core.nc&quot;              
-[23] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_slurp_gun.nc&quot;             
-[24] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T161534.nc&quot;                            
-[25] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T162309.nc&quot;                            
-[26] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_Ice_20210508T070815Z_ice_core.nc&quot;              
-[27] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T214530.nc&quot;                     
-[28] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T225046.nc&quot;                     
-[29] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T234300Z.nc&quot;                    
-[30] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_ice_core.nc&quot;       
-[31] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_slurp_gun.nc&quot;      
-[32] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_under_ice_water.nc&quot;
-[33] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210511T073146Z_slurp_gun.nc&quot;      
-[34] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210513T212217.nc&quot;                     
-[35] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T011506.nc&quot;                     
-[36] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T012126.nc&quot;                     
-[37] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210516T052902.nc&quot;                     
-[38] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_ice_core.nc&quot;       
-[39] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_slurp_gun.nc&quot;      
-[40] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_under_ice_water.nc&quot;
-</pre></div>
-</div>
-</div>
-</div>
-<p>Now we need to use a for loop to access each file in turn. Here is a quick example of how a for loop works if you are not familiar.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">animals</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;pig&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;dog&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;horse&#39;</span><span class="p">)</span>
-
-<span class="nf">for </span><span class="p">(</span><span class="n">animal</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">animals</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">message</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="s">&#39;Hello there,&#39;</span><span class="p">,</span><span class="n">animal</span><span class="p">)</span>
-<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;Hello there, pig&quot;
-[1] &quot;Hello there, dog&quot;
-[1] &quot;Hello there, horse&quot;
-</pre></div>
-</div>
-</div>
-</div>
-<p>Now a more relevant example</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">for </span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">full_urls</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="w">   </span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T133217.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG02_20210501T141507.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T043651.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEG05_20210503T045538.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGA_20210516T181751.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGB_20210517T001244.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGC_20210517T210252.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_NLEGD_20210518T142143.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T023742.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T035837.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T044113.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P1_NLEG01_20210430T101857.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T035943.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_20210502T043150.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P2_NLEG04_Ice_20210502T133216Z_ice_core.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T210116.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T212005.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P3_NLEG07_20210503T221452.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T064610.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T171510.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_20210505T183338.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_ice_core.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P4_NLEG11_Ice_20210505T064610Z_slurp_gun.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T161534.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_20210507T162309.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P5_NLEG13_Ice_20210508T070815Z_ice_core.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T214530.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T225046.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_20210510T234300Z.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_ice_core.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_slurp_gun.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210509T133528Z_under_ice_water.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P6_NLEG21_NPAL15_Ice_20210511T073146Z_slurp_gun.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210513T212217.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T011506.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210514T012126.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_20210516T052902.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_ice_core.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_slurp_gun.nc&quot;
-[1] &quot;https://opendap1.nodc.no/opendap//chemistry/point/cruise/nansen_legacy/2021704/Chlorophyll_A_and_phaeopigments_Nansen_Legacy_cruise_2021704_station_P7_NLEG25_NPAL16_Ice_20210513T062701Z_under_ice_water.nc&quot;
-</pre></div>
-</div>
-</div>
-</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># Write to CSV</span>
@@ -798,9 +636,8 @@ EARTH SCIENCE &gt; OCEANS ; EARTH SCIENCE &gt; BIOLOGICAL CLASSIFICATION &gt; BA
 </div>
 </div>
 </div>
-</section>
-<section id="id1">
-<h3>Looping through multiple files<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<section id="looping-through-multiple-files">
+<h3>Looping through multiple files<a class="headerlink" href="#looping-through-multiple-files" title="Permalink to this heading">#</a></h3>
 <p>What if we want to loop through and access data from all the casts?</p>
 <p>We can think of this as the human interface:
 <a class="reference external" href="https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/cytometry/contents.html">https://opendap1.nodc.no/opendap/hyrax/projects/nansen_legacy/cytometry/contents.html</a></p>
@@ -1095,7 +932,6 @@ EARTH SCIENCE &gt; OCEANS ; EARTH SCIENCE &gt; BIOLOGICAL CLASSIFICATION &gt; BA
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-dataframe-including-all-of-this-information-together">Creating a dataframe including all of this information together</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#looping-through-multiple-files">Looping through multiple files</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Looping through multiple files</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citing-the-data">Citing the data</a></li>

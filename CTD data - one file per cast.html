@@ -874,7 +874,7 @@ variables:
 <img alt="_images/b6dd85d111059bd504e0d3f83dd998326b2e77bbe0aed41067117951b8950200.png" src="_images/b6dd85d111059bd504e0d3f83dd998326b2e77bbe0aed41067117951b8950200.png" />
 </div>
 </div>
-<p>Now let’s write the data to a dataframe that.</p>
+<p>Now let’s write the data to a dataframe.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">Pressure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pres</span><span class="p">,</span><span class="w"> </span><span class="n">Temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp</span><span class="p">,</span><span class="w"> </span><span class="n">Salinity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">psal</span><span class="p">)</span>
@@ -1026,7 +1026,6 @@ variables:
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">for </span><span class="p">(</span><span class="n">url</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">full_urls</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nf">print</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 <span class="w">    </span><span class="c1"># Open the file and extract the data</span>
 <span class="w">    </span><span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">open.nc</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 <span class="w">    </span><span class="n">pres</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var.get.nc</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="s">&#39;PRES&#39;</span><span class="p">)</span>
